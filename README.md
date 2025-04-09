@@ -1,4 +1,4 @@
-# AMR-Genomic-Surveillance
+# Bioinformatics Analysis for Antimicrobial Resistance Genomic Surveillance
 
 ## Introduction  
 
