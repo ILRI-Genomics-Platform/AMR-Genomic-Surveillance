@@ -48,12 +48,6 @@ This module will come after the Introductory Linux module and therefore assumes 
 ## Set up  
 You will use your personal computers computers to log into the ILRI HPC cluster, which operates on a Linux-operating system. Since we will be working from the remote servers, you will not need special setup for your personal laptops. However, you will need to install a program that enables you to log into the HPC.
 
->**Note**
-
->Once inside the `hpc`, all instances of ```$USER``` will be equivalent to the hpc username that you were assigned. Your username, by default, is stored in a variable called `USER`. By using it, you will not have to type-in your username, rather, your shell will automatically pick your username which is the value stored in the `USER` variable. The `$` (dollar) character-prefix to a variable name is used to call the value of that variable.
-
-
-
 ## Analysis preprations
 
 ### Logging into the HPC  
@@ -77,13 +71,19 @@ interactive -w compute06 -c 2 -J amr-surveillance -p batch
 We will start by setting up the project directory structure and then conduct the analysis stepwise. To setup a well-structured project directory we need to create some directories to store our data and scripts. We will be conducting our a anlysis from a directory in the `scratch` space of the HPC.  
 
 1. *Create a directory using your username in the scratch:*
-> **Note:** In this command we use the UNIX environment variable `$USER` which by default was created during logging into the HPC to store your `<user_name>` i.e (`Bio4InfoXX`). You can view its value using the command `echo $USER`.  
+>**Note**
+
+>Once inside the `hpc`, all instances of ```$USER``` will be equivalent to the hpc username that you were assigned. Your username, by default, is stored in a variable called `USER`. By using it, you will not have to type-in your username, rather, your shell will automatically pick your username which is the value stored in the `USER` variable. The `$` (dollar) character-prefix to a variable name is used to call the value of that variable.
+
 ```
 mkdir -p /var/scratch/$USER
 cd /var/scratch/$USER
 ```
-2. *Create project directories:*
-> **Note:** We create a project directory `amr-surveillance` to store all that pertains to this tutorial/project. Within `amr-surveillance` we created `data` and subdirectories to store our input data and results from different analysis steps. We create `scripts` directory to store scripts/code that we genenrate or need in the analysis.
+1. *Create project directories:*
+> **Note:** 
+
+> We create a project directory `amr-surveillance` to store all that pertains to this tutorial/project. Within `amr-surveillance` we created `data` and subdirectories to store our input data and results from different analysis steps. We create `scripts` directory to store scripts/code that we genenrate or need in the analysis.
+
 ```
 mkdir -p amr-surveillance/{data,scripts}
 cd amr-surveillance/
