@@ -83,7 +83,7 @@ mkdir -p /var/scratch/$USER
 cd /var/scratch/$USER
 ```
 2. *Create project directories:*
-> **Note:** We create a project directory `viralMetagen` to store all that pertains to this tutorial/project. Within `viralMetagen` we created `data` and subdirectories to store our input data and results from different analysis steps. We create `scripts` directory to store scripts/code that we genenrate or need in the analysis.
+> **Note:** We create a project directory `amr-surveillance` to store all that pertains to this tutorial/project. Within `amr-surveillance` we created `data` and subdirectories to store our input data and results from different analysis steps. We create `scripts` directory to store scripts/code that we genenrate or need in the analysis.
 ```
 mkdir -p amr-surveillance/{data,scripts}
 cd amr-surveillance/
