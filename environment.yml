@@ -1,0 +1,58 @@
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f environment.yml
+name: bactopia-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+  
+dependencies:
+  - conda-forge::pigz
+  - conda-forge::libcxx
+  - conda-forge::libzlib
+
+# preprocessing tools
+  - bioconda::bbmap
+  - bioconda::fastp
+  - bioconda::fastqc
+  - bioconda::fastq-scan
+  - bioconda::lighter
+  - bioconda::nanoplot
+  - bioconda::nanoq
+  - bioconda::porechop
+  - bioconda::rasusa
+
+  # assembly tools
+  - bioconda::any2fasta
+  - bioconda::assembly-scan
+  - bioconda::bwa
+  - bioconda::dragonflye
+  - bioconda::flash
+  - bioconda::flye
+  - bioconda::medaka
+  - bioconda::megahit
+  - bioconda::miniasm
+  - bioconda::minimap2
+  - bioconda::nanoq
+  - bioconda::pilon
+  - bioconda::racon
+  - bioconda::raven-assembler
+  - bioconda::samclip
+  - bioconda::samtools
+  - bioconda::shovill
+  - bioconda::shovill-se
+  - bioconda::skesa
+  - bioconda::spades
+  - bioconda::velvet
+  - bioconda::unicycler
+
+  # annotation
+  - bioconda::blast
+  - bioconda::prokka
+
+  # amr analysis
+  - bioconda::ncbi-amrfinderplus
+
+  # mlst
+  - bioconda::mlst
