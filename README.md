@@ -85,8 +85,8 @@ cd /var/scratch/$USER
 > We create a project directory `amr-surveillance` to store all that pertains to this tutorial/project. Within `amr-surveillance` we created `data` and subdirectories to store our input data and results from different analysis steps. We create `scripts` directory to store scripts/code that we genenrate or need in the analysis.
 
 ```
-mkdir -p amr-surveillance/{data,scripts}
-cd amr-surveillance/
+mkdir -p AMR-Genomic-Surveillance/{data,scripts}
+cd AMR-Genomic-Surveillance/
 mkdir -p ./data/{database,fastq,fastqc,fastp,spades,quast,bowtie,samtools}
 ```
 
