@@ -1,37 +1,66 @@
+# Set up working Dir:
+```
+mkdir -p /var/scratch/$USER  
+cd /var/scratch/$USER  
+```
 
-# on hpc - load modules
+```
+mkdir -p AMR-Genomic-Surveillance/{data,scripts}
+cd AMR-Genomic-Surveillance/  
+```
+# Data  
+```
+mkdir -p ./data/ont/{klebs,ecoli}
+ln -s /var/scratch/global/jjuma/ACDC_AMR2025/data/klebs/ont/* ./data/ont/klebs/
+ln -s /var/scratch/global/jjuma/ACDC_AMR2025/data/ecoli/ont/* ./data/ont/ecoli/
+```
+## Alternative 2: Download data from NCBI/ENA:  
+SRA: `https://www.ncbi.nlm.nih.gov/sra`; search: `klebsiella pneumoniae`
+checkboxes to check in SRA:  
+`Type`: `genome`; `Platform`: `Oxford Nanopore` OR `Illumina`; `File Type`: `fastq`  
+Note: With SRA, first download SRA general format using `wget`, then convert SRA format to FASTQ using `fastq-dump`  
 
-module load bbmap/38.95
-module load bwa/0.7.17
-module load samtools/1.9
-module load racon/1.5.0
-module load unicycler/0.4.7
+Alternatively download the `fastq.gz` format directly from  the European Nucleotide Archive (ENA) - which mirrors many datasets in NCBI's SRA. Search the accession identified from SRA above in ENA site: https://www.ebi.ac.uk/ena/browser/home  
+
+```
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR214/024/SRR21465924/SRR21465924_1.fastq.gz -P ./data/ont/kbles/
+```
+# on hpc - load modules  
+
+```
+module load bbmap/38.95  
+module load bwa/0.7.17  
+module load samtools/1.9  
+module load racon/1.5.0  
+module load unicycler/0.4.7  
 module load prodigal/2.6.3  
-module load fastp/0.22.0
-module load porechop/0.2.4
-module load minimap2/2.13
-module load spades/3.13.0
-module load mlst/2.23.0
+module load fastp/0.22.0  
+module load porechop/0.2.4  
+module load minimap2/2.13  
+module load spades/3.13.0  
+module load mlst/2.23.0  
 module load infernal/1.1.2  
-module load fastqc/0.11.9
-module load any2fasta/0.4.2
-module load medaka/0.8.2
-module load velvet/1.2.10
-module load hmmer/3.3
+module load fastqc/0.11.9  
+module load any2fasta/0.4.2  
+module load medaka/0.8.2  
+module load velvet/1.2.10  
+module load hmmer/3.3  
 module load prokka/1.14.6   
-module load lighter/1.1.2
-module load flye/2.4.2
-module load megahit/1.2.9
-module load bowtie2/2.3.4.1
+module load lighter/1.1.2  
+module load flye/2.4.2  
+module load megahit/1.2.9  
+module load bowtie2/2.3.4.1  
 module load bedtools/2.29.0  
-module load flash/1.2.11
-module load htslib/1.9
-module load miniasm/0.3
-module load blast/2.7.1+
+module load flash/1.2.11  
+module load htslib/1.9  
+module load miniasm/0.3  
+module load blast/2.7.1+  
 module load barrnap/0.9  
-
-
+```
+Create analysis directories:
+```
 mkdir -p ~/trainings/ACDC_AMR2025/results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst}
+```
 
 # Remove Adapters
 porechop \
