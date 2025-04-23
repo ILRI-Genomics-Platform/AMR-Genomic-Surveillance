@@ -15,7 +15,7 @@ ln -s /var/scratch/global/jjuma/ACDC_AMR2025/data/klebs/ont/* ./data/ont/klebs/
 ln -s /var/scratch/global/jjuma/ACDC_AMR2025/data/ecoli/ont/* ./data/ont/ecoli/
 ```
 ## Alternative 2: Download data from NCBI/ENA:  
-SRA: `https://www.ncbi.nlm.nih.gov/sra`; search: `klebsiella pneumoniae`
+SRA: https://www.ncbi.nlm.nih.gov/sra; search: `klebsiella pneumoniae`
 checkboxes to check in SRA:  
 `Type`: `genome`; `Platform`: `Oxford Nanopore` OR `Illumina`; `File Type`: `fastq`  
 Note: With SRA, first download SRA general format using `wget`, then convert SRA format to FASTQ using `fastq-dump`  
@@ -23,7 +23,7 @@ Note: With SRA, first download SRA general format using `wget`, then convert SRA
 Alternatively download the `fastq.gz` format directly from  the European Nucleotide Archive (ENA) - which mirrors many datasets in NCBI's SRA. Search the accession identified from SRA above in ENA site: https://www.ebi.ac.uk/ena/browser/home  
 
 ```
-wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR214/024/SRR21465924/SRR21465924_1.fastq.gz -P ./data/ont/kbles/
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR214/024/SRR21465924/SRR21465924_1.fastq.gz -P ./data/ont/klebs/
 ```
 # on hpc - load modules  
 
@@ -63,52 +63,63 @@ mkdir -p ~/trainings/ACDC_AMR2025/results/ont/klebsiella/{porechop,nanoq,fastq-s
 ```
 
 # Remove Adapters
+```
 porechop \
     --input ./data/klebs/ont/SRR28370682.fastq.gz \
     --format fastq.gz \
     --threads 2 \
     --no_split \
     --output ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz
+```
 
 # Quality filter
+```
 nanoq \
     --min-len 1000 \
     --min-qual 0 \
     --input ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz \
     --output-type g \
     --output ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz
+```
 
-# fastq-scan reads a FASTQ from STDIN and outputs summary statistics (read lengths, per-read qualities, per-base qualities) in JSON format.
+fastq-scan reads a FASTQ from STDIN and outputs summary statistics (read lengths, per-read qualities, per-base qualities) in JSON format.
+
 # Quality steps before and after QC
+```
 gzip -cd \
 ./data/klebs/ont/SRR28370682.fastq.gz | fastq-scan -g 5248520 > \
 ./results/ont/klebsiella/fastq-scan/SRR28370682-original.json
-
+```
+```
 gzip -cd \
 ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz | fastq-scan -g 5248520 > \
 ./results/ont/klebsiella/fastq-scan/SRR28370682-final.json
-
+```
 
 # Nanoplot
+```
 NanoPlot \
     --threads 2 \
     --fastq ./data/klebs/ont/SRR28370682.fastq.gz \
     --outdir ./results/ont/klebsiella/nanoplot/ \
     --prefix SRR28370682-original_
-
+```
 # copy the report html to local computer from hpc
+```
 rsync -avP \
     --partial \
     ./results/ont/klebsiella/nanoplot/results/summary/SRR28370682-original_NanoPlot-report.html \
     ~/
-
+```
+```
 NanoPlot \
     --threads 2 \
     --fastq ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz \
     --outdir ./results/ont/klebsiella/nanoplot/ \
     --prefix SRR28370682-final_
-
+```
 # Tools
+```
 - bbduk: 39.19
 - fastp: 0.24.0
 - fastqc: 0.12.1
@@ -119,10 +130,10 @@ NanoPlot \
 - pigz: 2.8
 - porechop: 0.2.4
 - rasusa: 2.1.0
-
+```
 
 # assembly
-
+```
 dragonflye \
     --reads ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz \
     --gsize 5248520 \
@@ -144,9 +155,10 @@ dragonflye \
     --cpus 4 \
     --ram 7 \
     --noreorient
-
+```
 
 # Tools
+```
 - any2fasta: 0.4.2
 - assembly-scan: 1.0.0
 - bwa: 0.7.19-r1273
@@ -172,13 +184,14 @@ dragonflye \
 - velvetg: 1.2.10
 - velveth: 1.2.10
 - unicycler: 0.5.1
-
+```
 
 # annotation
-
+```
 mkdir ./results/ont/klebsiella/tmp_prokka/
 TMPDIR=./results/ont/klebsiella/tmp_prokka/
-
+```
+```
 prokka \
     --evalue 1e-09 \
     --coverage 80 \
@@ -192,33 +205,37 @@ prokka \
     ./results/ont/klebsiella/dragonflye/SRR28370682.fa
 
 rm -r ./results/ont/klebsiella/tmp_prokka/
-
-<!-- # Make blastdb of contigs, genes, proteins
+```
+# Make blastdb of contigs, genes, proteins
+```
 mkdir ./results/ont/klebsiella/prokka/blastdb
-
+```
+```
 cat ./results/ont/klebsiella/prokka/SRR28370682.fna | \
     makeblastdb \
     -dbtype "nucl" \
     -title "Assembled contigs for SRR28370682" \
     -out ./results/ont/klebsiella/prokka/blastdb/SRR28370682.fna
-
+```
+```
 cat ./results/ont/klebsiella/prokka/SRR28370682.ffn | \ 
     makeblastdb \
     -dbtype "nucl" \
     -title "Predicted genes sequences for SRR28370682" \
     -out ./results/ont/klebsiella/prokka/blastdb/SRR28370682.ffn
-
-
+```
+```
 cat ./results/ont/klebsiella/prokka/SRR28370682.faa | \
     makeblastdb \
     -dbtype "prot" \
     -title "Predicted protein sequences for SRR28370682" \
     -out ./results/ont/klebsiella/prokka/blastdb/SRR28370682.faa
-
+```
 # Compress
+```
 tar -cvf - blastdb/ | gzip -c > SRR28370682/SRR28370682-blastdb.tar.gz
-
-
+```
+```
 gzip SRR28370682/*.gff
 gzip SRR28370682/*.gbk
 gzip SRR28370682/*.fna
@@ -227,22 +244,25 @@ gzip SRR28370682/*.ffn
 gzip SRR28370682/*.sqn
 gzip SRR28370682/*.fsa
 gzip SRR28370682/*.tbl -->
-
+```
 # Cleanup intermediate files
+```
 rm -r ./results/ont/klebsiella/prokka/*.pdb ./results/ont/klebsiella/prokka/*.pjs ./results/ont/klebsiella/prokka/*.pot ./results/ont/klebsiella/prokka/*.ptf ./results/ont/klebsiella/prokka/*.pto
-
+```
 
 # Tools
+```
  - makeblastdb: 2.16.0+
  - prokka: 1.14.6
-
+```
 
 # Identify AMR and virulence genes in proteins and/or contigs and print a report
-
+```
 AMRFINDER_DB=$(find ./databases/amrfinderplus/2023-11-15.1 -name "AMR.LIB" | sed 's=AMR.LIB==')
-
+```
 
 # Full AMRFinderPlus search combining results
+```
 amrfinder \
     --nucleotide ./results/ont/klebsiella/prokka/SRR28370682.fna \
     --protein ./results/ont/klebsiella/prokka/SRR28370682.faa \
@@ -256,20 +276,22 @@ amrfinder \
     --database $AMRFINDER_DB \
     --threads 2 \
     --name SRR28370682 > ./results/ont/klebsiella/amrfinder/SRR28370682.tsv
-
+```
 # Tools
+```
  - amrfinderplus: 4.0.19
  - amrfinderplus-database: 4.0.19
-
+```
 
 # MLST 
-
+```
 mkdir ./databases/mlst/database
 tar -xzf ./databases/mlst/mlst.tar.gz -C ./databases/mlst/database
 MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
-
+```
 
 # Automatic MLST calling from assembled contigs
+```
 mlst \
     --threads 2 \
     --blastdb $MLST_DB/blast/mlst.fa \
@@ -280,7 +302,9 @@ mlst \
     --minscore 50 \
     ./results/ont/klebsiella/prokka/SRR28370682.fna \
     > ./results/ont/klebsiella/mlst/SRR28370682.tsv
-
-# Toolls
+```
+# Tools
+```
 - mlst: 2.23.0
 - mlst-database: 2.23.0-20240325
+```
