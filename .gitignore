@@ -2,3 +2,5 @@
 ./scripts
 ./results
 bacterial-amr-analysis-for-ont.md
+bactopia_env_allPackages.yml
+bactopia_env_selectPackages.yml
