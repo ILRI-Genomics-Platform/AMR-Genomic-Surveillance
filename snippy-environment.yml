@@ -1,0 +1,21 @@
+# You can use this file to create a conda environment for this pipeline:
+#   conda env create -f snippy-environment.yml
+name: snippy-env
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+  - r
+  
+dependencies:
+  - conda-forge::pigz
+  - conda-forge::gsl
+  
+  # snp analysis
+  - bioconda::bcftools>=1.7
+  - bioconda::bedtools=2.31.1
+  - bioconda::gubbins=3.4
+  - bioconda::snippy=4.6.0
+  - bioconda::iqtree=2.4.0
+  - bioconda::vcf-annotator=0.7
+  - bioconda::snp-dists=0.8.2
