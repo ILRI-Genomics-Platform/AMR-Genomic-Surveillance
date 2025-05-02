@@ -2,7 +2,7 @@
 
 ---  
 
-###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk) & [Gilbert Kibet](https://github.com/kibet-gilbert)
+###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk), [Daniel Ouso](https://github.com/ousodaniel) & [Gilbert Kibet](https://github.com/kibet-gilbert)
 
 ---
 
