@@ -1,4 +1,4 @@
-./data
+./data/
 ./scripts
 ./results
 bacterial-amr-analysis-for-ont.md
@@ -7,3 +7,5 @@ bactopia_env_selectPackages.yml
 
 bacterial-amr-analysis-for-illumina.md
 mpox-genome-analysis-illumina.md
+
+data/
