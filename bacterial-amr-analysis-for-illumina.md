@@ -17,8 +17,8 @@ echo $BASEDIR
 ```
 
 ```
-echo mkdir -p \
-$BASEDIR/trainings/ACDC_AMR2025/results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst}
+mkdir -p \
+$BASEDIR/trainings/ACDC_AMR2025/results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,tmp/{shovill,prokka,amrfinder}}
 ```
 
 ```
@@ -41,8 +41,6 @@ module load prokka/1.14.6
 module load resfinder/4.6.0
 module load mlst/2.23.0
 ```
-
-
 
 # QC
 ```
@@ -72,34 +70,6 @@ fastp \
     2> ./results/illumina/ecoli/fastp/SRR25008769.fastp.log
 ```
 
-# fastq-scan reads a FASTQ from STDIN and outputs summary statistics (read lengths, per-read qualities, per-base qualities) in JSON format.
-
-```
-gzip -cd \
-./data/ecoli/illumina/SRR25008769_1.fastq.gz | fastq-scan -g 5249449 > \
-./results/illumina/ecoli/fastq-scan/SRR25008769_1-original.json
-```
-
-```
-gzip -cd \
-./data/ecoli/illumina/SRR25008769_2.fastq.gz | fastq-scan -g 5249449 > \
-./results/illumina/ecoli/fastq-scan/SRR25008769_2-original.json
-```
-
-```
-gzip -cd \
-./results/illumina/ecoli/fastp/SRR25008769_R1.trim.fastq.gz | fastq-scan -g 5249449 > \
-./results/illumina/ecoli/fastq-scan/SRR25008769_1-trimmed.json
-```
-
-```
-gzip -cd \
-./results/illumina/ecoli/fastp/SRR25008769_R2.trim.fastq.gz | fastq-scan -g 5249449 > \
-./results/illumina/ecoli/fastq-scan/SRR25008769_2-trimmed.json
-```
-
-
-
 # De novo assembly pipeline for Illumina paired reads
 Assemble bacterial isolate genomes from Illumina paired-end reads
 
@@ -115,11 +85,22 @@ It will NOT work on metagenomes or larger genomes.
 Please use Megahit directly instead.
 
 
+# Main steps
+
+1. Estimate genome size and read length from reads (unless --gsize provided) - mash
+2. Reduce FASTQ files to a sensible depth (default --depth 100) - seqtk
+3. Trim adapters from reads (with --trim only) - trimmomatic
+4. Conservatively correct sequencing errors in reads - lighter
+5. Pre-overlap ("stitch") paired-end reads - flash
+6. Assemble with SPAdes/SKESA/Megahit with modified kmer range and PE + long SE reads
+7. Correct minor assembly errors by mapping reads back to contigs (bwa-mem + pilon)
+8. Remove contigs that are too short, too low coverage, or pure homopolymers
+9. Produce final FASTA with nicer names and parseable annotations
+
+
+
 ```
-mkdir -p ./results/illumina/ecoli/tmp_shovill
-```
-```
-TMPDIR=./results/illumina/ecoli/tmp_shovill
+export TMPDIR="./results/illumina/ecoli/tmp/shovill"
 ```
 
 ```
@@ -135,28 +116,15 @@ shovill \
   --keepfiles \
   --depth 0 \
   --noreadcorr \
-  --namefmt "contig%5d" \
-  --cpus 2 \
-  --ram 7 \
+  --namefmt "SRR25008769_%05d" \
+  --cpus 4 \
+  --ram 16 \
   --tmpdir $TMPDIR
 ```
 
 ```
 mv ./results/illumina/ecoli/shovill/SRR25008769/contigs.fa ./results/illumina/ecoli/shovill/SRR25008769/SRR25008769.fa
 ```
-
-# Main steps
-
-1. Estimate genome size and read length from reads (unless --gsize provided) - mash
-2. Reduce FASTQ files to a sensible depth (default --depth 100) - seqtk
-3. Trim adapters from reads (with --trim only) - trimmomatic
-4. Conservatively correct sequencing errors in reads - lighter
-5. Pre-overlap ("stitch") paired-end reads - flash
-6. Assemble with SPAdes/SKESA/Megahit with modified kmer range and PE + long SE reads
-7. Correct minor assembly errors by mapping reads back to contigs (bwa-mem + pilon)
-8. Remove contigs that are too short, too low coverage, or pure homopolymers
-9. Produce final FASTA with nicer names and parseable annotations
-
 
 # Assembly evaluation
 
@@ -172,10 +140,7 @@ corrected values based on stats.sh outputs.
 
 # Annotation
 ```
-mkdir -p ./results/illumina/ecoli/tmp_prokka/
-```
-```
-TMPDIR=./results/illumina/ecoli/tmp_prokka/
+export TMPDIR=./results/illumina/ecoli/tmp/prokka/
 ```
 
 ```
@@ -196,11 +161,7 @@ prokka \
 # Full AMRFinderPlus search combining results
 
 ```
-mkdir -p ./results/illumina/ecoli/tmp_amrfinder/
-```
-
-```
-TMPDIR=./results/illumina/ecoli/tmp_amrfinder/
+export TMPDIR=./results/illumina/ecoli/tmp/amrfinder/
 ```
 
 ```
