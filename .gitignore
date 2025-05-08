@@ -9,3 +9,8 @@ bacterial-amr-analysis-for-illumina.md
 mpox-genome-analysis-illumina.md
 
 data/
+databases/
+primer_scheme/
+py3env/
+results/
+scripts/
