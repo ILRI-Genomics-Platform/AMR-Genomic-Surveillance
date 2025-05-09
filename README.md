@@ -85,9 +85,10 @@ We will use `conda` to install the tools to an environment in your local compute
 ```
 
 ## Analysis tutorials
-Please find here linked the tutorials for respective organisms. Right click on the link and open it in a new tab on your browser.
+Please find here linked the tutorials for Introduction to Linux and for respective organisms. Right click on the link and open it in a new tab on your browser.
 
-1. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
-2. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
-3. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
+1. [Intoduction to Linux](linux_hpc_intro.md)
+2. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
+3. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
+4. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
 
