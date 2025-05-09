@@ -1,5 +1,5 @@
 
-# *E. coli* AMR analysis workflow using Illumina data
+# *K. pneumoniae* AMR analysis workflow using ONT data
 ---  
 
 ###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk), [Ouso Daniel](https://github.com/ousodaniel) & [Gilbert Kibet](https://github.com/kibet-gilbert)
