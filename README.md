@@ -13,6 +13,7 @@
   - [Set up](#set-up)
   - [Analysis preparations](#analysis-preprations)
     - [Logging into the HPC](#logging-into-the-hpc)
+  - [Project organisation](#project-organisation)
   - [Software installation (local computer)](#software-installation-local-computer)
   - [Analysis tutorials](#analysis-tutorials)
 
