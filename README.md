@@ -9,7 +9,7 @@
 - **Table of Contents**
   - [Introduction](#introduction)
   - [Scope of the tutorial](#scope-of-the-tutorial)
-  - [pre-requisites](#pre-requisites)
+  - [Pre-requisites](#pre-requisites)
   - [Set up](#set-up)
   - [Analysis preparations](#analysis-preprations)
     - [Logging into the HPC](#logging-into-the-hpc)
