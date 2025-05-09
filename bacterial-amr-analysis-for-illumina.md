@@ -1,36 +1,39 @@
-# login to hpc and create project directory
+
+# *E. coli* AMR analysis workflow using Illumina data
+---  
+
+###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk), [Ouso Daniel](https://github.com/ousodaniel) & [Gilbert Kibet](https://github.com/kibet-gilbert)
+
+---
+
+# Project organisation  
+We will start by setting up the project directory structure and then conduct the analysis stepwise. To setup a well-structured project directory we need to create some directories to store our data and scripts. We will be conducting our a anlysis from a directory in the `scratch` space of the HPC.  
+
+1. *Create a directory using your username in the scratch:*
+>**Note**
+
+>Once inside the `hpc`, all instances of ```$USER``` will be equivalent to the hpc username that you were assigned. Your username, by default, is stored in a variable called `USER`. By using it, you will not have to type-in your username, rather, your shell will automatically pick your username which is the value stored in the `USER` variable. The `$` (dollar) character-prefix to a variable name is used to call the value of that variable.
 
 ```
-interactive -w compute06 -c 8
-```
-
-```
+mkdir -p /var/scratch/$USER
 cd /var/scratch/$USER
 ```
+2. *Create project directories:*
+> **Note:** 
+
+> We create a project directory `ACDC_AMR2025` to store all that pertains to this tutorial/project. Within `ACDC_AMR2025` we will have `data` and subdirectories to store our input data and `results` from different analysis steps. We will also have `scripts` directory to store scripts/code that we genenrate or need in the analysis.
 
 ```
-BASEDIR=$(pwd)
-```
+cd ACDC_AMR2025/
 
-```
-echo $BASEDIR
-```
-
-```
 mkdir -p \
-$BASEDIR/trainings/ACDC_AMR2025/results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,tmp/{shovill,prokka,amrfinder}}
-```
+results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,tmp/{shovill,prokka,amrfinder}}
 
-```
-cd $BASEDIR/trainings/ACDC_AMR2025
-```
-
-```
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
 
 
-# on hpc - load modules
+# Load modules
 
 ```
 module load fastqc/0.11.9
@@ -42,7 +45,7 @@ module load resfinder/4.6.0
 module load mlst/2.23.0
 ```
 
-# QC
+# Quality control
 ```
 fastqc \
     -o ./results/illumina/ecoli/fastqc \
