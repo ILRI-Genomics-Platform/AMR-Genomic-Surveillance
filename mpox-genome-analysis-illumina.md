@@ -1,34 +1,38 @@
 
-# hpc environment
+# *Monkeypox virus* analysis workflow using Illumina data
+---  
+
+###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk), [Ouso Daniel](https://github.com/ousodaniel) & [Gilbert Kibet](https://github.com/kibet-gilbert)
+
+---
+
+# Project organisation  
+We will start by setting up the project directory structure and then conduct the analysis stepwise. To setup a well-structured project directory we need to create some directories to store our data and scripts. We will be conducting our a anlysis from a directory in the `scratch` space of the HPC.  
+
+1. *Create a directory using your username in the scratch:*
+>**Note**
+
+>Once inside the `hpc`, all instances of ```$USER``` will be equivalent to the hpc username that you were assigned. Your username, by default, is stored in a variable called `USER`. By using it, you will not have to type-in your username, rather, your shell will automatically pick your username which is the value stored in the `USER` variable. The `$` (dollar) character-prefix to a variable name is used to call the value of that variable.
 
 ```
-interactive -w compute06 -c 8
-```
-
-```
+mkdir -p /var/scratch/$USER
 cd /var/scratch/$USER
 ```
+2. *Create project directories:*
+> **Note:** 
+
+> We create a project directory `ACDC_AMR2025` to store all that pertains to this tutorial/project. Within `ACDC_AMR2025` we will have `data` and subdirectories to store our input data and `results` from different analysis steps. We will also have `scripts` directory to store scripts/code that we genenrate or need in the analysis.
 
 ```
-BASEDIR=$(pwd)
-```
+cd ACDC_AMR2025/
 
-```
-echo $BASEDIR
-```
+mkdir -p \
+results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},primertrimmed,primer-trimmed,freebayes}
 
-```
-mkdir -p $BASEDIR/trainings/ACDC_AMR2025/results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},primertrimmed,primer-trimmed,freebayes}
-```
-
-```
-cd $BASEDIR/trainings/ACDC_AMR2025
-```
-
-```
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
 
+# Load modules
 ```
 module load hostile/2.0.0
 module load fastp/0.22.0
@@ -39,7 +43,7 @@ module unload bcftools/1.17
 module unload bcftools/1.13
 ```
 
-# create a virtual and install dependencies
+## Create a virtual and install dependencies
 
 ```
 python3 -m venv $BASEDIR/py3env
@@ -64,9 +68,9 @@ hostile clean \
     --index ./databases/hostile/human-t2t-hla
 ```
 
-# trim adapters using trim galore
-# Note cutadapt which is a dependency of trim galore is not properly configured on hpc,
-# we opt to use fastp instead
+# Trim adapters using trim galore
+>Note cutadapt which is a dependency of trim galore is not properly configured on hpc,
+we opt to use fastp instead
 
 ```
 trim_galore \
@@ -77,7 +81,7 @@ trim_galore \
     ./results/mpox/hostile/SRR21755837_2.clean_2.fastq.gz
 ```
 
-# trim adapters using fastp
+# Trim adapters using fastp
 
 ```
 fastp \
@@ -96,7 +100,7 @@ fastp \
     2> ./results/mpox/fastp/SRR21755837.fastp.log
 ```
  
-# get scheme
+## Get scheme
 
 ```
 python ./scripts/get_scheme.py \
@@ -105,9 +109,9 @@ python ./scripts/get_scheme.py \
     yale-mpox/2000/v1.0.0-cladeii
 ```
 
-# alignment
+# Alignment
 
-# index the reference genome
+## Index the reference genome
 
 ```
 cp ./results/mpox/primerschemes/yale-mpox/2000/v1.0.0-cladeii/reference.fasta \
@@ -126,7 +130,7 @@ INDEX=$(find -L ./results/mpox/bwa/index -name "*.amb" | sed 's/.amb//')
 ```
 
 
-# align
+## Align
 
 ```
 bwa mem \
@@ -140,7 +144,7 @@ bwa mem \
     -o ./results/mpox/bwa/alignment/SRR21755837.bam - 
 ```
 
-# sort
+## Sort
 
 ```
 samtools sort \
@@ -151,13 +155,13 @@ samtools sort \
 ```
 
 
-# index
+## Index
 
 ```
 samtools index ./results/mpox/bwa/alignment/SRR21755837.sorted.bam
 ```
 
-# 1. Trim alignments from an amplicon scheme
+## Trim alignments from an amplicon scheme
 
 ```
 python ./scripts/align_trim.py \
@@ -176,7 +180,7 @@ python ./scripts/align_trim.py \
     && samtools index ./results/mpox/primertrimmed/SRR21755837.primertrimmed.rg.sorted.bam
 ```
 
-# call variants
+## Call variants
 
 ```
 freebayes \
@@ -192,7 +196,7 @@ freebayes \
     > ./results/mpox/freebayes/SRR21755837.gvcf
 ```
 
-# make depth mask, split variants into ambiguous/consensus
+## Make depth mask, split variants into ambiguous/consensus
 
 ```
 python ./scripts/process_gvcf.py \
@@ -206,7 +210,7 @@ python ./scripts/process_gvcf.py \
 ```
 
 
-# normalize variant records into canonical VCF representation
+## Normalize variant records into canonical VCF representation
 
 ```
 for v in "variants" "consensus"; do
@@ -217,7 +221,8 @@ for v in "variants" "consensus"; do
 done
 ```
 
-# # split the consensus sites file into a set that should be IUPAC codes and all other bases, using the ConsensusTag in the VCF
+## Split the consensus sites file 
+The file is split into a set that should be IUPAC codes and all other bases, using the ConsensusTag in the VCF
 
 ```
 for vt in "ambiguous" "fixed"; do
@@ -231,7 +236,8 @@ for vt in "ambiguous" "fixed"; do
 done
 ```
 
-# # apply ambiguous variants first using IUPAC codes. this variant set cannot contain indels or the subsequent step will break
+## Apply ambiguous variants first using IUPAC codes. 
+This variant set cannot contain indels or the subsequent step will break
 
 ```
 bcftools consensus \
@@ -240,14 +246,14 @@ bcftools consensus \
     ./results/mpox/freebayes/SRR21755837.ambiguous.fa
 ```
 
-# Get viral contig name from reference
+## Get viral contig name from reference
 
 ```
 CTG_NAME=$(head -n1 ./results/mpox/bwa/index/reference.fasta | sed 's/>//')
 ```
 
 
-# apply remaninng variants, including indels
+## Apply remaninng variants, including indels
 
 ```
 bcftools consensus \
@@ -258,9 +264,9 @@ bcftools consensus \
     ./results/mpox/freebayes/SRR21755837.consensus.fa
 ```
 
-# coverage metrics and visualization with IGV
+## Coverage metrics and visualization with IGV
 
-# squirrel
+## Squirrel
 
 ```
 export XDG_CACHE_HOME=$PWD/.cache
