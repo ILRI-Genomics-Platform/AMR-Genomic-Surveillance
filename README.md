@@ -13,6 +13,7 @@
   - [Set up](#set-up)
   - [Analysis preparations](#analysis-preprations)
     - [Logging into the HPC](#logging-into-the-hpc)
+  - [Analysis tutorials](#analysis-tutorials)
 
 
 ## Introduction  
@@ -49,3 +50,11 @@ interactive -w compute06 -c 2 -J amr-surveillance -p batch
 ```
 
 From here, we move to specific tutorial for analysis.
+
+## Analysis tutorials
+Please find here linked the tutorials for respective organisms. Right click on the link and open it in a new tab on your browser.
+
+1. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
+2. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
+3. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
+
