@@ -9,7 +9,6 @@
 - **Table of Contents**
   - [Introduction](#introduction)
   - [Scope of the tutorial](#scope-of-the-tutorial)
-  - [Background](#background)
   - [pre-requisites](#pre-requisites)
   - [Set up](#set-up)
   - [Analysis preparations](#analysis-preprations)
@@ -23,9 +22,6 @@
 
 ## Scope of the tutorial  
 In this workshop we will tackle, hands-on, the basic principles employed to generate consensus genome sequences of *E. coli* and *K. pneumoniae* and identify the serotypes involved in outbreaks, anti-microbial resistance genes (AMRs) and possible virulence factors they may have. 
-
-## Background  
-
 
 ## Pre-requisites  
 This module will come after the Introductory Linux module and therefore assumes familiarity with basic Linux command-line use. It also assumes you have an account and are operating in the ILRI computing cluster from a local Linux environment. 
