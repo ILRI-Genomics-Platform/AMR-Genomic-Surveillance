@@ -13,6 +13,7 @@
   - [Set up](#set-up)
   - [Analysis preparations](#analysis-preprations)
     - [Logging into the HPC](#logging-into-the-hpc)
+  - [Software installation (local computer)](#software-installation-local-computer)
   - [Analysis tutorials](#analysis-tutorials)
 
 
@@ -50,6 +51,15 @@ interactive -w compute06 -c 2 -J amr-surveillance -p batch
 ```
 
 From here, we move to specific tutorial for analysis.
+
+## Software installation (local computer)
+Please follow the following instructions to install the tools that we will use on local computer. Note that these tools have already been installed on the remote computer (the HPC) by the system admin.
+
+We will use `conda` to install the tools to an environment in your local computer.
+
+```
+
+```
 
 ## Analysis tutorials
 Please find here linked the tutorials for respective organisms. Right click on the link and open it in a new tab on your browser.
