@@ -65,8 +65,6 @@ hostile clean \
 ```
 
 # trim adapters using trim galore
-# Note cutadapt which is a dependency of trim galore is not properly configured on hpc,
-# we opt to use fastp instead
 
 ```
 trim_galore \
@@ -75,25 +73,6 @@ trim_galore \
     --paired \
     ./results/mpox/hostile/SRR21755837_1.clean_1.fastq.gz \
     ./results/mpox/hostile/SRR21755837_2.clean_2.fastq.gz
-```
-
-# trim adapters using fastp
-
-```
-fastp \
-    --in1 ./results/mpox/hostile/SRR21755837_1.clean_1.fastq.gz \
-    --in2 ./results/mpox/hostile/SRR21755837_2.clean_2.fastq.gz \
-    --out1 ./results/mpox/fastp/SRR21755837_R1.trim.fastq.gz \
-    --out2 ./results/mpox/fastp/SRR21755837_R2.trim.fastq.gz \
-    --detect_adapter_for_pe \
-    --thread 4 \
-    --json ./results/mpox/fastp/SRR21755837.fastp.json \
-    --html ./results/mpox/fastp/SRR21755837.fastp.html \
-    --cut_mean_quality 20 \
-    --qualified_quality_phred 25 \
-    --unqualified_percent_limit 40 \
-    --length_required 20 \
-    2> ./results/mpox/fastp/SRR21755837.fastp.log
 ```
  
 # get scheme
