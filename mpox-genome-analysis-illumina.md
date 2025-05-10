@@ -52,9 +52,13 @@ hostile clean \
     --index ./databases/hostile/human-t2t-hla
 ```
 
+<<<<<<< HEAD
+# trim adapters using trim galore
+=======
 # Trim adapters using trim galore
 >Note cutadapt which is a dependency of trim galore is not properly configured on hpc,
 we opt to use fastp instead
+>>>>>>> 8a140af98364322a064007f5effa221cc82b859e
 
 ```
 trim_galore \
@@ -64,6 +68,8 @@ trim_galore \
     ./results/mpox/hostile/SRR21755837_1.clean_1.fastq.gz \
     ./results/mpox/hostile/SRR21755837_2.clean_2.fastq.gz
 ```
+<<<<<<< HEAD
+=======
 
 # Trim adapters using fastp
 
@@ -83,6 +89,7 @@ fastp \
     --length_required 20 \
     2> ./results/mpox/fastp/SRR21755837.fastp.log
 ```
+>>>>>>> 8a140af98364322a064007f5effa221cc82b859e
  
 ## Get scheme
 
