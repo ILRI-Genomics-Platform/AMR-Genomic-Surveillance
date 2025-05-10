@@ -51,10 +51,13 @@ fastp \
     --json ./results/illumina/ecoli/fastp/SRR25008769.fastp.json \
     --html ./results/illumina/ecoli/fastp/SRR25008769.fastp.html \
     --cut_mean_quality 20 \
+    --cut_front \
+    --cut_tail \
+    --cut_window_size 4 \
     --qualified_quality_phred 25 \
     --unqualified_percent_limit 40 \
     --length_required 20 \
-    2> ./results/illumina/ecoli/fastp/SRR25008769.fastp.log
+    2>&1 | tee ./results/illumina/ecoli/fastp/SRR25008769.fastp.log
 ```
 
 # De novo assembly pipeline for Illumina paired reads
