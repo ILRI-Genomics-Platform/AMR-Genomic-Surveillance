@@ -1,36 +1,23 @@
-# login to hpc and create project directory
 
-```
-interactive -w compute06 -c 8
-```
+# *E. coli* AMR analysis workflow using Illumina data
+---  
 
-```
-cd /var/scratch/$USER
-```
+###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk), [Ouso Daniel](https://github.com/ousodaniel) & [Gilbert Kibet](https://github.com/kibet-gilbert)
 
-```
-BASEDIR=$(pwd)
-```
+---
 
-```
-echo $BASEDIR
-```
+# Set up directories
+Before starting the analysis, ensure that you are logged into the HPC, create an interactive session on the assigned compute node, and change directory to the project folder which is `ACDC_AMR2025`.
 
 ```
 mkdir -p \
-$BASEDIR/trainings/ACDC_AMR2025/results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,tmp/{shovill,prokka,amrfinder}}
-```
+results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,tmp/{shovill,prokka,amrfinder}}
 
-```
-cd $BASEDIR/trainings/ACDC_AMR2025
-```
-
-```
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
 
 
-# on hpc - load modules
+# Load modules
 
 ```
 module load fastqc/0.11.9
@@ -42,7 +29,7 @@ module load resfinder/4.6.0
 module load mlst/2.23.0
 ```
 
-# QC
+# Quality control
 ```
 fastqc \
     -o ./results/illumina/ecoli/fastqc \
