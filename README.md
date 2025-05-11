@@ -79,10 +79,27 @@ From here, we move to specific tutorial for analysis.
 Please follow the following instructions to install the tools that we will use on local computer. Note that these tools have already been installed on the remote computer (the HPC) by the system admin.
 
 We will use `conda` to install the tools to an environment in your local computer.
+Open a terminal in using WSL in Windows. If you have a Linux OS, open a terminal by clicking on the terminal icon. 
+
+It is good practice to organize your work in project directories so as to have all files relating to a project in one place. Therefore, let's create a directory
+on our local machine. We will create a directory similar to the one we created on the HPC above. Run the following command:
 
 ```
+mkdir -p ACDC_AMR2025
+cd ACDC_AMR2025
+```
+
+Download the following `yml` file to your computer.
+```
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/environment.yml
+```
+
+Install the tools that we will use in the analysis in a `conda` environment.
 
 ```
+conda env create -f environment.yml
+```
+
 
 ## Analysis tutorials
 Please find here linked the tutorials for Introduction to Linux and for respective organisms. Right click on the link and open it in a new tab on your browser.
