@@ -1,36 +1,23 @@
-# login to hpc and create project directory
 
-```
-interactive -w compute06 -c 8
-```
+# *E. coli* AMR analysis workflow using Illumina data
+---  
 
-```
-cd /var/scratch/$USER
-```
+###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk), [Ouso Daniel](https://github.com/ousodaniel) & [Gilbert Kibet](https://github.com/kibet-gilbert)
 
-```
-BASEDIR=$(pwd)
-```
+---
 
-```
-echo $BASEDIR
-```
+# Set up directories
+Before starting the analysis, ensure that you are logged into the HPC, create an interactive session on the assigned compute node, and change directory to the project folder which is `ACDC_AMR2025`.
 
 ```
 mkdir -p \
-$BASEDIR/trainings/ACDC_AMR2025/results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,tmp/{shovill,prokka,amrfinder}}
-```
+results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,tmp/{shovill,prokka,amrfinder}}
 
-```
-cd $BASEDIR/trainings/ACDC_AMR2025
-```
-
-```
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
 
 
-# on hpc - load modules
+# Load modules
 
 ```
 module load fastqc/0.11.9
@@ -42,7 +29,7 @@ module load resfinder/4.6.0
 module load mlst/2.23.0
 ```
 
-# QC
+# Quality control
 ```
 fastqc \
     -o ./results/illumina/ecoli/fastqc \
@@ -64,10 +51,13 @@ fastp \
     --json ./results/illumina/ecoli/fastp/SRR25008769.fastp.json \
     --html ./results/illumina/ecoli/fastp/SRR25008769.fastp.html \
     --cut_mean_quality 20 \
+    --cut_front \
+    --cut_tail \
+    --cut_window_size 4 \
     --qualified_quality_phred 25 \
     --unqualified_percent_limit 40 \
     --length_required 20 \
-    2> ./results/illumina/ecoli/fastp/SRR25008769.fastp.log
+    2>&1 | tee ./results/illumina/ecoli/fastp/SRR25008769.fastp.log
 ```
 
 # De novo assembly pipeline for Illumina paired reads
@@ -185,13 +175,6 @@ amrfinder \
 ```
 
 # Multilocus sequence typing
-```
-mkdir -p ./databases/mlst/database
-```
-
-```
-tar -xzf ./databases/mlst/mlst.tar.gz -C ./databases/mlst/database
-```
 
 ```
 MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
