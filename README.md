@@ -41,7 +41,8 @@ in downloading data from HPC to your local computer.
 
 Please follow the instructions here: [List of required tools](https://github.com/ILRI-Genomics-Platform/trainings-required-software)
 
-### Logging into the HPC  
+### Logging into the HPC
+On your computer open a terminal. On Windows use Windows Subsystem for Linux (WSL) or MobaXterm. If you are using Linux, click on the Terminal icon to open the terminal.  
 To sign in to HPC using the following command, you will have been assigned a ***username*** that looks like `Bio4InfoXX` and a ***password***.
 1. Replace `<user_name>` in the command with the provided username and execute (click enter). 
 2. Enter the password and execute. ***Note:*** The password will be typed in the background but will not be visible to you as you type.
@@ -85,7 +86,6 @@ From here, we move to specific tutorial for analysis.
 ## Software installation (local computer)
 Please follow the following instructions to install the tools that we will use on local computer. Note that these tools have already been installed on the remote computer (the HPC) by the system admin.
 
-We will use `conda` to install the tools to an environment in your local computer.
 Open a terminal in using WSL in Windows. If you have a Linux OS, open a terminal by clicking on the terminal icon. 
 
 It is good practice to organize your work in project directories so as to have all files relating to a project in one place. Therefore, let's create a directory
@@ -104,6 +104,7 @@ wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Survei
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt
 ```
 
+We will use `conda` to install the tools to an environment in your local computer.
 Install the tools that we will use in the analysis in a `conda` environment.
 
 ```
