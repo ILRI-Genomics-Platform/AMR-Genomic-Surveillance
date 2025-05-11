@@ -92,6 +92,9 @@ cd ACDC_AMR2025
 Download the following `yml` file to your computer.
 ```
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/environment.yml
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/snippy-environment.yml
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-mpox-environment.yml
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt
 ```
 
 Install the tools that we will use in the analysis in a `conda` environment.
@@ -104,8 +107,8 @@ conda env create -f environment.yml
 ## Analysis tutorials
 Please find here linked the tutorials for Introduction to Linux and for respective organisms. Right click on the link and open it in a new tab on your browser.
 
-1. [Intoduction to Linux](linux_hpc_intro.md)
-2. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
-3. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
+1. [Introduction to Linux](linux_hpc_intro.md)
+2. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
+3. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
 4. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
 
