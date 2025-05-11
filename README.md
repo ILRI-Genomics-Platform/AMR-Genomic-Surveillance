@@ -104,6 +104,13 @@ wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Survei
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt
 ```
 
+### Creating a `conda` environment
+First, we will need to install Miniforge. Please follow the instructions below which are obtained from miniforge [GitHub repository](https://github.com/conda-forge/miniforge?tab=readme-ov-file#unix-like-platforms-macos-linux--wsl)
+
+```
+
+```
+
 We will use `conda` to install the tools to an environment in your local computer.
 Install the tools that we will use in the analysis in a `conda` environment.
 
@@ -113,6 +120,7 @@ conda env create -f snippy-environment.yml
 conda env create -f artic-mpox-environment.yml
 ```
 
+### Creating a Python environment
 We also need to create a python environment to install Python packages that are needed by some python scripts we will run in some analysis steps.
 ```
 python3 -m venv ./py3env
