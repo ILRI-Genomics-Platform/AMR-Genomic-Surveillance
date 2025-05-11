@@ -11,7 +11,7 @@ Before starting the analysis, ensure that you are logged into the HPC, create an
 
 ```
 mkdir -p \
-results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst,tmp/{shovill,prokka,amrfinder}}
+results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,resfinder,amrfinder,mlst,tmp/{shovill,prokka,resfinder,amrfinder}}
 
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
@@ -27,6 +27,7 @@ module load shovill/1.1.0
 module load prokka/1.14.6
 module load resfinder/4.6.0
 module load mlst/2.23.0
+module load amrfinder/4.0.22
 ```
 
 # Quality control
@@ -147,8 +148,35 @@ prokka \
     ./results/illumina/ecoli/shovill/SRR25008769/SRR25008769.fa
 ```
 
+# AMR genes detection using ResFinder
+
+```
+python -m resfinder \
+    -ifa ./results/illumina/ecoli/shovill/SRR25008769/SRR25008769.fa \
+    -o ./results/illumina/ecoli/resfinder/ecoli \
+    -s ecoli \
+    --min_cov 0.6 \
+    --threshold 0.9 \
+    --min_cov_point 0.6 \
+    --threshold_point 0.9 \
+    --ignore_stop_codons \
+    --ignore_indels \
+    --acquired \
+    --point
+```
 
 # Full AMRFinderPlus search combining results
+
+Identify acquired antimicrobial resistance genes in bacterial protein and/or assembled nucleotide sequences as well as known resistance-associated point mutations for several taxa. With AMRFinderPlus we added select members of additional classes of genes such as virulence factors, biocide, heat, acid, and metal resistance genes.
+
+>**Note**
+AMRFinderPlus reports gene and point mutation presence/absence; it does not
+infer phenotypic resistance. Many of the resistance genes detected by
+AMRFinderPlus may not be relevant for clinical management or antimicrobial
+surveillance. **The AMR genes must be expressed to confer resistance**
+
+AMRFinder can be run in multiple modes with protein sequence as input and/or with DNA sequence as input. To get maximum information it should be run with both protein and nucleotide. When run with protein sequence it uses both BLASTP and HMMER to search protein sequences for AMR genes along with a hierarchical tree of gene families to classify and name novel sequences. With nucleotide sequences it uses BLASTX translated searches and the hierarchical tree of gene families. Adding the `--organism` option enables screening for point mutations in select organisms and suppresses the reporting of some that are extremely common in those organisms.
+
 
 ```
 export TMPDIR=./results/illumina/ecoli/tmp/amrfinder/
