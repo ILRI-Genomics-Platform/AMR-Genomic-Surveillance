@@ -101,6 +101,15 @@ Install the tools that we will use in the analysis in a `conda` environment.
 
 ```
 conda env create -f environment.yml
+conda env create -f snippy-environment.yml
+conda env create -f artic-mpox-environment.yml
+```
+
+We also need to create a python environment to install Python packages that are needed by some python scripts we will run in some analysis steps.
+```
+python3 -m venv ./py3env
+source ./py3env/bin/activate
+python3 -m pip install -r ./artic-requirements.txt
 ```
 
 
