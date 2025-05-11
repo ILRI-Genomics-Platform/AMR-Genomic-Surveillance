@@ -175,13 +175,6 @@ amrfinder \
 ```
 
 # Multilocus sequence typing
-```
-mkdir -p ./databases/mlst/database
-```
-
-```
-tar -xzf ./databases/mlst/mlst.tar.gz -C ./databases/mlst/database
-```
 
 ```
 MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
