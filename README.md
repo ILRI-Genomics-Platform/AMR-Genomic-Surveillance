@@ -12,6 +12,7 @@
   - [Pre-requisites](#pre-requisites)
   - [Set up](#set-up)
   - [Analysis preparations](#analysis-preprations)
+    - [Required tools](#required-tools)
     - [Logging into the HPC](#logging-into-the-hpc)
   - [Project organisation](#project-organisation)
   - [Software installation (local computer)](#software-installation-local-computer)
@@ -33,6 +34,12 @@ This module will come after the Introductory Linux module and therefore assumes 
 You will use your personal computers computers to log into the ILRI HPC cluster, which operates on a Linux-operating system. Since we will be working from the remote servers, you will not need special setup for your personal laptops. However, you will need to install a program that enables you to log into the HPC.
 
 ## Analysis preprations
+
+### Required tools
+If you are using a Windowas OS computer, you will need to install the follwing tools to enable you access the remote HPC server. Additional tools will help
+in downloading data from HPC to your local computer.
+
+Please follow the instructions here: [List of required tools](https://github.com/ILRI-Genomics-Platform/trainings-required-software)
 
 ### Logging into the HPC  
 To sign in to HPC using the following command, you will have been assigned a ***username*** that looks like `Bio4InfoXX` and a ***password***.
