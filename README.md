@@ -16,6 +16,8 @@
     - [Logging into the HPC](#logging-into-the-hpc)
   - [Project organisation](#project-organisation)
   - [Software installation (local computer)](#software-installation-local-computer)
+    - [Creating a conda environment](#creating-a-conda-environment)
+    - [Creating a Python environment](#creating-a-python-environment)
   - [Analysis tutorials](#analysis-tutorials)
 
 
@@ -104,15 +106,21 @@ wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Survei
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt
 ```
 
-### Creating a `conda` environment
+### Creating a conda environment
 First, we will need to install Miniforge. Please follow the instructions below which are obtained from miniforge [GitHub repository](https://github.com/conda-forge/miniforge?tab=readme-ov-file#unix-like-platforms-macos-linux--wsl)
 
+Download the installation bash script.
+```
+wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 ```
 
+Run the script to install Miniforge.
+```
+bash Miniforge3-$(uname)-$(uname -m).sh
 ```
 
-We will use `conda` to install the tools to an environment in your local computer.
-Install the tools that we will use in the analysis in a `conda` environment.
+Followign successful Miniforge installation, we can use `conda` to install the tools we need to an environment in your local computer.
+Install the tools as follows:
 
 ```
 conda env create -f environment.yml
