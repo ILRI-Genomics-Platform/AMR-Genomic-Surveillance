@@ -13,7 +13,9 @@ Before starting the analysis, ensure that you are logged into the HPC, create an
 mkdir -p \
 results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},primertrimmed,primer-trimmed,freebayes}
 
-ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
+ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* . 
+
+cp /var/scratch/global/jjuma/ACDC_AMR2025/artic-requirements.txt . 
 ```
 
 # Load modules
