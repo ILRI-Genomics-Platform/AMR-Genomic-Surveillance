@@ -183,7 +183,7 @@ export TMPDIR=./results/illumina/ecoli/tmp/amrfinder/
 ```
 
 ```
-AMRFINDER_DB=$(find ./databases/amrfinderplus/2023-11-15.1 -name "AMR.LIB" | sed 's=AMR.LIB==')
+AMRFINDER_DB=$(find /export/apps/amrfinder/4.0.22/data/2025-03-25.1 -name "AMR.LIB" | sed 's=AMR.LIB==')
 ```
 
 ```
