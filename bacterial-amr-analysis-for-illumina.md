@@ -139,7 +139,7 @@ prokka \
     --evalue 1e-09 \
     --centre ILRI \
     --coverage 80 \
-    --cpus 2 \
+    --cpus 4 \
     --prefix SRR25008769 \
     --locustag SRR25008769 \
     --proteins ./databases/prokka/proteins.faa \
@@ -153,7 +153,7 @@ prokka \
 ```
 python -m resfinder \
     -ifa ./results/illumina/ecoli/shovill/SRR25008769/SRR25008769.fa \
-    -o ./results/illumina/ecoli/resfinder/ecoli \
+    -o ./results/illumina/ecoli/resfinder/SRR25008769/ \
     -s ecoli \
     --min_cov 0.6 \
     --threshold 0.9 \

@@ -6,12 +6,18 @@
 
 ---
 
+# Project: PRJNA1087001
+Benchmark various nanopore-based variant callers on 14 different species.
+Samples are sequenced on the latest (September 2023) R10.4.1 Nanopore flowcells and Illumina. Ground truth assemblies are generated for each sample.
+
+https://elifesciences.org/reviewed-preprints/98300
+
 # Set up directories
 Before starting the analysis, ensure that you are logged into the HPC, create an interactive session on the assigned compute node, and change directory to the project folder which is `ACDC_AMR2025`.
 
 ```
 mkdir -p \
-results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,resfinder,amrfinder,mlst,tmp/{dragonflye,prokka,resfinder,amrfinder,snippy},snippy,snippy-core,gubbins}
+results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,resfinder,amrfinder,mlst,tmp/{dragonflye,prokka,resfinder,amrfinder,snippy},snippy,snippy-core,gubbins,iqtree}
 
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
@@ -48,6 +54,26 @@ module load blast/2.7.1+
 module load barrnap/0.9 
 ```
 
+
+## Retrieve the reference genome in GenBank format
+
+```
+mkdir -p ./data/klebs/reference
+```
+
+```
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz -P  ./data/klebs/reference
+
+```
+
+```
+gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff.gz > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff
+```
+
+# convert the GenBank format to Fasta format
+any2fasta \
+    ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff > \
+    ./data/klebs/reference/Reference.fasta
 
 # Remove Adapters
 
@@ -193,6 +219,38 @@ rm -r ./results/ont/klebsiella/prokka/*.pdb ./results/ont/klebsiella/prokka/*.pj
 ```
 
 
+## Fast bacterial variant calling from NGS reads or contigs
+Here we will use 11 Klebs isolates collected in Kenya between January 14 and January 31, 2019
+https://pathogen.watch/genomes/all?country=ke&genusId=570&maxDate=2019-01-31T20%3A59%3A59.999Z&minDate=2018-12-31T21%3A00%3A00.000Z&sort=date&speciesId=573
+
+
+```
+mkdir -p ./data/klebs/pathogenwatch/assemblies-to-test
+```
+
+```
+rsync -avP --partial \
+    ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+    ./data/klebs/pathogenwatch/assemblies-to-test/SRR28370682.fasta
+```
+
+```
+rsync -avP --partial \
+    ./data/klebs/reference/Reference.fasta \
+    ./data/klebs/pathogenwatch/assemblies-to-test/Reference.fasta
+```
+
+## Select assemblies to test
+
+ <!-- ./data/klebs/pathogenwatch/genomes/SAMN25722[2,3]{68,97,35,64,03,77}.fasta -->
+
+```
+rsync -avP --partial \
+    /data/klebs/pathogenwatch/genomes/*.fasta
+    ./data/klebs/pathogenwatch/assemblies-to-test/
+```
+
+
 # AMR genes detection using ResFinder
 
 ```
@@ -226,7 +284,7 @@ surveillance. **The AMR genes must be expressed to confer resistance**
 AMRFinder can be run in multiple modes with protein sequence as input and/or with DNA sequence as input. To get maximum information it should be run with both protein and nucleotide. When run with protein sequence it uses both BLASTP and HMMER to search protein sequences for AMR genes along with a hierarchical tree of gene families to classify and name novel sequences. With nucleotide sequences it uses BLASTX translated searches and the hierarchical tree of gene families. Adding the `--organism` option enables screening for point mutations in select organisms and suppresses the reporting of some that are extremely common in those organisms.
 
 ```
-AMRFINDER_DB=$(find ./databases/amrfinderplus/2023-11-15.1 -name "AMR.LIB" | sed 's=AMR.LIB==')
+AMRFINDER_DB=$(find /export/apps/amrfinder/4.0.22/data/2025-03-25.1 -name "AMR.LIB" | sed 's=AMR.LIB==')
 ```
 ```
 export TMPDIR=./results/ont/klebsiella/tmp/amrfinder/
@@ -250,19 +308,47 @@ amrfinder \
 # AMR detection with ResFinder
 
 ```
-cp -rf
-/var/scratch/global/gkibet/ilri-africa-cdc-training/wastewater-surveillance-analysis/database/{disinfinder_db,pointfinder_db,resfinder_db}
-./database/
+python -m resfinder \
+    -ifa ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+    -o ./results/ont/klebsiella/resfinder/SRR28370682 \
+    -s klebsiella \
+    --min_cov 0.6 \
+    --threshold 0.9 \
+    --min_cov_point 0.6 \
+    --threshold_point 0.9 \
+    --ignore_stop_codons \
+    --ignore_indels \
+    --acquired \
+    --point
 ```
+
+
+# Batch AMR detection 
+
+```
+for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
+    sample=$(basename $fn)
+    sample="${sample%.*}"
+    echo -e "-------------------------------\n"
+    echo -e "running ResFinder on: $sample - $fn"
+
+    python -m resfinder \
+        -ifa $fn \
+        -o ./results/ont/klebsiella/resfinder/${sample} \
+        -s klebsiella \
+        --min_cov 0.6 \
+        --threshold 0.9 \
+        --min_cov_point 0.6 \
+        --threshold_point 0.9 \
+        --ignore_stop_codons \
+        --ignore_indels \
+        --acquired \
+        --point
+done
+```
+
+
 # MLST 
-
-```
-mkdir -p ./databases/mlst/database
-```
-
-```
-tar -xzf ./databases/mlst/mlst.tar.gz -C ./databases/mlst/database
-```
 
 ```
 MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
@@ -289,6 +375,36 @@ BIGSdb platform curated by the Institute Pasteur
 (https://bigsdb.pasteur.fr/klebsiella)
 
 
+# Batch MLST typing
+
+```
+for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
+    sample=$(basename $fn)
+    sample="${sample%.*}"
+    echo -e "-------------------------------\n"
+    echo -e "running mlst on: $sample - $fn"
+
+    mlst \
+        --threads 2 \
+        --blastdb $MLST_DB/blast/mlst.fa \
+        --datadir $MLST_DB/pubmlst \
+        --scheme klebsiella \
+        --minid 95 \
+        --mincov 10 \
+        --minscore 50 \
+        $fn \
+        > ./results/ont/klebsiella/mlst/${sample}.tsv
+done
+```
+
+# concatenate output
+
+```
+cat \
+    ./results/ont/klebsiella/mlst/*.tsv > \
+    ./results/ont/klebsiella/mlst/klebs-mlst.txt
+```
+
 ### Running on hpc
 ```
 module purge
@@ -311,45 +427,6 @@ output files in a single folder. It can then take a set of Snippy results using
 the same reference and generate a core SNP alignment (and ultimately a
 phylogenomic tree).
 
-
-
-Here we will use 11 Klebs isolates collected in Kenya between January 14 and January 31, 2019
-https://pathogen.watch/genomes/all?country=ke&genusId=570&maxDate=2019-01-31T20%3A59%3A59.999Z&minDate=2018-12-31T21%3A00%3A00.000Z&sort=date&speciesId=573
-
-
-## Retrieve the reference genome in GenBank format
-
-```
-mkdir -p ./data/klebs/reference
-```
-
-```
-wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz -P  ./data/klebs/reference
-
-```
-
-```
-gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff.gz > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff
-```
-
-## Fast bacterial variant calling from NGS reads or contigs
-```
-mkdir -p ./data/klebs/pathogenwatch/assemblies-to-test
-```
-
-```
-rsync -avP --partial \
-    ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
-    ./data/klebs/pathogenwatch/assemblies-to-test/SRR28370682.fasta
-```
-
-## Select assemblies to test
-
-```
-rsync -avP --partial \
-    ./data/klebs/pathogenwatch/genomes/SAMN25722[2,3]{68,97,35,64,03,77}.fasta \
-    ./data/klebs/pathogenwatch/assemblies-to-test/
-```
 
 
 ```
@@ -485,4 +562,32 @@ mask_gubbins_aln.py \
     --aln ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln \
     --gff ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
     --out ./results/ont/klebsiella/gubbins/core-snp.masked.aln
+```
+
+
+# Phylogenetic analysis
+
+>**Note**
+Use phylogenetic algorithms that take into account SNP alignments. These
+algorithms usually include some form of ascertainment bias correction that
+corrects for the 'missing' nucleotides in the alignment that were removed
+because they did not show polymorphism.
+
+If working with a recombining species, the alignment will also include SNPs
+introduced through recombination, unless recombination detection and masking was
+previously performed.
+
+```
+iqtree \
+    -m HKY \
+    -bb 1000 \
+    -alrt 1000 \
+    -wbt \
+    -wbtl \
+    -alninfo \
+    -s ./results/ont/klebsiella/gubbins/core-snp.masked.aln \
+    -nt 8 \
+    -ntmax 8 \
+    -redo \
+    -pre ./results/ont/klebsiella/iqtree/core-snp
 ```
