@@ -126,7 +126,6 @@ Linux organizes files in a tree-like structure starting from the root directory[
     <summary>
         Click to toggle contents of <b style='color:blue'>Full Linux file structure</b>
     </summary>
-</details>
 ```
 /
 ├── bin/    # Essential commands
@@ -147,6 +146,7 @@ Linux organizes files in a tree-like structure starting from the root directory[
 ├── usr/    # User utilities and applications
 └── var/    # Variable files (logs, etc.)
 ```
+</details>
 
 **Important Directories**
 
