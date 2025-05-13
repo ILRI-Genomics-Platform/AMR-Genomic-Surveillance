@@ -141,7 +141,10 @@ python3 -m pip install -r ./artic-requirements.txt
 Please find here linked the tutorials for Introduction to Linux and for respective organisms. Right click on the link and open it in a new tab on your browser.
 
 1. [Introduction to Linux](linux_hpc_intro.md)
-2. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
-3. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
-4. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
+2. Environment Management Systems
+ - [Environment Manament with Conda](Introduction_environment_managament_systems.md)
+ - [HPC Module System](Intro_Module_System)
+3. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
+4. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
+5. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
 
