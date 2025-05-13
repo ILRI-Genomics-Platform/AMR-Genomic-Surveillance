@@ -8,7 +8,19 @@ Here is a simple command-line tutorial overview for the most common Conda-based 
 
 ## 1. Conda (General Overview)
 
-`conda` is a **package and environment manager**, forming the backbone of Anaconda, Miniconda, etc.
+`conda` is a **package and environment manager**, forming the backbone of Anaconda, Miniconda, etc. It allows you to:  
+ - Create and manage **isolated environments** for different projects  
+ - Install specific versions of tools/packages  
+
+### Installing conda
+There are three ways/options for installing conda:
+
+**Option 1:** Install Conda via Anaconda (Full Package)   
+**Option 2:** Install Conda via Miniconda (Minimal Package)  
+**Option 3:** Install Conda via Miniforge (Community Version)  
+
+See sections below for a more detailed explanation.  
+Once Conda is installed, you can create environments, install packages, and manage dependencies easily!  
 
 ### Basic Conda Commands
 
@@ -145,12 +157,101 @@ micromamba install numpy
 
 ---
 
+## Exercises: Now lets embark on creating and installing bioinformatics softwares in an environment.  
+
+**Problem Statement:** *Using mamba create an environment called 'acdc_amr', installed with python verion 3.11 and activate it, install fastp, bowtie, spades and megahit all from bioconda channel. Then export to a yaml file. The ymal file will ensure* **portability** and **reproducibility**
+
+**Solution:**
+Creating a **reproducible environment** with `mamba` ensures consistency across different systems, allowing easy replication of analyses. Here’s a **step-by-step guide** to setting up and exporting a reproducible Conda environment using `mamba`:
+
+---
+
+## **Step 1: Install Mamba**  
+
+If you don’t have `mamba`, install it into your base Conda environment:
+```bash
+conda install mamba -n base -c conda-forge
+```
+  > `mamba` is a **drop-in replacement** for `conda` but much faster in resolving dependencies.
+
+---
+
+## **Step 2: Create an Environment Called `acdc_amr` with Python 3.11**  
+
+Use the `mamba create` command to set up the environment:
+
+```bash
+mamba create -n acdc_amr python=3.11
+```
+ >  `-n acdc_amr`: Names the environment `acdc_amr`    
+ >  `python=3.11`: Specifies Python version **3.11**  
+
+---
+
+## **Step 3: Activate the Environment**
+
+After creation, activate the new environment:
+
+```bash
+mamba activate acdc_amr
+```
+
+ > This switches from the **base environment** to `acdc_amr`.
+
+---
+
+## **Step 4: Install Required Packages from `bioconda`**  
+
+Now, install **fastp**, **bowtie**, **SPAdes**, and **megahit** using `mamba`, making sure they come from the `bioconda` channel:  
+
+```bash
+mamba install -c bioconda fastp bowtie spades megahit
+```
+
+ > `-c bioconda` → Ensures all packages are fetched from **bioconda**  
+ > This installs sequencing tools critical for bioinformatics analysis.
+
+---
+
+## **Step 5: Export Environment to a YAML File**  
+
+To ensure the environment can be **reproduced** exactly, export its configuration:
+
+```bash
+mamba env export -n acdc_amr > acdc_amr_env.yaml
+```
+
+**Creates a file** (`acdc_amr_env.yaml`) containing:
+- **Python version**
+- **All installed packages**
+- **Channels used (`bioconda`)**
+
+---
+
+## **Step 6: Recreate the Environment from YAML File**
+
+Anyone can **replicate the environment** using:
+
+```bash
+mamba env create -f acdc_amr_env.yaml
+```
+
+ Ensures that another user gets **exactly the same environment**!
+
+---
+
+### ** Why is this Important for Reproducibility?**
+✔ **Version Control** → Fixes Python and package versions  
+✔ **Channel Control** → Ensures all dependencies come from `bioconda`  
+✔ **Portable** → YAML file allows easy recreation across machines  
+
+
 ## Next Steps
 
-Would you like to know alternative package management system for a HPC?
+Would you like to know alternative package management system for a HPC?  
 See the next part on HPC module management system:
 
-[Introduction to Module System](https://github.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/blob/main/Intro_Module_System)
+[Introduction to Module System](https://github.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/blob/main/Intro_Module_System.md)
 
 Happy coding! 🎯
 
