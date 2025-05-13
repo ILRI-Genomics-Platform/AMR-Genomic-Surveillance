@@ -1,488 +1,147 @@
+# Bioinformatics Analysis for Antimicrobial Resistance Genomic Surveillance  
 
-# *K. pneumoniae* AMR analysis workflow using ONT data
 ---  
 
 ###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk), [Ouso Daniel](https://github.com/ousodaniel) & [Gilbert Kibet](https://github.com/kibet-gilbert)
 
 ---
 
-# Set up directories
-Before starting the analysis, ensure that you are logged into the HPC, create an interactive session on the assigned compute node, and change directory to the project folder which is `ACDC_AMR2025`.
+- **Table of Contents**
+  - [Introduction](#introduction)
+  - [Scope of the tutorial](#scope-of-the-tutorial)
+  - [Pre-requisites](#pre-requisites)
+  - [Set up](#set-up)
+  - [Analysis preparations](#analysis-preprations)
+    - [Required tools](#required-tools)
+    - [Logging into the HPC](#logging-into-the-hpc)
+  - [Project organisation](#project-organisation)
+  - [Software installation (local computer)](#software-installation-local-computer)
+    - [Creating a conda environment](#creating-a-conda-environment)
+    - [Creating a Python environment](#creating-a-python-environment)
+  - [Analysis tutorials](#analysis-tutorials)
 
+
+## Introduction  
+*Escherichia coli* are ubiquitous bacteria found in the environment including the gut of humans and other animals and consists of numerous types and strains. Most types of *E. coli* are normal inhabitants of the gut of animals and do not cause diseases. However, some of the strains of *E. coli* have acquired genes that enable them to cause disease. These strains are commonly associated with food poisoning leading to diarrhoea and are referred to as diarrheagenic *E. coli* (DEC). Transmission occurs primarily through contaminated food but can also occur via person-to-person transmission, animal contact and water. For example, Shiga toxin-producing *E. coli* (STEC) serotype O157:H7 causes bloody diarrhoea and has previosuly been responsible for outbreaks worldwide.   
+
+*Klebsiella pneumoniae* is a Gram-negative, non-motile, encapsulated, lactose-fermenting and facultative anaerobic, rod-shaped bacterium.  It can be found in a wide range of environments from soil to plants, water or human bodies where it is a normal flora of mucosal membranes of the mouth, skin, and intestines. However, once it enters the human body or animal lungs, it becomes pathogenic; highly virulent and resistant to antibiotics. It is the most common cause of hospital-acquired pneumonia and a very important cause of nosocomial (hospital-acquired) bacterial infections. It has also been associated with patients with alcohol use disorder or diabetes mellitus but also a major threat to newborns, elderly and immunocompromised patients.
+
+## Scope of the tutorial  
+In this workshop we will tackle, hands-on, the basic principles employed to generate consensus genome sequences of *E. coli* and *K. pneumoniae* and identify the serotypes involved in outbreaks, anti-microbial resistance genes (AMRs) and possible virulence factors they may have. 
+
+## Pre-requisites  
+This module will come after the Introductory Linux module and therefore assumes familiarity with basic Linux command-line use. It also assumes you have an account and are operating in the ILRI computing cluster from a local Linux environment. 
+
+## Set up  
+You will use your personal computers computers to log into the ILRI HPC cluster, which operates on a Linux-operating system. Since we will be working from the remote servers, you will not need special setup for your personal laptops. However, you will need to install a program that enables you to log into the HPC.
+
+## Analysis preprations
+
+### Required tools
+If you are using a Windowas OS computer, you will need to install the follwing tools to enable you access the remote HPC server. Additional tools will help
+in downloading data from HPC to your local computer.
+
+Please follow the instructions here: [List of required tools](https://github.com/ILRI-Genomics-Platform/trainings-required-software)
+
+### Logging into the HPC
+On your computer open a terminal. On Windows use Windows Subsystem for Linux (WSL) or MobaXterm. If you are using Linux, click on the Terminal icon to open the terminal.  
+To sign in to HPC using the following command, you will have been assigned a ***username*** that looks like `Bio4InfoXX` and a ***password***.
+1. Replace `<user_name>` in the command with the provided username and execute (click enter). 
+2. Enter the password and execute. ***Note:*** The password will be typed in the background but will not be visible to you as you type.
 ```
-mkdir -p \
-results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,resfinder,amrfinder,mlst,tmp/{dragonflye,prokka,resfinder,amrfinder,snippy},snippy,snippy-core,gubbins}
-
-ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
+ssh <user_name>@hpc.ilri.cgiar.org
 ```
-
-# Load modules
-
+There are two nodes to choose from: `compute05`  and `compute06`. If your username (`Bio4InfoXX`) ends with an ***Odd Number*** (1,3,5,7,9) use `compute05` and if it ends with n ***even number*** (2,4,6,8,0) use `compute06`. Now let us secure a four of CPUs in one of the HPC nodes.  
+>Compute05
 ```
-module load porechop/0.2.4
-module load bbmap/38.95
-module load bwa/0.7.17
-module load samtools/1.9
-module load racon/1.5.0
-module load prodigal/2.6.3  
-module load fastp/0.22.0
-module load minimap2/2.13
-module load spades/3.13.0
-module load mlst/2.23.0
-module load infernal/1.1.2  
-module load fastqc/0.11.9
-module load any2fasta/0.4.2
-module load medaka/0.8.2
-module load velvet/1.2.10
-module load hmmer/3.3
-module load prokka/1.14.6   
-module load lighter/1.1.2
-module load flye/2.4.2
-module load megahit/1.2.9
-module load bowtie2/2.3.4.1
-module load bedtools/2.29.0  
-module load flash/1.2.11
-module load htslib/1.9
-module load miniasm/0.3
-module load blast/2.7.1+
-module load barrnap/0.9 
+interactive -w compute05 -c 2 -J amr-surveillance -p batch
 ```
-
-
-# Remove Adapters
-
+>Compute06
 ```
-porechop \
-    --input ./data/klebs/ont/SRR28370682.fastq.gz \
-    --format fastq.gz \
-    --threads 4 \
-    --no_split \
-    --output ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz
-```
-
-# Quality filter
-
-```
-nanoq \
-    --min-len 1000 \
-    --min-qual 0 \
-    --input ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz \
-    --output-type g \
-    --output ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz
+interactive -w compute06 -c 2 -J amr-surveillance -p batch
 ```
 
-# Nanoplot
+# Project organisation  
+We will start by setting up the project directory structure and then conduct the analysis stepwise. To setup a well-structured project directory we need to create some directories to store our data and scripts. We will be conducting our a anlysis from a directory in the `scratch` space of the HPC.  
 
-```
-NanoPlot \
-    --threads 2 \
-    --fastq ./data/klebs/ont/SRR28370682.fastq.gz \
-    --outdir ./results/ont/klebsiella/nanoplot/ \
-    --prefix SRR28370682-original_
-```
-
-### Copy the report html to local computer from hpc
-
-```
-rsync -avP \
-    --partial \
-    ./results/ont/klebsiella/nanoplot/results/summary/SRR28370682-original_NanoPlot-report.html \
-    ~/
-```
-
-```
-NanoPlot \
-    --threads 2 \
-    --fastq ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz \
-    --outdir ./results/ont/klebsiella/nanoplot/ \
-    --prefix SRR28370682-final_
-```
-
-
-### Copy the report html to local computer from hpc
-
-```
-rsync -avP \
-    --partial \
-    ./results/ont/klebsiella/nanoplot/results/summary/SRR28370682-final_NanoPlot-report.html \
-    ~/
-```
-
-# *De novo* assembly for ONT reads
-
-### Assemble bacterial isolate genomes from Nanopore reads
-
-### Main steps
-
-1. Estimate genome size and read length from reads (unless `--gsize` provided) (`kmc`)
-2. Filter reads by length (default `--minreadlength 1000`) (`nanoq`)
-3. Reduce FASTQ files to a sensible depth (default `--depth 150`) (`rasusa`)
-4. Remove adapters (requires `--trim` be given) (`porechop`)
-5. Assemble with `Flye`, `Miniasm`, or `Raven`
-6. Polish assembly with `Racon` and/or `Medaka`
-7. Polish assembly with short reads via `Polypolish` and/or `Pilon`
-8. Remove contigs that are too short, too low coverage, or pure homopolymers
-9. Produce final FASTA with nicer names and parsable annotations
-10. Reorient contigs from final FASTA using `dnaapler`
-11. Output parsable assembly statistics (`assembly-scan`)
-
-```
-export TMPDIR=./results/ont/klebsiella/tmp/dragonflye/
-```
-
-```
-dragonflye \
-    --reads ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz \
-    --gsize 5248520 \
-    --prefix SRR28370682 \
-    --outdir ./results/ont/klebsiella/dragonflye \
-    --assembler flye \
-    --tmpdir ./results/ont/klebsiella/tmp/dragonflye/ \
-    --polypolish 1 \
-    --minlen 500 \
-    --mincov 2 \
-    --force \
-    --keepfiles \
-    --depth 0 \
-    --minreadlen 0 \
-    --minquality 0 \
-    --racon 1 \
-    --medaka 0 \
-    --namefmt "SRR28370682_%05d" \
-    --cpus 4 \
-    --ram 7 \
-    --noreorient
-```
-
-
-# Assembly evaluation
-
-```
-stats.sh in=./results/ont/klebsiella/dragonflye/SRR28370682.fa
-```
-
+1. *Create a directory using your username in the scratch:*
 >**Note**
-Unfortunately, the N50 and L50 values generated by stats.sh are switched. N50 should be a length and L50 should be a count. The results table below shows the corrected values based on stats.sh outputs.
 
-
-# Annotation
+>Once inside the `hpc`, all instances of ```$USER``` will be equivalent to the hpc username that you were assigned. Your username, by default, is stored in a variable called `USER`. By using it, you will not have to type-in your username, rather, your shell will automatically pick your username which is the value stored in the `USER` variable. The `$` (dollar) character-prefix to a variable name is used to call the value of that variable.
 
 ```
-export TMPDIR=./results/ont/klebsiella/tmp/prokka/
+mkdir -p /var/scratch/$USER
+cd /var/scratch/$USER
 ```
+2. *Create project directories:*
+> **Note:** 
 
-```
-prokka \
-    --evalue 1e-09 \
-    --coverage 80 \
-    --centre ILRI \
-    --cpus 2 \
-    --prefix SRR28370682 \
-    --locustag SRR28370682 \
-    --proteins ./databases/prokka/proteins.faa \
-    --force \
-    --outdir ./results/ont/klebsiella/prokka \
-    ./results/ont/klebsiella/dragonflye/SRR28370682.fa
-```
-
-
-### Cleanup intermediate files
+> We create a project directory `ACDC_AMR2025` to store all that pertains to this tutorial/project. Within `ACDC_AMR2025` we will have `data` and subdirectories to store our input data and `results` from different analysis steps. We will also have `scripts` directory to store scripts/code that we genenrate or need in the analysis.
 
 ```
-rm -r ./results/ont/klebsiella/prokka/*.pdb ./results/ont/klebsiella/prokka/*.pjs ./results/ont/klebsiella/prokka/*.pot ./results/ont/klebsiella/prokka/*.ptf ./results/ont/klebsiella/prokka/*.pto
+mkdir -p ACDC_AMR2025
+cd ACDC_AMR2025
 ```
 
+From here, we move to specific tutorial for analysis.
 
-# AMR genes detection using ResFinder
+## Software installation (local computer)
+Please follow the following instructions to install the tools that we will use on local computer. Note that these tools have already been installed on the remote computer (the HPC) by the system admin.
 
-```
-python -m resfinder \
-    -ifa ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
-    -o ./results/ont/klebsiella/resfinder/ \
-    -s klebsiella \
-    --min_cov 0.6 \
-    --threshold 0.9 \
-    --min_cov_point 0.6 \
-    --threshold_point 0.9 \
-    --ignore_stop_codons \
-    --ignore_indels \
-    --acquired \
-    --point
-```
+Open a terminal in using WSL in Windows. If you have a Linux OS, open a terminal by clicking on the terminal icon. 
 
-# Identify AMR and virulence genes in proteins and/or contigs
-### Full AMRFinderPlus search combining results
-
-# Full AMRFinderPlus search combining results
-
-Identify acquired antimicrobial resistance genes in bacterial protein and/or assembled nucleotide sequences as well as known resistance-associated point mutations for several taxa. With AMRFinderPlus we added select members of additional classes of genes such as virulence factors, biocide, heat, acid, and metal resistance genes.
-
->**Note**
-AMRFinderPlus reports gene and point mutation presence/absence; it does not
-infer phenotypic resistance. Many of the resistance genes detected by
-AMRFinderPlus may not be relevant for clinical management or antimicrobial
-surveillance. **The AMR genes must be expressed to confer resistance**
-
-AMRFinder can be run in multiple modes with protein sequence as input and/or with DNA sequence as input. To get maximum information it should be run with both protein and nucleotide. When run with protein sequence it uses both BLASTP and HMMER to search protein sequences for AMR genes along with a hierarchical tree of gene families to classify and name novel sequences. With nucleotide sequences it uses BLASTX translated searches and the hierarchical tree of gene families. Adding the `--organism` option enables screening for point mutations in select organisms and suppresses the reporting of some that are extremely common in those organisms.
+It is good practice to organize your work in project directories so as to have all files relating to a project in one place. Therefore, let's create a directory
+on our local machine. We will create a directory similar to the one we created on the HPC above. Run the following command:
 
 ```
-AMRFINDER_DB=$(find ./databases/amrfinderplus/2023-11-15.1 -name "AMR.LIB" | sed 's=AMR.LIB==')
-```
-```
-export TMPDIR=./results/ont/klebsiella/tmp/amrfinder/
-```
-```
-amrfinder \
-    --nucleotide ./results/ont/klebsiella/prokka/SRR28370682.fna \
-    --protein ./results/ont/klebsiella/prokka/SRR28370682.faa \
-    --gff ./results/ont/klebsiella/prokka/SRR28370682.gff \
-    --annotation_format prokka \
-    --organism Klebsiella_pneumoniae \
-    --plus \
-    --ident_min -1 \
-    --coverage_min 0.5 \
-    --translation_table 11 \
-    --database $AMRFINDER_DB \
-    --threads 2 \
-    --name SRR28370682 > ./results/ont/klebsiella/amrfinder/SRR28370682.tsv
+mkdir -p ACDC_AMR2025
+cd ACDC_AMR2025
 ```
 
-# AMR detection with ResFinder
-
+Download the following `yml` file to your computer.
 ```
-cp -rf
-/var/scratch/global/gkibet/ilri-africa-cdc-training/wastewater-surveillance-analysis/database/{disinfinder_db,pointfinder_db,resfinder_db}
-./database/
-```
-# MLST 
-
-```
-mkdir -p ./databases/mlst/database
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/environment.yml
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/snippy-environment.yml
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-mpox-environment.yml
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt
 ```
 
-```
-tar -xzf ./databases/mlst/mlst.tar.gz -C ./databases/mlst/database
-```
+### Creating a conda environment
+First, we will need to install Miniforge. Please follow the instructions below which are obtained from miniforge [GitHub repository](https://github.com/conda-forge/miniforge?tab=readme-ov-file#unix-like-platforms-macos-linux--wsl)
 
+Download the installation bash script.
 ```
-MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
-```
-
-### Automatic MLST calling from assembled contigs
-
-```
-mlst \
-    --threads 2 \
-    --blastdb $MLST_DB/blast/mlst.fa \
-    --datadir $MLST_DB/pubmlst \
-    --scheme klebsiella \
-    --minid 95 \
-    --mincov 10 \
-    --minscore 50 \
-    ./results/ont/klebsiella/prokka/SRR28370682.fna \
-    > ./results/ont/klebsiella/mlst/SRR28370682.tsv
+wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
 ```
 
-# Assign sequence types
-
-BIGSdb platform curated by the Institute Pasteur
-(https://bigsdb.pasteur.fr/klebsiella)
-
-
-### Running on hpc
+Run the script to install Miniforge.
 ```
-module purge
-module load snippy/4.6.0
+bash Miniforge3-$(uname)-$(uname -m).sh
 ```
 
-### Running on local computer in a conda environment
+Followign successful Miniforge installation, we can use `conda` to install the tools we need to an environment in your local computer.
+Install the tools as follows:
 
 ```
-conda activate $HOME/miniforge3/envs/snippy-env
+conda env create -f environment.yml
+conda env create -f snippy-environment.yml
+conda env create -f artic-mpox-environment.yml
 ```
 
-## SNP calling and phylogenetic analysis
-
-Snippy finds SNPs between a haploid reference genome and your NGS sequence
-reads. It will find both substitutions (snps) and insertions/deletions (indels).
-It will use as many CPUs as you can give it on a single computer (tested to 64
-cores). It is designed with speed in mind, and produces a consistent set of
-output files in a single folder. It can then take a set of Snippy results using
-the same reference and generate a core SNP alignment (and ultimately a
-phylogenomic tree).
-
-
-
-Here we will use 11 Klebs isolates collected in Kenya between January 14 and January 31, 2019
-https://pathogen.watch/genomes/all?country=ke&genusId=570&maxDate=2019-01-31T20%3A59%3A59.999Z&minDate=2018-12-31T21%3A00%3A00.000Z&sort=date&speciesId=573
-
-
-## Retrieve the reference genome in GenBank format
-
+### Creating a Python environment
+We also need to create a python environment to install Python packages that are needed by some python scripts we will run in some analysis steps.
 ```
-mkdir -p ./data/klebs/reference
-```
-
-```
-wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz -P  ./data/klebs/reference
-
-```
-
-```
-gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff.gz > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff
-```
-
-## Fast bacterial variant calling from NGS reads or contigs
-```
-mkdir -p ./data/klebs/pathogenwatch/assemblies-to-test
-```
-
-```
-rsync -avP --partial \
-    ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
-    ./data/klebs/pathogenwatch/assemblies-to-test/SRR28370682.fasta
-```
-
-## Select assemblies to test
-
-```
-rsync -avP --partial \
-    ./data/klebs/pathogenwatch/genomes/SAMN25722[2,3]{68,97,35,64,03,77}.fasta \
-    ./data/klebs/pathogenwatch/assemblies-to-test/
+python3 -m venv ./py3env
+source ./py3env/bin/activate
+python3 -m pip install -r ./artic-requirements.txt
 ```
 
 
-```
-export TMPDIR=$(pwd)/results/ont/klebsiella/tmp/snippy/
-```
+## Analysis tutorials
+Please find here linked the tutorials for Introduction to Linux and for respective organisms. Right click on the link and open it in a new tab on your browser.
 
-```
-for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
-    sample=$(basename $fn)
-    sample="${sample%.*}"
-    echo -e "-------------------------------\n"
-    echo -e "running snippy on: $sample - $fn"
-    
-    snippy \
-        --force \
-        --prefix $sample \
-        --mapqual 60 \
-        --basequal 13 \
-        --cpus 4 \
-        --ram 4 \
-        --tmpdir $TMPDIR \
-        --outdir ./results/ont/klebsiella/snippy/$sample \
-        --reference ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff \
-        --ctgs $fn
-    echo -e "-------------------------------\n"
-done
-```
+1. [Introduction to Linux](linux_hpc_intro.md)
+2. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
+3. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
+4. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
 
-`--mapqual` is the minimum mapping quality to accept in variant calling. 
-BWA MEM using `60` to mean a read is "uniquely mapped".
-
-`--basequal` is minimum quality a nucleotide needs to be used in variant
-calling. We use `13` which corresponds to error probability of ~5%. It is a
-traditional SAMtools value.
-
-The variant calling is done by Freebayes. The key parameters under user control are:
-
-`--mincov` - the minimum number of reads covering a site to be considered (default=10)
-`--minfrac` - the minimum proportion of those reads which must differ from the reference
-`--minqual` - the minimum VCF variant call "quality" (default=100)
-
-
->**Note**
-If you run Snippy with the `--report` option it will automatically run `snippy-vcf_report` and generate a `snps.report.txt`
-
-# Visualize the variants
-
-1. Go to https://igv.org/app/
-2. Load the Genome `ref.fa` in the `Genome` tab
-3. Load the alignment and its index in the `Tracks` tab
-4. For the `ref.fa` select `NC_009648` as chromosome and type `NC_009648:1-200`
-   as the region of interest
-
-
-<br>
-<left><img src="img/igv-screenshot.png" alt="Screenshot of IGV" width="1532"/></left>
-<br>
-
-
-# Build whole+core genome aligment from Snippy folders
-
-If you call SNPs for multiple isolates from the same reference, you can produce 
-an alignment of "core SNPs" which can be used to build a high-resolution 
-phylogeny (ignoring possible recombination). A "core site" is a genomic position Q
-that is present in all the samples. A core site can have the same nucleotide in 
-every sample ("monomorphic") or some samples can be different 
-("polymorphic" or "variant"). If we ignore the complications of "ins", "del" 
-variant types, and just use variant sites, these are the "core SNP genome".
-
-If you want to mask certain regions of the genome, you can provide a BED file 
-with the `--mask` parameter. Any SNPs in those regions will be excluded. 
-This is common for genomes like M.tuberculosis where pesky repetitive 
-PE/PPE/PGRS genes cause false positives, or masking phage regions. 
-A `--mask` bed file for M.tb is provided with Snippy in the 
-`etc/Mtb_NC_000962.3_mask.bed` folder. 
-It is derived from the XLSX file from https://gph.niid.go.jp/tgs-tb/
-
-# Run snippy-core
-```
-snippy-core \
-    --maxhap 100 \
-    --mask-char N \
-    --ref ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff \
-    --prefix ./results/ont/klebsiella/snippy-core/core-snp \
-    ./results/ont/klebsiella/snippy/*
-```
-
-## Output
-`.aln` - A core SNP alignment in the `--aformat` format (default FASTA)
-`.full.aln` - A whole genome SNP alignment (includes invariant sites)
-
-
-## Cleanup the alignment
-You can remove all the "weird" characters and replace them with N using the 
-included snippy-clean_full_aln. This is useful when you need to pass it to a tree-building or recombination-removal tool:
-
-```
-snippy-clean_full_aln \
-    ./results/ont/klebsiella/snippy-core/core-snp.full.aln > \
-    ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln
-```
-
-## Compute snp distances
-
->**Note** 
-Requires `snp-dists`
-
-```
-snp-dists \
-    ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln > \
-    ./results/ont/klebsiella/snippy-core/core-snp.distance.tsv
-```
-
-
-# Detect recombination
-
-```
-run_gubbins.py \
-    --threads 8 \
-    --prefix ./results/ont/klebsiella/gubbins/core-snp \
-    --iterations 5 \
-    --min-snps 3 \
-    --min-window-size 100 \
-    --max-window-size 10000 \
-    --filter-percentage 25.0 \
-    ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln
-```
-
-## Create masked alignment
-
-```
-mask_gubbins_aln.py \
-    --aln ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln \
-    --gff ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
-    --out ./results/ont/klebsiella/gubbins/core-snp.masked.aln
-```
