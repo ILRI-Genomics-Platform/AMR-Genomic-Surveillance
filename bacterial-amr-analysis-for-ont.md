@@ -18,6 +18,7 @@
       - [Compute Node](compute-node)
       - [Project organisation](#project-organisation)
   - [Bioinformatics Analysis](#bioinformatics-analysis)
+      - [About the Sample](#about-the-sample)
       - [Step 1: Data Quality Assessment](#step-1-data-quality-assessment)
       - [Step 2: Genome Assembly](#step-2-genome-assembly)
       - [Step 3: Genome Annotation](#step-3-genome-annotation)
@@ -145,7 +146,14 @@ ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
 > **Note:**  We create a project root directory `ACDC_AMR2025` to store all that pertains to this tutorial/project. Within `ACDC_AMR2025` we created sub-directories aligned with the workflow tools.
 
-## Bioinformatics Analysis  
+## Bioinformatics Analysis
+
+### About the Sample
+**Project accession:** [PRJNA1087001](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1087001/)
+
+**Project paper:** [Publication](https://elifesciences.org/reviewed-preprints/98300)
+
+**Project summary:** Benchmark various nanopore-based variant callers on 14 different species. Samples are sequenced on the latest (September 2023) R10.4.1 Nanopore flowcells and Illumina. Ground truth assemblies are generated for each sample.
 
 ### Step 1: Data Quality Assessment
 We start by exploring the quality of the raw sequence reads. We need to know whether the data is worth commencing analysis on, or otherwise.
@@ -201,6 +209,24 @@ Let's copy the second round of quality assessment results to our local computers
 
 How do we get genomes from reads?
 Dragonflye is a pipeline for  quick and easy assembling of bacterial genomes from Oxford Nanopore reads.
+
+<details>
+  <summary>Click to toggle <span style="color:blue"><b>Dragonflye assembly steps</b></span></summary>
+
+1. Estimate genome size and read length from reads (unless `--gsize` provided) (`kmc`)  
+2. Filter reads by length (default `--minreadlength 1000`) (`nanoq`)  
+3. Reduce FASTQ files to a sensible depth (default `--depth 150`) (`rasusa`)  
+4. Remove adapters (requires `--trim` be given) (`porechop`)  
+5. Assemble with `Flye`, `Miniasm`, or `Raven`  
+6. Polish assembly with `Racon` and/or `Medaka`  
+7. Polish assembly with short reads via `Polypolish` and/or `Pilon`  
+8. Remove contigs that are too short, too low coverage, or pure homopolymers  
+9. Produce final FASTA with nicer names and parsable annotations  
+10. Reorient contigs from final FASTA using `dnaapler`  
+11. Output parsable assembly statistics (`assembly-scan`)  
+
+</details>
+
 ```
 # Assembly
 
