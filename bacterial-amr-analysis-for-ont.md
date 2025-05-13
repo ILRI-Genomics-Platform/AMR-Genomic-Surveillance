@@ -23,6 +23,19 @@ ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
 
 
+# Load modules
+
+<!-- module load nanoplot/1.42.0 -->
+```
+module load nanoplot/1.42.0
+module load dragonflye/1.2.1
+module load porechop/0.3.2pre
+module load bbmap/38.95
+module load resfinder/4.6.0
+module load amrfinder/4.0.22
+```
+
+
 ## Retrieve the reference genome in GenBank format
 
 ```
@@ -31,7 +44,6 @@ mkdir -p ./data/klebs/reference
 
 ```
 wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz -P  ./data/klebs/reference
-
 ```
 
 ```
@@ -39,11 +51,15 @@ gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff.gz > ./
 ```
 
 
-# Remove Adapters
+```
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.fna.gz -P  ./data/klebs/reference
+```
 
 ```
-module load porechop/0.2.4
+gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna.gz > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna
 ```
+
+# Remove Adapters
 
 ```
 porechop \
@@ -54,46 +70,6 @@ porechop \
     --output ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz
 ```
 
-```
-module unload porechop/0.2.4
-```
-
-
-# Load modules
-
-```
-module load any2fasta/0.4.2
-module load nanoq/0.10.0
-module load nanoplot/1.42.0
-module load bbmap/38.95
-
-
-module load bwa/0.7.17
-module load samtools/1.9
-module load racon/1.5.0
-module load prodigal/2.6.3  
-module load fastp/0.22.0
-module load minimap2/2.13
-module load spades/3.13.0
-module load mlst/2.23.0
-module load infernal/1.1.2  
-module load fastqc/0.11.9
-
-module load medaka/0.8.2
-module load velvet/1.2.10
-module load hmmer/3.3
-module load prokka/1.14.6   
-module load lighter/1.1.2
-module load flye/2.4.2
-module load megahit/1.2.9
-module load bowtie2/2.3.4.1
-module load bedtools/2.29.0  
-module load flash/1.2.11
-module load htslib/1.9
-module load miniasm/0.3
-module load blast/2.7.1+
-module load barrnap/0.9 
-```
 
 # Nanoplot
 
@@ -229,23 +205,17 @@ rm -r ./results/ont/klebsiella/prokka/*.pdb ./results/ont/klebsiella/prokka/*.pj
 ```
 
 
-## Fast bacterial variant calling from NGS reads or contigs
-
-# Convert the GenBank format to Fasta format
-```
-any2fasta \
-    ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff > \
-    ./data/klebs/reference/Reference.fasta
-```
-
+# Add additional genomes from pathogenwatch
 
 Here we will use 11 Klebs isolates collected in Kenya between January 14 and January 31, 2019
 https://pathogen.watch/genomes/all?country=ke&genusId=570&maxDate=2019-01-31T20%3A59%3A59.999Z&minDate=2018-12-31T21%3A00%3A00.000Z&sort=date&speciesId=573
 
-
 ```
 mkdir -p ./data/klebs/pathogenwatch/assemblies-to-test
 ```
+
+
+1. add our genome assembly to the directory for global assemblies
 
 ```
 rsync -avP --partial \
@@ -253,29 +223,30 @@ rsync -avP --partial \
     ./data/klebs/pathogenwatch/assemblies-to-test/SRR28370682.fasta
 ```
 
+2. add reference genome assembly to the directory for global assemblies
+
 ```
 rsync -avP --partial \
-    ./data/klebs/reference/Reference.fasta \
+    ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna \
     ./data/klebs/pathogenwatch/assemblies-to-test/Reference.fasta
 ```
 
-## Select assemblies to test
+3. select assemblies to test and add to the directory for global assemblies
 
- <!-- ./data/klebs/pathogenwatch/genomes/SAMN25722[2,3]{68,97,35,64,03,77}.fasta -->
+<!-- ./data/klebs/pathogenwatch/genomes/SAMN25722[2,3]{68,97,35,64,03,77}. -->
 
 ```
 rsync -avP --partial \
-    /data/klebs/pathogenwatch/genomes/*.fasta
+    ./data/klebs/pathogenwatch/genomes/*.fasta \
     ./data/klebs/pathogenwatch/assemblies-to-test/
 ```
 
-
-# AMR genes detection using ResFinder
+# AMR detection with ResFinder
 
 ```
 python -m resfinder \
     -ifa ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
-    -o ./results/ont/klebsiella/resfinder/ \
+    -o ./results/ont/klebsiella/resfinder/SRR28370682 \
     -s klebsiella \
     --min_cov 0.6 \
     --threshold 0.9 \
@@ -322,23 +293,6 @@ amrfinder \
     --database $AMRFINDER_DB \
     --threads 2 \
     --name SRR28370682 > ./results/ont/klebsiella/amrfinder/SRR28370682.tsv
-```
-
-# AMR detection with ResFinder
-
-```
-python -m resfinder \
-    -ifa ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
-    -o ./results/ont/klebsiella/resfinder/SRR28370682 \
-    -s klebsiella \
-    --min_cov 0.6 \
-    --threshold 0.9 \
-    --min_cov_point 0.6 \
-    --threshold_point 0.9 \
-    --ignore_stop_codons \
-    --ignore_indels \
-    --acquired \
-    --point
 ```
 
 
