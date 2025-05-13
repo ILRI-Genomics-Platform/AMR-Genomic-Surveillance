@@ -1,0 +1,44 @@
+name: amrGenomics
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - any2fasta=0.4.2=hdfd78af_3
+  - assembly-scan=1.0.0=pyhdfd78af_0
+  - barrnap=0.9=hdfd78af_4
+  - bbmap=39.19=he5f24ec_0
+  - blast=2.16.0=hc155240_3
+  - bwa=0.7.18=he4a0461_1
+  - dragonflye=1.2.1=hdfd78af_0
+  - fastp=0.24.1=heae3180_0
+  - fastq-scan=1.0.1=h9948957_4
+  - fastqc=0.12.1=hdfd78af_0
+  - flye=2.9.5=py311hc849397_1
+  - libcxx=20.1.3=ha0f52bf_0
+  - libzlib=1.2.13=h4ab18f5_6
+  - lighter=1.1.3=hdcf5f25_1
+  - medaka=2.0.1=py311hfd2b166_0
+  - megahit=1.2.9=h43eeafb_5
+  - miniasm=0.3=he4a0461_3
+  - minimap2=2.28=he4a0461_3
+  - mlst=2.23.0=hdfd78af_1
+  - nanoplot=1.44.1=pyhdfd78af_0
+  - nanoq=0.10.0=hc1c3326_4
+  - ncbi-amrfinderplus=4.0.19=hf69ffd2_0
+  - pigz=2.8=h2797004_0
+  - pilon=1.24=hdfd78af_0
+  - porechop=0.2.4=py311he264feb_9
+  - python=3.11.9=hb806964_0_cpython
+  - racon=1.5.0=hdcf5f25_5
+  - rasusa=2.1.0=hc1c3326_1
+  - raven-assembler=1.8.3=h43eeafb_1
+  - samclip=0.4.0=hdfd78af_1
+  - samtools=1.21=h50ea8bc_0
+  - shovill=1.1.0=hdfd78af_1
+  - shovill-se=1.1.0se=hdfd78af_2
+  - skesa=2.5.1=h077b44d_2
+  - spades=4.0.0=h6dccd9a_3
+  - unicycler=0.5.1=py311h6eedab3_2
+  - velvet=1.2.10=he4a0461_7
+#prefix: ~/bioinformatics/anaconda3/envs/amrGenomics

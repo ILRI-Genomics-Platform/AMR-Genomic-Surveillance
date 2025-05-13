@@ -1,8 +1,26 @@
+## Login to hpc and create project directory
+```
+interactive -w compute06 -c 8
+
+cd /var/scratch/$USER
+
+BASEDIR=$(pwd)
+
+echo $BASEDIR
 
 
+mkdir -p \
+$BASEDIR/trainings/ACDC_AMR2025/results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst}
 
-# on hpc - load modules
 
+cd $BASEDIR/trainings/ACDC_AMR2025
+
+
+ln -s /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
+```
+
+## Loading modules
+```
 module load bbmap/38.95
 module load bwa/0.7.17
 module load samtools/1.9
@@ -31,14 +49,10 @@ module load htslib/1.9
 module load miniasm/0.3
 module load blast/2.7.1+
 module load barrnap/0.9  
+```
 
-
-mkdir -p \
-$HOME/trainings/ACDC_AMR2025/results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,amrfinder,mlst}
-
-
-
-# QC
+## Quality control (QC)
+```
 fastqc \
     -o ./results/illumina/ecoli/fastqc \
     --noextract \
@@ -63,8 +77,10 @@ fastp \
     --length_required 20 \
     2> ./results/illumina/ecoli/fastp/SRR25008769.fastp.log
 
-
-# fastq-scan reads a FASTQ from STDIN and outputs summary statistics (read lengths, per-read qualities, per-base qualities) in JSON format.
+```
+## QC Summary Statistics
+fastq-scan reads a FASTQ from STDIN and outputs summary statistics (read lengths, per-read qualities, per-base qualities) in JSON format.
+```
 gzip -cd \
 ./data/ecoli/illumina/SRR25008769_1.fastq.gz | fastq-scan -g 5249449 > \
 ./results/illumina/ecoli/fastq-scan/SRR25008769_1-original.json
@@ -82,11 +98,11 @@ gzip -cd \
 ./results/illumina/ecoli/fastp/SRR25008769_R2.trim.fastq.gz | fastq-scan -g 5249449 > \
 ./results/illumina/ecoli/fastq-scan/SRR25008769_2-trimmed.json
 
+```
 
+## De novo assembly pipeline for Illumina paired reads
 
-# De novo assembly pipeline for Illumina paired reads
-
-
+```
 mkdir ./results/illumina/ecoli/tmp_shovill
 TMPDIR=./results/illumina/ecoli/tmp_shovill
 
@@ -110,10 +126,10 @@ shovill \
 mv ./results/illumina/ecoli/shovill/SRR25008769/contigs.fa ./results/illumina/ecoli/shovill/SRR25008769/SRR25008769.fa
 
 rm ./results/illumina/ecoli/tmp_shovill
+```
 
-
-# Annotation
-
+## Annotation
+```
 mkdir ./results/illumina/ecoli/tmp_prokka/
 TMPDIR=./results/illumina/ecoli/tmp_prokka/
 
@@ -131,11 +147,11 @@ prokka \
 
 rm -r ./results/illumina/ecoli/tmp_prokka/
 
+```
 
 
-
-# Full AMRFinderPlus search combining results
-
+## Full AMRFinderPlus search combining results
+```
 mkdir ./results/illumina/ecoli/tmp_amrfinder/
 TMPDIR=./results/illumina/ecoli/tmp_amrfinder/
 
@@ -157,8 +173,10 @@ amrfinder \
 
 
 rm -r ./results/illumina/ecoli/tmp_amrfinder
+```
 
-# Multilocus sequence typing
+## Multilocus sequence typing
+```
 mkdir ./databases/mlst/database
 tar -xzf ./databases/mlst/mlst.tar.gz -C ./databases/mlst/database
 MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
@@ -174,4 +192,4 @@ mlst \
     ./results/illumina/ecoli/prokka/SRR25008769.fna \
     > ./results/illumina/ecoli/mlst/SRR25008769.tsv
 
-
+```
