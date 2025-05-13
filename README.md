@@ -142,8 +142,8 @@ Please find here linked the tutorials for Introduction to Linux and for respecti
 
 1. [Introduction to Linux](linux_hpc_intro.md)
 2. Environment Management Systems
- - [Environment Manament with Conda](Introduction_environment_managament_systems.md)
- - [HPC Module System](Intro_Module_System)
+   - [Environment Manament with Conda](Introduction_environment_managament_systems.md)
+   - [HPC Module System](Intro_Module_System.md)
 3. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
 4. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
 5. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
