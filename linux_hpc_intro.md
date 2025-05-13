@@ -207,7 +207,9 @@ However, sometimes it is possible to get things done with the `command` alone, o
 
 **Command History**
 
+
 We write code because we are lazy and prefer not to unnecessarily repeat tasks. Linux stores your command line history in a register to allow quick retrieval for repeat use cases--saved time.
+
 - `Up/Down` arrows to navigate through previous commands
 - `history` to list recent commands: note the register number of your command and rerun it by preceding the number with a `!` (exclamation).
 - `Ctrl+R` to search command history
@@ -371,6 +373,7 @@ grep -B 3 -A 3 "ATGC" sequence.fa
 
 #### Input/Output Redirection
 
+
 What happens when you want to feed the output of one command the input to another? What about if you want to save the output of a command, whether that output is an _error_ or the _results_ from a process?
 
 **Standard Streams**
@@ -520,6 +523,7 @@ The first line of a script (`#!/bin/bash`) tells the system which interpreter to
 - `#!/usr/bin/env Rscript`: R script -->
 
 **Variables and Environment**
+
 
 ***Variable***: a named symbol that stores value which can be evaluated in a command or script.
 
