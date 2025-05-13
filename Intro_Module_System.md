@@ -1,8 +1,7 @@
-# **simple command-line tutorial** for using the **module system**
+# **A Simple Command-Line Tutorial** for using the *module system*
 
 **module system** is a common tool for managing software on **HPC (High-Performance Computing)** systems.
 
----
 
 ## What is the Module System?
 
@@ -161,10 +160,10 @@ echo "module load python/3.10" >> ~/.bashrc
 module loadd samtools/1.9 racon/1.5.0 unicycler/0.4.7 prodigal/2.6.3 fastp/0.22.0 porechop/0.2.4 minimap2/2.13 spades/3.13.0 mlst/2.23.0 infernal/1.1.2 fastqc/0.11.9 any2fasta/0.4.2 medaka/0.8.2 velvet/1.2.10  hmmer/3.3 prokka/1.14.6 lighter/1.1.2 flye/2.4.2 megahit/1.2.9 bowtie2/2.3.4.1 bedtools/2.29.0 flash/1.2.11 miniasm/0.3  nanoplot/1.42.0 nanoq/0.10.0 porechop/0.3.2pre
 ```
 
- > Which dependancies did you see?  
- > What are the conflicts you noticed?  
- > How best do you think you can resolve these conflicts?  
- > Why are there conflicts with `porechop`?  
+ - Which dependancies did you see?  
+ - What are the conflicts you noticed?  
+ - How best do you think you can resolve these conflicts?  
+ - Why are there conflicts with `porechop`?  
 
 ### **Step 2:**  List modules that have been loaded.  
 
@@ -172,17 +171,19 @@ module loadd samtools/1.9 racon/1.5.0 unicycler/0.4.7 prodigal/2.6.3 fastp/0.22.
 module list
 ```
 
- > Are there extra modules that have been loaded? and Why?  
- > Can you swap `porechop` to latest version?  
+ - Are there extra modules that have been loaded? and Why?  
+ - Can you swap `porechop` to latest version?  
 
 ### **Step 3:**  Lets manage our modules even further...  
 
- > `module avail` all versions of `samtools`. Which version is loaded and which version is the latest?  
- > Can you `module unload` current version and `module load` latest version?  
- > `module swap` the current version to another version of `samtools` 
+ - `module avail` all versions of `samtools`. Which version is loaded and which version is the latest?  
+ - Can you `module unload` current version and `module load` latest version?  
+ - `module swap` the current version to another version of `samtools` 
  > Now `module purge` all modules and check if you succeeded.   
 
 ### **Step 4:**  Lets now discuss the pros and cons of **Module System** vs **conda** System.  
- > Are there any benefits of module system vs conda system in a PC vs a HPC?  
- > How easy is each to set-up/install?  
- > What would you wish to work with in your PC vs a shared cluster?  
+
+ - Are there any benefits of module system vs conda system in a PC vs a HPC?  
+ - How easy is each to set-up/install?  
+ - What would you wish to work with in your PC vs a shared cluster?  
+
