@@ -15,7 +15,7 @@ By the end of this course, participants will be:
 ### Target Audience
 - Windows users with little to no prior experience with Linux
 - Researchers, students, and professionals in bioinformatics and computational biology
-- Anyone who needs to use Linux-based tools for analyzing biological data
+- Anyone who needs to use Linux-based tools for analysing biological data
 
 ### Prerequisites
 - Basic computer literacy
@@ -47,7 +47,7 @@ Linux comes in many forms called _distributions_ or _distros_. Common ones inclu
 - **Fedora**: Cutting-edge features
 - **Scientific Linux/Biolinux**: Specialized for scientific computing
 
-For bioinformatics, **Ubuntu** and **CentOS** are widely used, with many specialized bioinformatics tools pre-configured to work well on these platforms.
+For bioinformatics, **Ubuntu** and **CentOS** are widely used, with many specialised bioinformatics tools pre-configured to work well on these platforms.
 
 **Key Differences from Windows**
 
@@ -59,7 +59,7 @@ For bioinformatics, **Ubuntu** and **CentOS** are widely used, with many special
 | File Extensions | Required | Optional |
 | Terminal/Command Line | PowerShell/CMD | Bash, Zsh, etc. |
 | Software Installation | `.exe` installers | Package managers |
-| System Customization | Limited | Highly customizable |
+| System Customisation | Limited | Highly customizable |
 | Cost | Licensed | Free (mostly) |
 
 **Why Linux for Bioinformatics?**
@@ -119,14 +119,13 @@ A file system (FS) is the method and structure an operating system uses to store
 
 **File System Hierarchy**
 
-Linux organizes files in a tree-like structure starting from the root directory[^1] (`/`):
+Linux organises files in a tree-like structure starting from the root directory[^1] (`/`):
 [^1]: _Folder_ equivalent in Windows
 
 <details>
     <summary>
         Click to toggle contents of <b style='color:blue'>Full Linux file structure</b>
     </summary>
-</details>
 ```
 /
 ├── bin/    # Essential commands
@@ -147,6 +146,7 @@ Linux organizes files in a tree-like structure starting from the root directory[
 ├── usr/    # User utilities and applications
 └── var/    # Variable files (logs, etc.)
 ```
+</details>
 
 **Important Directories**
 
@@ -195,8 +195,8 @@ command [options] [arguments]
 
 However, sometimes it is possible to get things done with the `command` alone, or with the `command` and either of `options` or `arguments`. The square brackets around the latter two components indicate that they are optional.
 - `command`: The program to run (usually the name of the program in lowercase with hyphens for spaces)
-- `options`: Modify/Specify the command's behavior (usually preceded by `-` (short form) or `--` (long form))
-- `arguments`: What the cammand acts on: files, directories, links etc
+- `options`: Modify/Specify the command's behaviour (usually preceded by `-` (short form) or `--` (long form))
+- `arguments`: What the command acts on: files, directories, links etc
 
 **Using Tab Completion**
 
@@ -207,7 +207,9 @@ However, sometimes it is possible to get things done with the `command` alone, o
 
 **Command History**
 
-We write code because we are lazy and prefer not to unnecessarily repeat tasks. Linux stores your command line history in a register to allow quick retireval for repeat use cases--saved time.
+
+We write code because we are lazy and prefer not to unnecessarily repeat tasks. Linux stores your command line history in a register to allow quick retrieval for repeat use cases--saved time.
+
 - `Up/Down` arrows to navigate through previous commands
 - `history` to list recent commands: note the register number of your command and rerun it by preceding the number with a `!` (exclamation).
 - `Ctrl+R` to search command history
@@ -315,14 +317,14 @@ Each set has three permission types:
 - View with `ls -a`
 - Common examples: `.bashrc`, `.profile`, `.cache` -->
 
-#### Finding and Organizing Files
+#### Finding and Organising Files
 
 **The `find` Command**
 
 The `find` command locates files based on various criteria:
 
 ```bash
-# Find all .fastq files in the current directory and subdirectories
+# Find all .fastq files in the current directory and sub-directories
 find . -name "*.fastq"
 
 # Find and delete temporary files
@@ -371,7 +373,8 @@ grep -B 3 -A 3 "ATGC" sequence.fa
 
 #### Input/Output Redirection
 
-What happens when you want to feed the output of one command the inout to another? What about if you want to save the output of a command, whether that output is an _error_ or the _results_ from a process?
+
+What happens when you want to feed the output of one command the input to another? What about if you want to save the output of a command, whether that output is an _error_ or the _results_ from a process?
 
 **Standard Streams**
 
@@ -521,7 +524,8 @@ The first line of a script (`#!/bin/bash`) tells the system which interpreter to
 
 **Variables and Environment**
 
-***Variable***: a named symbol that stores value which can be evalauted in a command or script.
+
+***Variable***: a named symbol that stores value which can be evaluated in a command or script.
 
 ***Envirnment***: a collection of key-value pairs that define the behaviour of processes.
 
@@ -533,7 +537,7 @@ NUM_SAMPLES=10
 
 # Use variables
 echo "Project: $PROJECT_NAME"
-echo "Analyzing $NUM_SAMPLES samples from $DATA_DIR"
+echo "Analysing $NUM_SAMPLES samples from $DATA_DIR"
 
 # Command substitution
 TODAY=$(date +%Y-%m-%d)
@@ -648,7 +652,7 @@ echo "Extracting sequences longer than $MIN_LENGTH bp from $FASTA_FILE"
 echo "Output will be saved to $OUTPUT"
 
 # Process the file
-# Initialize variables
+# Initialise variables
 current_header=""
 current_seq=""
 count=0
@@ -788,7 +792,7 @@ SLURM (Simple Linux Utility for Resource Management) is a workload manager for L
 #SBATCH --time=01:00:00            # Wall time (HH:MM:SS)
 #SBATCH --nodes=1                  # Number of nodes
 #SBATCH --ntasks=1                 # Number of tasks
-#SBATCH --cpus-per-task=4          # Number of CPUs per task
+#SBATCH --cpus-per-task=2          # Number of CPUs per task
 #SBATCH --mem=8G                   # Memory per node
 #SBATCH --partition=normal         # Partition/queue name
 
@@ -860,7 +864,7 @@ echo "Node list: $SLURM_JOB_NODELIST"
 #SBATCH --job-name=bwa_align
 #SBATCH --output=bwa_align_%j.log
 #SBATCH --time=04:00:00
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=16G
 
 # Load modules
@@ -925,7 +929,7 @@ echo "Job completed in $elapsed_time seconds"
 | **Directory** | A folder in the file system |
 | **Environment Variable** | A named value that can affect how processes run |
 | **File System** | The structure used to control how data is stored and retrieved |
-| **Flag** | A type of option that modifies command behavior |
+| **Flag** | A type of option that modifies command behaviour |
 | **GUI** | Graphical User Interface |
 | **HPC** | High-Performance Computing |
 | **Job** | A computational task submitted to a cluster |
