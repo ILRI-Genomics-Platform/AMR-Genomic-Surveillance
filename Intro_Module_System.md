@@ -108,23 +108,38 @@ module help python
 
 ## Example Workflow
 
+ - Check available Python versions
 ```bash
-# Check available Python versions
 module avail python
+```
 
-# Load Python 3.11
-module load python/3.11.1
+ - Load Python 3.10
+```bash
+module load python/3.10
+```
 
-# Verify it's active
+ - Verify it's active
+```bash
 python --version
+```
 
-# Load a Reads qc
+ - Load a fastp for Reads qc
+```bash
 module load fastp/0.24.1
+```
 
-# Swap to another fastq reads qc
+ - Swap to another fastp version
+```bash
 module swap fastp/0.24.1 fastp/0.22.0
+```
 
-# Clean up environment
+ - List loaded modules
+```bash
+module list
+```
+
+ - Clean up environment
+```bash
 module purge
 ```
 
@@ -157,7 +172,7 @@ echo "module load python/3.10" >> ~/.bashrc
 ### **Step 1:**  Attempt to load all packages at once.  
 
 ```bash
-module loadd samtools/1.9 racon/1.5.0 unicycler/0.4.7 prodigal/2.6.3 fastp/0.22.0 porechop/0.2.4 minimap2/2.13 spades/3.13.0 mlst/2.23.0 infernal/1.1.2 fastqc/0.11.9 any2fasta/0.4.2 medaka/0.8.2 velvet/1.2.10  hmmer/3.3 prokka/1.14.6 lighter/1.1.2 flye/2.4.2 megahit/1.2.9 bowtie2/2.3.4.1 bedtools/2.29.0 flash/1.2.11 miniasm/0.3  nanoplot/1.42.0 nanoq/0.10.0 porechop/0.3.2pre
+module load samtools/1.9 racon/1.5.0 unicycler/0.4.7 prodigal/2.6.3 fastp/0.22.0 porechop/0.2.4 minimap2/2.13 spades/3.13.0 mlst/2.23.0 infernal/1.1.2 fastqc/0.11.9 any2fasta/0.4.2 medaka/0.8.2 velvet/1.2.10  hmmer/3.3 prokka/1.14.6 lighter/1.1.2 flye/2.4.2 megahit/1.2.9 bowtie2/2.3.4.1 bedtools/2.29.0 flash/1.2.11 miniasm/0.3  nanoplot/1.42.0 nanoq/0.10.0 porechop/0.3.2pre
 ```
 
  - Which dependancies did you see?  
@@ -176,10 +191,16 @@ module list
 
 ### **Step 3:**  Lets manage our modules even further...  
 
- - `module avail` all versions of `samtools`. Which version is loaded and which version is the latest?  
+ - `module avail` all versions of `samtools`.  
+
+```bash
+module avail samtools
+```
+
+ - Which version is loaded and which version is the latest?  
  - Can you `module unload` current version and `module load` latest version?  
  - `module swap` the current version to another version of `samtools` 
- > Now `module purge` all modules and check if you succeeded.   
+ -  Now `module purge` all modules and check if you succeeded.   
 
 ### **Step 4:**  Lets now discuss the pros and cons of **Module System** vs **conda** System.  
 
