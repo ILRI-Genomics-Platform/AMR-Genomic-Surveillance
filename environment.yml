@@ -12,7 +12,7 @@ dependencies:
   - conda-forge::pigz
   - conda-forge::libcxx
   - conda-forge::libzlib
-  # - conda-forge::gsl
+  - conda-forge::gsl
 
 # preprocessing tools
   - bioconda::bbmap

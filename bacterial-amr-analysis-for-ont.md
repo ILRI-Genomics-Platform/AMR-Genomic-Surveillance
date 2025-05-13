@@ -95,17 +95,6 @@ module load blast/2.7.1+
 module load barrnap/0.9 
 ```
 
-# Quality filter
-
-```
-nanoq \
-    --min-len 1000 \
-    --min-qual 0 \
-    --input ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz \
-    --output-type g \
-    --output ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz
-```
-
 # Nanoplot
 
 ```
@@ -123,6 +112,18 @@ rsync -avP \
     --partial \
     ./results/ont/klebsiella/nanoplot/results/summary/SRR28370682-original_NanoPlot-report.html \
     ~/
+```
+
+
+# Quality filter
+
+```
+nanoq \
+    --min-len 1000 \
+    --min-qual 0 \
+    --input ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz \
+    --output-type g \
+    --output ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz
 ```
 
 ```
