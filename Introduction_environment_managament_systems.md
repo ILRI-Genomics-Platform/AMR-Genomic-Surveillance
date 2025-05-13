@@ -2,7 +2,7 @@
 
 A **quick guide** to using **Conda**, **Anaconda**, **Miniconda**, **Miniforge**, **Mamba**, and **Micromamba**.
 
-Here is a simple command-line tutorial overview for the most common Conda-based tools: Conda, Anaconda, Miniconda, Miniforge, Mamba, and Micromamba. markdown document
+Here is a simple command-line tutorial overview for the most common Conda-based tools: Conda, Anaconda, Miniconda, Miniforge, Mamba, and Micromamba.
 
 ---
 
@@ -21,39 +21,6 @@ There are three ways/options for installing conda:
 
 See sections below for a more detailed explanation.  
 Once Conda is installed, you can create environments, install packages, and manage dependencies easily!  
-
-### Basic Conda Commands
-
-```bash
-# Check conda version
-conda --version
-
-# Update conda
-conda update conda
-
-# Create a new environment
-conda create -n myenv python=3.11
-
-# Activate the environment
-conda activate myenv
-
-# Deactivate current environment
-conda deactivate
-
-# Install a package
-conda install numpy
-
-# List installed packages
-conda list
-
-# List all environments
-conda env list
-
-# Remove environment
-conda remove -n myenv --all
-```
-
----
 
 ## 2. Anaconda
 
@@ -98,6 +65,39 @@ Same as `conda` commands above.
 ```bash
 # Example: Create env using conda-forge
 conda create -n myenv -c conda-forge python=3.11
+```
+
+---
+
+### Basic Conda Commands
+
+```bash
+# Check conda version
+conda --version
+
+# Update conda
+conda update conda
+
+# Create a new environment
+conda create -n myenv python=3.11
+
+# Activate the environment
+conda activate myenv
+
+# Deactivate current environment
+conda deactivate
+
+# Install a package
+conda install numpy
+
+# List installed packages
+conda list
+
+# List all environments
+conda env list
+
+# Remove environment
+conda remove -n myenv --all
 ```
 
 ---
