@@ -14,7 +14,7 @@ To practice and learn more about `conda` and its environments, work on the follo
    - Which tools will be installed if that `yml` file is used as an argument for conda?  
    - Into which environment will be the tools be installed?
    - From which conda channels are we obtaining the tools?  
-10. Use the downloaded yml file in step 11 above to install the tools.  
+10. Use the downloaded yml file in step 9 above to install the tools.  
 11. On your terminal, list all the conda environments that you have. Can you identify the active environment?  
 
 
