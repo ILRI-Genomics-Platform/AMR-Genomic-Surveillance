@@ -73,7 +73,7 @@ Linux dominates bioinformatics for several reasons:
 5. **Remote Access**: Simple `SSH` connectivity to high-performance computing resources
 6. **Open Source Nature**: Aligns with scientific principles of transparency and reproducibility
 
-#### Accessing Linux
+#### Accessing Linux from Windows
 
 **Windows Subsystem for Linux (WSL)**
 
@@ -115,6 +115,8 @@ Many bioinformatics analyses run on remote Linux servers or clusters.
 
 #### The Linux File System
 
+A file system (FS) is the method and structure an operating system uses to store, organize, and manage data on storage devices.
+
 **File System Hierarchy**
 
 Linux organizes files in a tree-like structure starting from the root directory[^1] (`/`):
@@ -124,7 +126,7 @@ Linux organizes files in a tree-like structure starting from the root directory[
     <summary>
         Click to toggle contents of <b style='color:blue'>Full Linux file structure</b>
     </summary>
-</details>
+    
 ```
 /
 ├── bin/    # Essential commands
@@ -145,6 +147,8 @@ Linux organizes files in a tree-like structure starting from the root directory[
 ├── usr/    # User utilities and applications
 └── var/    # Variable files (logs, etc.)
 ```
+    
+</details>
 
 **Important Directories**
 
@@ -163,6 +167,7 @@ Linux organizes files in a tree-like structure starting from the root directory[
 - **Home directory** shorthand: `~` (tilde)
 - **Parent directory**: `..`
 - **Current directory**: `.`
+- **Previous directory**: `-`
 
 ---
 ### Command Line Basics
@@ -184,71 +189,81 @@ Linux organizes files in a tree-like structure starting from the root directory[
 - In WSL: Open _Ubuntu_ from the `Start menu`
 
 **Command Syntax**
+
+Commands generally take the below form:
 ```
 command [options] [arguments]
 ```
 
+However, sometimes it is possible to get things done with the `command` alone, or with the `command` and either of `options` or `arguments`. The square brackets around the latter two components indicate that they are optional.
 - `command`: The program to run (usually the name of the program in lowercase with hyphens for spaces)
 - `options`: Modify/Specify the command's behavior (usually preceded by `-` (short form) or `--` (long form))
 - `arguments`: What the cammand acts on: files, directories, links etc
 
 **Using Tab Completion**
+
+`Tab` completion is a shell feature (used in Linux, macOS, and other Unix-like systems) that auto-completes commands, file names, directory paths, or other inputs when you press the `Tab` key on your keyboard.
 - Start typing a command or file name and press `Tab`
 - The shell will complete it if there's only one possibility
 - Press `Tab` twice to see all possibilities
 
 **Command History**
+
+We write code because we are lazy and prefer not to unnecessarily repeat tasks. Linux stores your command line history in a register to allow quick retireval for repeat use cases--saved time.
 - `Up/Down` arrows to navigate through previous commands
-- `history` to list recent commands
+- `history` to list recent commands: note the register number of your command and rerun it by preceding the number with a `!` (exclamation).
 - `Ctrl+R` to search command history
 
 **Getting Help**
-- `man <command>` - Display the manual page for a command
-- `<command> -h` - Brief help for a command
-- `<command> --help` - Extended help for a command
-- `info <command>` - Detailed documentation (if available)
+
+Help is never far from you:
+- `man <command>`: Display the manual page for a command
+- `<command> -h`: Brief help for a command
+- `<command> --help`: Extended help for a command
+- `info <command>`: Detailed documentation (if available)
 
 #### Basic Commands
+Basic Linux commands are inspired by natural language (English), thus easy to work with.
 
 **Navigation Commands**
-- `pwd` - **P**rint **W**orking **D**irectory (shows current location)
-- `ls` - List files and directories
-  - `ls -l` - Detailed listing
-<!--   - `ls -a` - Show hidden files
-  - `ls -h` - Human-readable file sizes -->
-- `cd <directory_name>` - Change Directory
-    - `cd -` - Go to previous directory
+- `pwd`: Print working directory (shows current location)
+- `ls`: List files and directories
+  - `ls -l`: Detailed listing
+<!--   - `ls -a`: Show hidden files
+  - `ls -h`: Human-readable file sizes -->
+- `cd <directory_name>`: Change directory
+    - `cd -`: Go to previous directory
 <!--   - `cd` or `cd ~` - Go to home directory
-  - `cd ..` - Go up one directory -->
+  - `cd ..`: Go up one directory -->
   
 
 **Directory and File Operations**
-- `mkdir <directory_name>` - Create directory
-  - `mkdir -p parent/child` - Create parent directories as needed
-- `touch <file>` - Create empty file or update timestamp
-- `cp <source> <destination>` - Copy files or directories
-  - `cp -r <source> <destination>` - Copy directories recursively
-- `mv <source> <destination>` - Move or rename files/directories
-- `rm <file_name>` - Remove files
-  - `rm -r <directory_name>` - Remove directories recursively
-  - `rmdir <directory_name>` - Remove empty directory
-<!--   - `rm -f file` - Force removal without confirmation -->
+- `mkdir <directory_name>`: Create directory
+  - `mkdir -p parent/child`: Create parent directories as needed
+- `touch <file>`: Create empty file or update timestamp
+- `cp <source> <destination>`: Copy files or directories
+  - `cp -r <source> <destination>`: Copy directories recursively
+- `mv <source> <destination>`: Move or rename files/directories
+- `rm <file_name>`: Remove files
+  - `rm -r <directory_name>`: Remove directories recursively
+  - `rmdir <directory_name>`: Remove empty directory
+<!--   - `rm -f file`: Force removal without confirmation -->
 
 
 **Viewing File Contents**
-- `cat <file_name>` - Display entire file
-- `less <file_name>` - View file with pagination (use q to quit)
-- `head file` - Show first 10 lines
-  - `head -n 20 <file_name>` - Show first 20 lines
-- `tail file` - Show last 10 lines
-  - `tail -n 20 <file_name>` - Show last 20 lines
-  - `tail -f <file_name>` - Follow file updates in real-time
+- `cat <file_name>`: Display entire file
+- `less <file_name>`: View file with pagination (use q to quit)
+- `head <file_name>`: Show first 10 lines
+  - `head -n 20 <file_name>`: Show first 20 lines
+- `tail <file_name>`: Show last 10 lines
+  - `tail -n 20 <file_name>`: Show last 20 lines
+  - `tail -f <file_name>`: Follow file updates in real-time
 
 **System Information**
-- `whoami` - Display current username
-- `date` - Show current date and time
-- `echo <text>` - Display text
-- `uname -a` - Show system information
+- `whoami`: Display current username
+- `date`: Show current date and time
+- `echo <text>`: Display text
+- `uname -a`: Show system information
 
 ---
 ### Working with Files and Directories
@@ -342,15 +357,15 @@ grep -B 3 -A 3 "ATGC" sequence.fa
 
 **Wildcards and Pattern Matching**
 
-- `*` - Matches any number of characters
-  - `*.fastq` - All files with .fastq extension
-  - `sample_*` - All files starting with "sample_"
-- `?` - Matches a single character
-  - `sample?.txt` - Matches sample1.txt, sampleA.txt, etc.
-- `[]` - Matches any character within brackets
-  - `sample[123].txt` - Matches sample1.txt, sample2.txt, or sample3.txt
-- `{}` - Group of patterns
-  - `{*.fastq,*.fq}` - Matches files ending in .fastq or .fq
+- `*`: Matches any number of characters
+  - `*.fastq`: All files with .fastq extension
+  - `sample_*`: All files starting with "sample_"
+- `?`: Matches a single character
+  - `sample?.txt`: Matches sample1.txt, sampleA.txt, etc.
+- `[]`: Matches any character within brackets
+  - `sample[123].txt`: Matches sample1.txt, sample2.txt, or sample3.txt
+- `{}`: Group of patterns
+  - `{*.fastq,*.fq}`: Matches files ending in .fastq or .fq
 
 ---
 ### Linux Pipes and Redirection
@@ -358,14 +373,14 @@ grep -B 3 -A 3 "ATGC" sequence.fa
 
 #### Input/Output Redirection
 
-What happens when you want to feed a command to work on? What about if you want to save the output of a command, whether that output is an _error_ the _results_ from a process?
+What happens when you want to feed the output of one command the inout to another? What about if you want to save the output of a command, whether that output is an _error_ or the _results_ from a process?
 
 **Standard Streams**
 
 Linux commands use three standard streams:
-- **stdin (0)**: Standard input (keyboard by default)
-- **stdout (1)**: Standard output (terminal by default)
-- **stderr (2)**: Standard error (terminal by default)
+- **`stdin (0)`**: Standard input (keyboard by default)
+- **`stdout (1)`**: Standard output (terminal by default)
+- **`stderr (2)`**: Standard error (terminal by default)
 
 **Redirection Operators**
 
@@ -473,6 +488,7 @@ grep "^>" sequences.fa | wc -l
 ### Shell Scripting Basics
 ---
 #### Introduction to Shell Scripts
+A script is a file containing a sequence of commands for task automation.
 
 **Creating and Executing Scripts**
 
@@ -500,12 +516,16 @@ grep "^>" sequences.fa | wc -l
 **Shebang Line**
 
 The first line of a script (`#!/bin/bash`) tells the system which interpreter to use:
-- `#!/bin/bash` - Bash shell
-<!-- - `#!/bin/sh` - POSIX shell (more portable)
-- `#!/usr/bin/env python` - Python
-- `#!/usr/bin/env Rscript` - R script
- -->
+- `#!/bin/bash`: Bash shell
+- `#!/bin/sh`: POSIX shell (more portable)
+<!-- - `#!/usr/bin/env python`: Python
+- `#!/usr/bin/env Rscript`: R script -->
+
 **Variables and Environment**
+
+***Variable***: a named symbol that stores value which can be evalauted in a command or script.
+
+***Envirnment***: a collection of key-value pairs that define the behaviour of processes.
 
 ```bash
 # Set variables
@@ -536,6 +556,7 @@ echo "You selected: $FILENAME"
 
 **Conditionals**
 
+What if you want to do something based on whether some logic evaluates to `true` or `false`?
 ```bash
 #!/bin/bash
 
@@ -568,6 +589,7 @@ fi
 
 **Loops**
 
+How can we perform the same operations on some sequence of input?
 ```bash
 #!/bin/bash
 
@@ -588,6 +610,7 @@ done
 
 **Command Substitution**
 
+It is possible to substitute the output of a command in another command.
 ```bash
 # Store command output in variable
 NUM_SEQS=$(grep -c "^>" sequence.fa)
