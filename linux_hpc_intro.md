@@ -780,7 +780,9 @@ SLURM (Simple Linux Utility for Resource Management) is a workload manager for L
 
 #### Creating SLURM Job Scripts
 
- - Before we proceed, let us copy some test data.  
+ - Before we proceed, first [log in to the HPC](https://github.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/tree/main#logging-into-the-hpc) as explained earlier.   
+ - Then let us copy some test data.  
+ 
 Our test data is in the path `/var/scratch/global/gkibet/ACDC_AMR2025/data/test_data`. We will copy the folder to current directory.
 
 ```bash
