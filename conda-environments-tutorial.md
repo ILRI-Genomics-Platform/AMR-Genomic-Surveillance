@@ -1,5 +1,38 @@
 # Conda and bioinformatics software environment management
-In this tutorial, you will learn how to create a conda environment and install tools in the environment.
+
+## Installing Miniforge
+Please follow the instructions below which are obtained from miniforge [GitHub repository](https://github.com/conda-forge/miniforge?tab=readme-ov-file#unix-like-platforms-macos-linux--wsl)
+
+### Linux-based distributions
+Download the installation bash script.
+```
+wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
+```
+
+Run the script to install Miniforge.
+```
+bash Miniforge3-$(uname)-$(uname -m).sh
+```
+### MacOS
+If you are using MacOS, install Miniforge by first installing Homebrew:
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Once already installed, install Miniforge as follows:
+```
+brew install miniforge
+```
+
+Finally run this command:
+```
+conda init zsh
+```
+Restart your terminal.
+
+## Check your conda installation
+
+We will now learn how to create a conda environment and install tools in the environment.
 This tutorial assumes that you have already installed one of the minimal installers of `conda` such as `Miniconda` or `Miniforge`.
 
 We can check that `conda` is installed by printing out its help page or by printing out its version
