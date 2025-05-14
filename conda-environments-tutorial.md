@@ -62,7 +62,7 @@ List the environments again to see what was added to the list of environments.
 Activate the environment that you created as follows:
 
 ```
-conda activate fastqc-env
+conda activate fastp-env
 ```
 
 Did you see any change on your terminal?
