@@ -812,12 +812,15 @@ ls test_data/*/
 #SBATCH --partition=normal         # Partition/queue name
 
 # Load any required modules
-module load samtools bwa
+module load samtools/1.17 bwa/0.7.19
 
 # Run commands
 echo "Job started at $(date)"
 echo "Running on host: $(hostname)"
 echo "Working directory: $(pwd)"
+
+# Use bwa to index a reference genome
+bwa index test_data/reference/reference.fa
 
 # Example bioinformatics commands
 bwa mem -t $SLURM_CPUS_PER_TASK \
@@ -901,6 +904,10 @@ mkdir -p $OUTPUT_DIR
 
 # Start timing
 start_time=$(date +%s)
+
+# Indexing the reference 
+echo "Indexing reference genome in readiness for alignment"
+bwa index $REFERENCE
 
 # Run alignment
 echo "Starting alignment for $SAMPLE_ID"
