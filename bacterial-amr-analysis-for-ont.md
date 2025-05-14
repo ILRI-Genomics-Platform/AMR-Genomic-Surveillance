@@ -452,11 +452,6 @@ resistance. There a variety of tools for the task. We will use commonly used
 tools whose AMR databases are regularly/frequently.
 
 [**ResFinder**](https://genepi.dk/resfinder) identifies acquired genes and/or finds chromosomal mutations mediating antimicrobial resistance in total or partial DNA sequence of bacteria.
-<details>
-<summary>
-    Click to toggle <b style='color:blue'>ResFinder CLI</b>
-</summary>
-
 
 ```
 python -m resfinder \
