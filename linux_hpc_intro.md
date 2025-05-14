@@ -780,6 +780,21 @@ SLURM (Simple Linux Utility for Resource Management) is a workload manager for L
 
 #### Creating SLURM Job Scripts
 
+ - Before we proceed, let us copy some test data.  
+Our test data is in the path `/var/scratch/global/gkibet/ACDC_AMR2025/data/test_data`. We will copy the folder to current directory.
+
+```bash
+pwd # Ensure you are in /var/scratch/$USER/
+cp -rf /var/scratch/global/gkibet/ACDC_AMR2025/data/test_data/ ./
+ls test_data
+```
+
+ - List the contents of the directory to make sure all files are there:  
+
+```bash
+ls test_data/*/
+```
+
 **Basic SLURM Script Structure**
 
 ```bash
@@ -803,7 +818,11 @@ echo "Running on host: $(hostname)"
 echo "Working directory: $(pwd)"
 
 # Example bioinformatics commands
-bwa mem -t $SLURM_CPUS_PER_TASK reference.fa read1.fq read2.fq > output.sam
+bwa mem -t $SLURM_CPUS_PER_TASK \
+	./test_data/reference/reference.fa \
+	./test_data/fastq/read1.fq \
+	./test_data/fastq/read2.fq > output.sam
+
 samtools sort -@ $SLURM_CPUS_PER_TASK -o output.bam output.sam
 samtools index output.bam
 
@@ -869,11 +888,11 @@ echo "Node list: $SLURM_JOB_NODELIST"
 module load bwa samtools
 
 # Set variables
-REFERENCE="/path/to/reference/genome.fa"
+REFERENCE="./test_data/reference/genome.fa"
 SAMPLE_ID="sample1"
-READ1="/path/to/reads/${SAMPLE_ID}_R1.fastq.gz"
-READ2="/path/to/reads/${SAMPLE_ID}_R2.fastq.gz"
-OUTPUT_DIR="/path/to/output"
+READ1="./test_data/fastq/${SAMPLE_ID}_R1.fastq.gz"
+READ2="./test_data/fastq/${SAMPLE_ID}_R2.fastq.gz"
+OUTPUT_DIR="./test_data/output"
 
 # Create output directory
 mkdir -p $OUTPUT_DIR
