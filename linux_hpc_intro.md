@@ -890,7 +890,7 @@ echo "Node list: $SLURM_JOB_NODELIST"
 #SBATCH --mem=16G
 
 # Load modules
-module load bwa samtools
+module load samtools/1.17 bwa/0.7.19
 
 # Set variables
 REFERENCE="./test_data/reference/genome.fa"
