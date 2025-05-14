@@ -50,7 +50,9 @@
 Welcome to this workshop on antimicrobial resistance (AMR) genomics analysis!
 
 This workshop is designed for professionals who are already familiar with AMR and genomics concepts but are looking to develop practical bioinformatics skills for analysing genomic data related to AMR.
-We'll explore the fundamental concepts, tools, and workflows used in AMR genomics analysis, with a focus on practical applications using _Escherichia coli_ and _Klebsiella pneumoniae_ sequencing data.
+We'll explore the fundamental concepts, tools, and workflows used in AMR
+genomics analysis, with a focus on practical applications using _Escherichia
+coli_ and _Klebsiella pneumoniae_ sequencing data.
 
 ## Learning Objectives
 By the end of this workshop, you will be able to:
@@ -124,26 +126,31 @@ For any Bioinformatics project, it's good practice to have a structured file sys
 1. *Create a course directory called `ACDC_AMR2025`:*
 
 ```
-# Creating the entity and project directory
 mkdir -p /var/scratch/$USER/ACDC_AMR2025
+```
 
 # Change directory into the created directory
+
+```
 cd /var/scratch/$USER/ACDC_AMR2025
 ```
+
 >**Note** Once inside the `hpc`, all instances of ```$USER``` will be equivalent to the `hpc` username that you were assigned. Your username, by default, is stored in a variable called `USER`. By using it, you will not have to type your username, rather, your shell will automatically retrieve your username which is the value stored in the `USER` variable. The `$` (dollar) prefix is used to retrieve the value of that variable.
 
 2. *Create project sub-directories:*
 
 ```
-# Create the project directory and sub-directories
-mkdir -p AMR-Genomic-Surveillance/{data,scripts}
-
-# Create tool sub-directories within the data directory
 mkdir -p \
 results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
+```
 
+3. *Create symblic links to the required resources
+
+```
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
+
+
 > **Note:**  We create a project root directory `ACDC_AMR2025` to store all that pertains to this tutorial/project. Within `ACDC_AMR2025` we created sub-directories aligned with the workflow tools.
 
 ## Bioinformatics Analysis
@@ -153,59 +160,154 @@ ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 
 **Project paper:** [Publication](https://elifesciences.org/reviewed-preprints/98300)
 
-**Project summary:** Benchmark various nanopore-based variant callers on 14 different species. Samples are sequenced on the latest (September 2023) R10.4.1 Nanopore flowcells and Illumina. Ground truth assemblies are generated for each sample.
+**Project summary:** Benchmark various nanopore-based variant callers on 14
+different species. Samples are sequenced on the latest (September 2023) R10.4.1
+Nanopore flowcells and Illumina. Ground truth assemblies are generated for each
+sample.
 
-### Step 1: Data Quality Assessment
-We start by exploring the quality of the raw sequence reads. We need to know whether the data is worth commencing analysis on, or otherwise.
+**Methods**
+Bacterial isolates were streaked onto agar plates and grown overnight at 37°C.
+
+ONT library preparation was performed using either Rapid Barcoding Kit V14
+(SQK-RBK114.96) or Native Barcoding Kit V14 (SQK-NBD114.96). Long-read
+whole-genome sequencing was performed on a MinION Mk1b or GridION using R10.4.1
+MinION flow cells (FLO-MIN114). 
+
+### Step 1: Load required modules
+
 ```
-# Initial quality assessment
-NanoPlot
-    --threads 2 # number of processing
-    --fastq ./data/klebs/ont/SRR28370682.fastq.gz # input reads
-    --outdir ./results/ont/klebsiella/nanoplot/ # output dir
-    --prefix SRR28370682-original_ # output naming prefix
+module load nanoplot/1.42.0
+module load dragonflye/1.2.1
+module load porechop/0.3.2pre
+module load bbmap/38.95
+module load prokka/1.14.6
+module load resfinder/4.6.0
+module load amrfinder/4.0.22
+module load mlst/2.23.0
 ```
-The HPC does not provide a graphical interface, therefore, we must transfer the quality assessment results to our local computer to view the outputs. The `rsync` or `scp` commands can help us with the transfer. From you local machine, and n the terminal, transfer the QC file as below.
+
+
+### Step 2: Retrieve reference genome in GenBank and FASTA format
+
 ```
-# Transfer QC reports fro viewing
+mkdir -p ./data/klebs/reference
+```
+
+```
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz \
+-P ./data/klebs/reference
+```
+
+```
+gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff.gz > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff
+```
+
+
+```
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.fna.gz \
+-P ./data/klebs/reference
+```
+
+```
+gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna.gz > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna
+```
+
+
+### Step 3: Data Quality Assessment
+We start by exploring the quality of the raw sequence reads. We need to know
+whether the data is worth commencing analysis on, or otherwise.
+
+**Initial quality assessment**
+
+`NanoPlot` is a python package for plotting various aspects of Nanopore sequencing data (fastq) and alignments (bam).
+
+```
+NanoPlot \
+    --threads 2 \
+    --fastq ./data/klebs/subsampled/SRR28370682.fastq.gz \
+    --outdir ./results/ont/klebsiella/nanoplot/ \
+    --prefix SRR28370682-original_
+```
+
+
+The HPC does not provide a graphical interface, therefore, we must transfer the
+quality assessment results to our local computer to view the outputs. The
+`rsync` or `scp` commands can help us with the transfer. 
+
+**Copy the NanoPlot report to your `home` directory on `hpc`**
+
+```
+rsync -avP \
+    --partial \
+    ./results/ont/klebsiella/nanoplot/SRR28370682-original_NanoPlot-report.html \
+    ~/
+```
+
+On the terminal of your local machine transfer the QC report file as below.
+
+**Copy the NanoPlot report to your `home` directory on `local pc`**
+
+```
 rsync -avzP \
     <hpc_user_name>@hpc.ilri.cgiar.org:<path_to_files_in_hpc> <local_path>
 ```
+
+For example:
+
+```
+rsync -avzP \
+    jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
+```
+
+**Remove adapters**
+
 Sequencing adapters are short sequences added to genomic fragments during library preparation to enable sequencing, which must be removed before downstream analysis.
 
 
 ```
-# Remove Adapters
 porechop \
-    --input SRR28370682.fastq.gz \ # reads
-    --format fastq \ # read format
-    --threads 2 > adapter-ont.fq # number of threads
+    --input ./data/klebs/subsampled/SRR28370682.fastq.gz \
+    --format fastq.gz \
+    --threads 4 \
+    --no_split \
+    --output ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz
 ```
-We can filter ours reads based on the quality assessment observation.
+
+
+**Quality filter**
+
+`Nanoq` implements ultra-fast read filters and summary reports for
+high-throughput nanopore reads. We can filter the reads based on the quality
+assessment from `NanoPlot`
+
 ```
-# Quality filter
 nanoq \
-    --min-len 1000 \ # minimum read length
-    --min-qual 0 \ # minimum read quality
+    --min-len 1000 \
+    --min-qual 10 \
     --input ./results/ont/klebsiella/porechop/SRR28370682_adapter_ont.fastq.gz \
-    --output-type g \ # gzip compressed output
+    --output-type g \
+    --stats \
+    --top 5 \
+    -vvv \
     --output ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz
 ```
 
+For a comprehensive quality visualization and reporting, we use `NanoPlot`
+again.
 
-For a comprehensive quality visualization and reporting, we use `NanoPlot` again.
+
 ```
-# Nanopore Plots
 NanoPlot \
-    --threads 2 \ # number of processing threads
-    --fastq ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz # input fastq file
-    --outdir ./results/ont/klebsiella/nanoplot/ \ # output directory
-    --prefix SRR28370682-filt_ # output name prefix
+    --threads 2 \
+    --fastq ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz \
+    --outdir ./results/ont/klebsiella/nanoplot/ \
+    --prefix SRR28370682-final_
 ```
+
 Let's copy the second round of quality assessment results to our local computers, as before.
 
 
-### Step 2: Genome Assembly
+### Step 4: Genome Assembly
 
 How do we get genomes from reads?
 Dragonflye is a pipeline for  quick and easy assembling of bacterial genomes from Oxford Nanopore reads.
@@ -228,69 +330,100 @@ Dragonflye is a pipeline for  quick and easy assembling of bacterial genomes fro
 </details>
 
 ```
-# Assembly
-
 dragonflye \
-    --reads ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz \ # input reads
-    --gsize 5248520 \ # reference genome size in bp
+    --reads ./results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz \
+    --gsize 5248520 \
     --prefix SRR28370682 \
-    --outdir ./results/ont/klebsiella/dragonflye \ # output directory
-    --assembler flye # specify the assembly algorithm; other options miniasm, raven
-    --tmpdir ./results/ont/klebsiella/tmp/dragonflye/
-    --polypolish 1 \ # enable assembly polishing
-    --racon 1 \ # enable racon consensus refinement
-    --medaka 0 \ # disable medaka polishing
-    --minlen 500 \ # min contig length in final assembly
-    --mincov 2 \ # min contig coverage for retention
-    --minreadlen 0 \ # disable filtering by length
-    --minquality 0 \ # disable filtering by quality
-    --force \ # overwrite existing out dir, if present
-    --keepfiles \ # keep intermeadiates; for debugging
-    --depth 0 \ # disable read sub-sampling; use all reads
-    --noreorient # disable contig re-orientation based on reference    
-    --namefmt "SRR25570560_%05d" \ # output formarting; how many digits
-    --cpus 2 \ # number of processing cpus
-    --ram 7 \ # amount of memory to reserve
+    --outdir ./results/ont/klebsiella/dragonflye \
+    --assembler flye \
+    --tmpdir ./results/ont/klebsiella/tmp/dragonflye/ \
+    --polypolish 1 \
+    --minlen 500 \
+    --mincov 2 \
+    --force \
+    --keepfiles \
+    --depth 0 \
+    --minreadlen 0 \
+    --minquality 0 \
+    --racon 1 \
+    --medaka 0 \
+    --namefmt "SRR28370682_%05d" \
+    --cpus 4 \
+    --ram 7 \
+    --noreorient
 ```
-    
-We need to verify the quality of the resulting assembly before annotation. We will use the utility script below:
+
+**Assembly evaluation**
+
+We need to verify the quality of the resulting assembly before any downstream
+processes. We will use the utility script below:
+
 ```
 stats.sh in=./results/ont/klebsiella/dragonflye/SRR28370682.fa
 ```
+
    > Note Unfortunately, the N50 and L50 values generated by `stats.sh` are switched. N50 should be a length and L50 should be a count. The results table below shows the corrected values based on `stats.sh` outputs.
 
-### Step 3: Genome Annotation
+
+**Transfer assembly to local computer**
+
+**Copy the assembly to your `home` directory on `hpc`**
+
+```
+rsync -avP \
+    --partial \
+    ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+    ~/
+```
+
+On the terminal of your local machine transfer the assembly as below.
+
+**Copy the NanoPlot report to your `home` directory on `local pc`**
+```
+rsync -avzP \
+    ./results/ont/klebsiella/dragonflye/SRR28370682.fa ~/
+```
+
+
+### Step 5: Genome Annotation
 
 After assembling our genome, we need to characterise it through annotation to enable inferencing. Prokka (Prokaryotic annotation) is a pipeline tool designed for the rapid annotation of prokaryotic genomes, including bacteria and archaea. After Prokka annotation, tools like ABRicate or RGI can be run on the annotated genome to identify resistance genes in their proper genomic context.
 
-Prokka respects the default Linux temporary directory--`TMPDIR`. Therefore we assign one if none exists.
+Prokka respects the default Linux temporary directory `--TMPDIR`. Therefore we
+assign one if none exists.
+
 ```
-# Only assigns /tmp to TMPDIR if it is unset
 ${TMPDIR:=/tmp}
 ```
-However, because we are all running the same pipeline and we don't want to overwrite each other's files, we will use our project-specific temporary directories.
+
+However, because we are all running the same pipeline and we don't want to
+overwrite each other's files, we will use our project-specific temporary
+directories.
+
 ```
 export TMPDIR=./results/ont/klebsiella/tmp/prokka/
 ```
-The tool also comes with its own database which is stored in the variable `PROKKA_DBDIR`. To point it to a custom DB, the variable can be tailored and exported.
+
+The tool also comes with its own database which is stored in the variable
+`PROKKA_DBDIR`. To point it to a custom DB, the variable can be tailored and
+exported.
+
 ```
-# To use a custom DB
 export PROKKA_DBDIR=<path/to/custom/db>
 ```
-Running prokka.
-```
-# Run prokka
-prokka \
-    --evalue 1e-09 # significance of alignment
-    --coverage 80 # min alignment coverage
-    --centre ILRI \ # metadata, centre name
-    --cpus 2 \ # processing cpus
-    --prefix SRR28370682 \ # output prefix
-    --locustag SRR28370682 \ # gene tags
-    --proteins ./databases/prokka/proteins.faa \ # custom priority to use for annotation befor PROKKA_DBDIR
-    --outdir ./results/ont/klebsiella/prokka # output directory
-    ./results/ont/klebsiella/dragonflye/SRR28370682.fa # input genome to be annotated
 
+```
+prokka \
+    --evalue 1e-09 \
+    --coverage 80 \
+    --centre ILRI \
+    --cpus 2 \
+    --prefix SRR28370682 \
+    --locustag SRR28370682 \
+    --proteins ./databases/prokka/proteins.faa \
+    --force \
+    --outdir ./results/ont/klebsiella/prokka \
+    ./results/ont/klebsiella/dragonflye/SRR28370682.fa
 ```
 
 Prokka generates multiple output files in standard bioinformatics formats:
@@ -307,54 +440,89 @@ Prokka generates multiple output files in standard bioinformatics formats:
 `.tbl` | Feature Table | Feature table for GenBank submission
 `.txt` | Text | Statistics of the annotation run
 
-We can clean intermediate files to conserve space:
-```
-rm -r ./results/ont/klebsiella/prokka/*.pdb \
-./results/ont/klebsiella/prokka/*.pjs \
-./results/ont/klebsiella/prokka/*.pot \
-./results/ont/klebsiella/prokka/*.ptf \
-./results/ont/klebsiella/prokka/*.pto
+
+
+### Step 6: AMR genes detection
+
+
+#### AMR genes detection using ResFinder
+
+Now that we have an annotated genome, we can query it for antimicrobial
+resistance. There a variety of tools for the task. We will use commonly used
+tools whose AMR databases are regularly/frequently.
+
+[**ResFinder**](https://genepi.dk/resfinder) identifies acquired genes and/or finds chromosomal mutations mediating antimicrobial resistance in total or partial DNA sequence of bacteria.
+<details>
+<summary>
+    Click to toggle <b style='color:blue'>ResFinder CLI</b>
+</summary>
+
 
 ```
+python -m resfinder \
+    -ifa ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+    -o ./results/ont/klebsiella/resfinder/SRR28370682 \
+    -s klebsiella \
+    --min_cov 0.6 \
+    --threshold 0.9 \
+    --min_cov_point 0.6 \
+    --threshold_point 0.9 \
+    --ignore_stop_codons \
+    --ignore_indels \
+    --acquired \
+    --point
+```
 
-### Step 4: AMR Detection
-Now that we have an annotated genome, we can query it for antimicrobial resistance. There a variety of tools for the task. We will use a leading and frequently updated one by NCBI--[***AMRFinderPlus***](https://github.com/ncbi/amr/wiki/Home). It identifies acquired antimicrobial resistance genes in bacterial protein and/or assembled nucleotide sequences as well as known resistance-associated point mutations for several taxa.
+
+#### AMR genes detection using AMRFinder
+
+NCBI--[***AMRFinderPlus***](https://github.com/ncbi/amr/wiki/Home). It
+identifies acquired antimicrobial resistance genes in bacterial protein and/or
+assembled nucleotide sequences as well as known resistance-associated point
+mutations for several taxa.
 
 The most critical part of any AMR tool is the underlying database. So we take time to understand the databse on which AMRFinderPlus is based.
 
 "This database is derived from the [Pathogen Detection Reference Gene Catalog](https://www.ncbi.nlm.nih.gov/pathogens/isolates#/refgene/), [Pathogen Detection Reference Gene Hierarchy](https://www.ncbi.nlm.nih.gov/pathogens/genehierarchy/), and [Reference HMM Catalog](https://www.ncbi.nlm.nih.gov/pathogens/hmm/) and is used by the [Pathogen Detection](https://ncbi.nlm.nih.gov/pathogens/) isolate analysis system to provide results to the [Isolates browser](https://www.ncbi.nlm.nih.gov/pathogens/isolates) and [MicroBIGG-E](https://www.ncbi.nlm.nih.gov/pathogens/microbigge) as well as the command-line version of AMRFinderPlus. The 'core' subset version focuses on acquired or intrinsic AMR gene products including point mutations in a limited set of taxa. As of version 4.0 AMRFinderPlus also includes [StxTyper](https://github.com/ncbi/stxtyper) which has a separate DNA-sequence database and algorithm for typing Stx operons.
 
-The 'plus' subset include a less-selective set of genes of interest including genes involved in virulence, biocide, heat, metal, and acid resistance."
+The 'plus' subset include a less-selective set of genes of interest including genes involved in virulence, biocide, heat, metal, and acid resistance.
 
 >**Note:** that AMRFinderPlus reports gene and point mutation presence/absence; it does not infer phenotypic resistance. Many of the resistance genes detected by AMRFinderPlus may not be relevant for clinical management or antimicrobial surveillance, AMRFinderPlus.
 
-Let's get started by defining a temporary directory for the tool and define DB path:
+Let's get started by defining a temporary directory for the tool and define DB
+path:
+
+
 ```
 export TMPDIR=./results/ont/klebsiella/tmp/amrfinder/
+```
 
-AMRFINDER_DB=./databases/amrfinderplus/2023-11-15.1/
+
 ```
-You can update the database before the analysis to ensure the latest information.
+AMRFINDER_DB=$(find ./databases/amrfinderplus/2023-11-15.1/ -name "AMR.LIB" | sed 's=AMR.LIB==')
 ```
-# Updating the database
-amrfinder --update
+
+
+You can update the database before the analysis to ensure the latest
+information using the command `amrfinder --update`
+
 ```
-```
-# Run AMR finder
 amrfinder \
-    --nucleotide ./results/ont/klebsiella/prokka/SRR28370682.fna \ # prokka out genomic
-    --protein ./results/ont/klebsiella/prokka/SRR28370682.faa \ # prokka out proteins
-    --gff ./results/ont/klebsiella/prokka/SRR28370682.gff \ # gene feature file
-    --annotation_format prokka \ # specify input format producer
-    --organism Klebsiella_pneumoniae \ # exploit prior knowledge to narrow the search
-    --plus \ # detect/report beyond AMR genes
-    --ident_min -1 \ # matc identity; any
-    --coverage_min 0.5 \ # extent of gene to be covered
-    --translation_table 11 \ # use bacterial codon table for DNA-Prot translation
+    --nucleotide ./results/ont/klebsiella/prokka/SRR28370682.fna \
+    --protein ./results/ont/klebsiella/prokka/SRR28370682.faa \
+    --gff ./results/ont/klebsiella/prokka/SRR28370682.gff \
+    --annotation_format prokka \
+    --organism Klebsiella_pneumoniae \
+    --plus \
+    --ident_min -1 \
+    --coverage_min 0.5 \
+    --translation_table 11 \
     --database $AMRFINDER_DB \
     --threads 2 \
     --name SRR28370682 > ./results/ont/klebsiella/amrfinder/SRR28370682.tsv
 ```
+
+
 #### Output Format
 AMRFinderPlus produces a tab-separated output file with detailed information:
 Column | Description
@@ -378,49 +546,48 @@ Name of closest sequence | Name of the matching sequence
 HMM id | Identifier of HMM used for detection (if applicable)
 HMM description | Description of HMM (if applicable)
 
-#### AMR Detection with ResFinder
-[**ResFinder**](https://genepi.dk/resfinder) identifies acquired genes and/or finds chromosomal mutations mediating antimicrobial resistance in total or partial DNA sequence of bacteria.
-<details>
-<summary>
-    Click to toggle <b style='color:blue'>ResFinder CLI</b>
-</summary>
-We get started by availing the relevant databases (pre-downloaded).
-```
-# Creating the database directory
-mkdir -p ./databases/resfinder/database
-```
+
+#### AMR Detection using CARD/RGI web resource
+[**CARD/RGI**](https://card.mcmaster.ca/analyze/rgi) can be used to predict resistomes from protein or nucleotide data based on homology and SNP models.
+
+# Add additional genomes from pathogenwatch
+
+Here we will use 11 Klebs isolates collected in Kenya between January 14 and January 31, 2019
+https://pathogen.watch/genomes/all?country=ke&genusId=570&maxDate=2019-01-31T20%3A59%3A59.999Z&minDate=2018-12-31T21%3A00%3A00.000Z&sort=date&speciesId=573
 
 ```
-# Copy pre-available databases to local path
-cp -rf
-/var/scratch/global/gkibet/ilri-africa-cdc-training/wastewater-surveillance-analysis/database/{disinfinder_db,pointfinder_db,resfinder_db}
-./databases/resfinder/database
-
-# Export DB path variable
-export DB_PATH_RES=./databases/resfinder/database/
+mkdir -p ./data/klebs/pathogenwatch/assemblies-to-test
 ```
 
-    ```
-    python -m resfinder \
-    -ifa ./results/ont/klebsiella/dragonflye/SRR28370682.fa \ # input FASTA
-    -o ./results/ont/klebsiella/resfinder/ \ # output
-    -s klebsiella \ # spicies
-    --min_cov 0.6 \ # min aligmnt gene covarage
-    --threshold 0.9 \ # min id for amr match
-    --min_cov_point 0.6 \ # min coverage for point mutations
-    --threshold_point 0.9 \ # min id for point mutation
-    --ignore_stop_codons \ # ignore premature stops; segmented assemblie
-    --ignore_indels \ # inore insertion/deletions
-    --acquired \ # acquired amr genes
-    --point # find point mutations known for amr
-    ```
-</details>
+
+1. add our genome assembly to the directory for global assemblies
+
+```
+rsync -avP --partial \
+    ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+    ./data/klebs/pathogenwatch/assemblies-to-test/SRR28370682.fasta
+```
+
+2. add reference genome assembly to the directory for global assemblies
+
+```
+rsync -avP --partial \
+    ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna \
+    ./data/klebs/pathogenwatch/assemblies-to-test/Reference.fasta
+```
+
+3. select assemblies to test and add to the directory for global assemblies
+
+<!-- ./data/klebs/pathogenwatch/genomes/SAMN25722[2,3]{68,97,35,64,03,77}. -->
+
+```
+rsync -avP --partial \
+    ./data/klebs/pathogenwatch/genomes/*.fasta \
+    ./data/klebs/pathogenwatch/assemblies-to-test/
+```
 
 
-<details>
-    <summary>
-        Click to toggle <b style='color:blue'>Batch ResFinder detection</b>
-    </summary>
+# Batch AMR detection 
 
 ```
 for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
@@ -428,27 +595,24 @@ for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
     sample="${sample%.*}"
     echo -e "-------------------------------\n"
     echo -e "running ResFinder on: $sample - $fn"
-    
+
     python -m resfinder \
-    -ifa $fn \ # input FASTA
-    -o ./results/ont/klebsiella/resfinder/${sample} \ # output
-    -s klebsiella \ # spicies
-    --min_cov 0.6 \ # min aligmnt gene covarage
-    --threshold 0.9 \ # min id for amr match
-    --min_cov_point 0.6 \ # min coverage for point mutations
-    --threshold_point 0.9 \ # min id for point mutation
-    --ignore_stop_codons \ # ignore premature stops; segmented assemblie
-    --ignore_indels \ # inore insertion/deletions
-    --acquired \ # acquired amr genes
-    --point # find point mutations known for amr
+        -ifa $fn \
+        -o ./results/ont/klebsiella/resfinder/${sample} \
+        -s klebsiella \
+        --min_cov 0.6 \
+        --threshold 0.9 \
+        --min_cov_point 0.6 \
+        --threshold_point 0.9 \
+        --ignore_stop_codons \
+        --ignore_indels \
+        --acquired \
+        --point
 done
 ```
-</details>
 
-#### AMR Detection with CARD/RGI
-[**CARD/RGI**](https://card.mcmaster.ca/analyze/rgi) can be used to predict resistomes from protein or nucleotide data based on homology and SNP models.
+### Step 7: Pathogen Typing
 
-### Step 5: Pathogen Relatedness
 Understanding the differences and relationships within circulating pathogens is an important aspect of genomics epidemiology. Whole-genome comparison has better resolution for pathogen characterisation than fragments per genome equivalent (FPGE) or gene-based or multi-locus sequence typing (MLST). Distances between genomes can be compared based a reference or _de novo_; _k-mer_-composition-based and _core-genome_ assembly-based.
 
 #### MLST 
@@ -458,32 +622,30 @@ Multi-Locus Sequence Typing (MLST) is an essential tool in analyzing multiple an
 MLST is a molecular typing method that characterizes bacterial isolates by sequencing internal fragments (typically 450-500 bp) of multiple housekeeping genes (usually 7-8 genes). Each unique sequence for a gene is assigned an allele number, and the combination of allele numbers defines the sequence type (ST) of an isolate.
 
 Create a database directory and extract a pre-downloaded MLST databse into it:
-```
-# Creating the database directory
-mkdir -p ./databases/mlst/database
-tar -xzf ./databases/mlst/mlst.tar.gz -C ./databases/mlst/database
 
-# MLST base dir
-MLST_DB_DIR=./databases/mlst/database/
+```
+mkdir -p ./databases/mlst/database
+```
+
+```
+MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
 ```
 
 ```
 mlst \
-    --threads 2 \ # num of processing threads
-    --blastdb $MLST_DB_DIR/blast/mlst.fa \ # specific BLAST-indexed database file containing all MLST allele sequences
-    --datadir $MLST_DB_DIR/pubmlst \ # directory containing schem definitions
-    --scheme klebsiella \ # specify scheme: gapA, infB, mdh, pgi, phoE, rpoB, and tonB for kleb
-    --minid 95 \ # min match identity
-    --mincov 10 \ # min match coverage
-    --minscore 50 \ # min align score
-    ./results/ont/klebsiella/prokka/SRR28370682.fna \ # input
-    > ./results/ont/klebsiella/mlst/SRR28370682.tsv # output
+    --threads 2 \
+    --blastdb $MLST_DB/blast/mlst.fa \
+    --datadir $MLST_DB/pubmlst \
+    --scheme klebsiella \
+    --minid 95 \
+    --mincov 10 \
+    --minscore 50 \
+    ./results/ont/klebsiella/prokka/SRR28370682.fna \
+    > ./results/ont/klebsiella/mlst/SRR28370682.tsv
 ```
 
-<details>
-    <summary>
-        Click to toggle <b style='color:blue'>Batch MLST typing</b>
-    </summary>
+
+**Batch MLST**
 
 ```
 for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
@@ -491,20 +653,20 @@ for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
     sample="${sample%.*}"
     echo -e "-------------------------------\n"
     echo -e "running mlst on: $sample - $fn"
-    
+
     mlst \
-        --threads 2 \ # num of processing threads
-        --blastdb $MLST_DB_DIR/blast/mlst.fa \ # specific BLAST-indexed database file containing all MLST allele sequences
-        --datadir $MLST_DB_DIR/pubmlst \ # directory containing schem definitions
-        --scheme klebsiella \ # specify scheme: gapA, infB, mdh, pgi, phoE, rpoB, and tonB for kleb
-        --minid 95 \ # min match identity
-        --mincov 10 \ # min match coverage
-        --minscore 50 \ # min align score
-        ./results/ont/klebsiella/prokka/SRR28370682.fna \ # input
-        > ./results/ont/klebsiella/mlst/${sample}.tsv # output
+        --threads 2 \
+        --blastdb $MLST_DB/blast/mlst.fa \
+        --datadir $MLST_DB/pubmlst \
+        --scheme klebsiella \
+        --minid 100 \
+        --mincov 10 \
+        --minscore 50 \
+        $fn \
+        > ./results/ont/klebsiella/mlst/${sample}.tsv
 done
 ```
-</details>
+
 
 ##### MLST Output Format
 
@@ -549,67 +711,98 @@ When analyzing MLST results, be aware of ceratain limitations:
 - Limited Resolution: MLST may not distinguish between closely related isolates
 - Temporal Dynamics: Does not capture all evolutionary changes over time
 - Geographic Bias: Some STs may be overrepresented in databases due to sampling bias
-- Horizontal Gene Transfer: May complicate interpretation of evolutionary relationships
+- Horizontal Gene Transfer: May complicate interpretation of evolutionary
+  relationships
 
-### Step 6: Variant Calling and Consensus Assemblies
 
-We will now focus on using an alignment-based comparison approach to identify relationships within pathogen isolates. We begin by retrieving a relevant reference genome. 
+
+
+#### Merge MLST reports
+
 ```
-# Create a ref directory and retrieve reference
-mkdir -p ./data/klebs/reference
-
-# Download, unzip ref genome
-wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz \
--O - | gunzip -c > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff
+cat \
+    ./results/ont/klebsiella/mlst/*.tsv > \
+    ./results/ont/klebsiella/mlst/klebs-mlst.txt
 ```
+
+#### Assign sequence types using web resources
+
+BIGSdb platform curated by the Institute Pasteur
+(https://bigsdb.pasteur.fr/klebsiella)
+
+
+### Step 8: Variant Calling and Consensus Assemblies
+
+
+Prepare the working environment
+
+```
+module purge
+module load snippy/4.6.0
+module load gubbins/3.4
+```
+
+We will now focus on using an alignment-based comparison approach to identify
+relationships within pathogen isolates. To model an epidemilogical situation involving different pathogens in circulation, 11 isolate assemblies collected in Kenya between January 14 and January 31, 2019 were retrieved from [PathogenWatch](https://pathogen.watch/genomes/all?country=ke&genusId=570&maxDate=2019-01-31T20%3A59%3A59.999Z&minDate=2018-12-31T21%3A00%3A00.000Z&sort=date&speciesId=573)  as context to ourassembled isolate. They are located in `./data/klebs/pathogenwatch/genomes`.
+
 
 #### Fast Bacterial Variant Calling with Contigs
-```
-# Create a working directory
-mkdir -p ./data/klebs/pathogenwatch/assemblies-to-test
-```
+Snippy finds SNPs between a haploid reference genome and your NGS sequence
+reads. It will find both substitutions (snps) and insertions/deletions (indels).
+It will use as many CPUs as you can give it on a single computer (tested to 64
+cores). It is designed with speed in mind, and produces a consistent set of
+output files in a single folder. It can then take a set of Snippy results using
+the same reference and generate a core SNP alignment (and ultimately a
+phylogenomic tree).
 
-```
-# Copy assembled genome to the working directory
-rsync -avP \
-    ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
-    ./data/klebs/pathogenwatch/assemblies-to-test/SRR28370682.fasta
-```
-
-To model an epidemilogical situation involving different pathogens in circulation, 11 isolate assemblies collected in Kenya between January 14 and January 31, 2019 were retrieved from [PathogenWatch](https://pathogen.watch/genomes/all?country=ke&genusId=570&maxDate=2019-01-31T20%3A59%3A59.999Z&minDate=2018-12-31T21%3A00%3A00.000Z&sort=date&speciesId=573)  as context to ourassembled isolate. They are located in `./data/klebs/pathogenwatch/genomes`. We copy the isolates into the working directory we just created.
-
-```
-rsync -avP \
-    ./data/klebs/pathogenwatch/genomes/SAMN25722[2,3]{68,97,35,64,03,77}.fasta \
-    ./data/klebs/pathogenwatch/assemblies-to-test/
-```
 Define the temporary directory for `snippy` analysis.
 
 ```
 export TMPDIR=$(pwd)/results/ont/klebsiella/tmp/snippy/
 ```
+
+
 Contig-based variant calling with `snippy`:
+
+
 ```
-# Iterate over assemblies
 for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
-    sample=$(basename $fn) # retrieve sample name
-    sample="${sample%.*}" # remove file extension suffix
+    sample=$(basename $fn)
+    sample="${sample%.*}"
     echo -e "-------------------------------\n"
     echo -e "running snippy on: $sample - $fn"
+    echo -e "-------------------------------\n"
     
     snippy \
-        --force \ # overwrite existing dirs
-        --prefix $sample \ # output prefix
-        --cpus 4 \ # number of processing threads
-        --ram 4 \ # memory allocation
-        --tmpdir $TMPDIR \ # temporary directory
-        --outdir ./results/ont/klebsiella/snippy/$sample \ # output
-        --reference ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff \ # reference genome
-        --ctgs $fn # assembled contigs
-        --report # summarises variants in a human-readable way
-    echo -e "-------------------------------\n"
+        --force \
+        --prefix $sample \
+        --mapqual 60 \
+        --basequal 13 \
+        --cpus 4 \
+        --ram 4 \
+        --tmpdir $TMPDIR \
+        --outdir ./results/ont/klebsiella/snippy/$sample \
+        --reference ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff \
+        --ctgs $fn
+    echo -e "\n-------------------------------\n"
 done
 ```
+
+`--mapqual` is the minimum mapping quality to accept in variant calling. 
+BWA MEM using `60` to mean a read is "uniquely mapped".
+
+`--basequal` is minimum quality a nucleotide needs to be used in variant
+calling. We use `13` which corresponds to error probability of ~5%. It is a
+traditional SAMtools value.
+
+The variant calling is done by Freebayes. The key parameters under user control are:
+
+`--mincov` - the minimum number of reads covering a site to be considered (default=10)
+`--minfrac` - the minimum proportion of those reads which must differ from the reference
+`--minqual` - the minimum VCF variant call "quality" (default=100)
+
+
+
 ##### `Snippy` Outputs
 Snippy can perform variant calling based on reads or contigs. We used the latter approach which is associated with the following output files (Some of them are universal to either approches except the amount of infomation may differ).
 
@@ -624,7 +817,11 @@ File | Description
 `*.bam` | BAM file for **contigs** alignment agains the reference
 `*.html` | HTML summary of variants
 `*.txt` | A simple summary of the run; lists numbers of different variant types
+
+
 ##### Visualising the Snippy Variants
+
+Download the reference file and it's index
 
 1. Go to https://igv.org/app/
 2. Load the Genome `ref.fa` in the `Genome` tab
@@ -648,13 +845,27 @@ Snippy-core combines multiple Snippy outputs to:
 - Generate various outputs suitable for downstream phylogenetic analysis
 
 #### Run snippy-core
-`snippy-core` is a tool that allows you to compile a core **SNP alignment** from multiple Snippy analyses. It's particularly useful for phylogenetic analysis of closely related bacterial isolates.
+`snippy-core` is a tool that allows you to compile a core **SNP alignment** from
+multiple Snippy analyses. It's particularly useful for phylogenetic analysis of closely related bacterial isolates.
+
+
+If you want to mask certain regions of the genome, you can provide a BED file 
+with the `--mask` parameter. Any SNPs in those regions will be excluded. 
+This is common for genomes like M.tuberculosis where pesky repetitive 
+PE/PPE/PGRS genes cause false positives, or masking phage regions. 
+A `--mask` bed file for M.tb is provided with Snippy in the 
+`etc/Mtb_NC_000962.3_mask.bed` folder. 
+It is derived from the XLSX file from https://gph.niid.go.jp/tgs-tb/
+
 ```
 snippy-core \
-    --ref ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff \ # ref sequence
-    --prefix ./results/ont/klebsiella/snippy-core/core-snp \ #output prefix
-    ./results/ont/klebsiella/snippy/* # snippy dir outputs
+    --maxhap 100 \
+    --mask-char N \
+    --ref ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff \
+    --prefix ./results/ont/klebsiella/snippy-core/core-snp \
+    ./results/ont/klebsiella/snippy/*
 ```
+
 #### Snippy Core Outputs
 File | Description
 --- | ---
@@ -669,46 +880,14 @@ File | Description
 
 #### Cleanup the Snippy SNP Alignment
 The resultant `core-snp.full.aln` is loaded with alphabetical encoding (see [Snippy](https://github.com/tseemann/snippy/tree/master) for details) which may not be compatible with downstream analyses like tree-building or recombination-removal. The numerous encodings may be simplified  as below:
+
 ```
 snippy-clean_full_aln \
-    ./results/ont/klebsiella/snippy-core/core-snp.full.aln > \ # snippy-core output
-    ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln # simplified aligment ouput
-
+    ./results/ont/klebsiella/snippy-core/core-snp.full.aln > \
+    ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln
 ```
 
-#### Compute Pairwise SNP Distances
-`snp-dists` is a basic and fast command-line tool for computing pairwise SNP distances between sequence assemblies. We can use it to quickly generate distance matrices for phylogenetic and epidemiological analyses.
->**Note:** 
-`snp-dists` is a stand-alone tool to be installed separately
-
-We can process with phylogentic-analyses in mind--option `-p`:
-```
-snp-dists -p \ # a phylo-compartible distance matrix
-    ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln > \ # clean alignment
-    ./results/ont/klebsiella/snippy-core/core-snp.distance.phylip # distance matrix output
-```
-Which can allow you generate a phylogentic tree using, for instance `FastTree` (which you must have loaded/installed):
-```
-FastTree -dist core-snp.distance.phylip > kleb_pneu_phylogenetic_tree.nwk
-```
-Or default to the absolute matrix distance:
-```
-snp-dists \ # a phylo-compartible distance matrix
-    ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln > \ # clean alignment
-    ./results/ont/klebsiella/snippy-core/core-snp.distance.tsv # distance matrix output
-```
-### Step 7: Dealing with Recombination
-Sometimes you may want to exclude certain regions of the genome from snippy consideration for practical reasons. This is common for genomes like _M.tuberculosis_ where pesky repetitive 
-PE/PPE/PGRS genes cause false positives, or masking phage regions.
-
-The tool provides a conveniency by using the `--mask` option with `BED` file of the regions for exclusion.
-Any SNPs in those regions will be excluded. 
- 
-> **Note:** An exclusion `BED` file for _M.tb_ is provided with Snippy in the 
-`etc/Mtb_NC_000962.3_mask.bed` folder. 
-It is derived from the `XLSX` file from https://gph.niid.go.jp/tgs-tb/.
-
-What about a scenario where the masking `BED` file is not provided?
+### Step 9: Detect Recombination and mask recombinant regions
 
 Gubbins (Genealogies Unbiased By recomBinations In Nucleotide Sequences) is a toolfor detecting and accounting for homologous recombination in bacterial whole genome alignments. Since homologous recombination can obscure the true relatedness/vertical inheritance, it may be desirable to find and mask such regions before phylogenetic inference.
 
@@ -718,53 +897,62 @@ Gubbins:
 - Iteratively masks/"remove" recombination and infers a clonal phylogeny.
 
 Predicting recombination regions:
+
 ```
-# Detect recombination
-run_gubbins.py \
-    --threads 2 \ # number of processing threads
-    --prefix ./results/ont/klebsiella/gubbins/core-snp \ # output prefix
-    --iterations 5 \ # max iterations for refining predictions
-    --min-snps 3 \ # min number of snp to consider a recombination block
-    --min-window-size 100 \ # smalles window size for scanning recomb
-    --max-window-size 10000 \# largest window size for scanning recomb
-    --filter-percentage 25.0 \ # mask alignment columns with x missing/ambigous info
+python /export/apps/gubbins/3.4/.venv/bin/run_gubbins.py \
+    --threads 8 \
+    --prefix ./results/ont/klebsiella/gubbins/core-snp \
+    --iterations 5 \
+    --min-snps 3 \
+    --min-window-size 100 \
+    --max-window-size 10000 \
+    --filter-percentage 25.0 \
     ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln
 ```
 
 Masking the predicted recombination regions:
 
 ```
-# Recomb region masking
 mask_gubbins_aln.py \
-    --aln ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln \ # original/sbippy alignment
-    --gff ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \ # .gff from gubbins recombinant region annotation
-    --out ./results/ont/klebsiella/gubbins/core-snp.masked.aln # output files
+    --aln ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln \
+    --gff ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
+    --out ./results/ont/klebsiella/gubbins/core-snp.masked.aln
 ```
 
-We can then convert the Gubbins `.gff` masking feature output into a `BED` format file usable with `snippy` as arguement to the `--mask` option.
+
+We can then convert the Gubbins `.gff` masking feature output into a `BED`
+format file usable with `snippy` as arguement to the `--mask` option.
+
+Convert Gubbins GFF to BED format
+
 ```
-# Convert Gubbins GFF to BED format
 python gubbins_to_bed.py \
-./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \ # .gff from gubbins recombinant region annotation > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
+    ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \ > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
 ```
+
+
 <details>
     <summary>Click to toggle a <b style='color:blue'>Challenge</b>
     </summary>
-Now, can you use the resultant `BED` file to re-run Snippy all the way to building a phylogenrtic tree. How do the trees compare with(out) masking of recombinat regions?
+
+Now, can you use the resultant `BED` file to re-run Snippy all the way to building a phylogenrtic tree. How do the trees compare with(out) masking of recombinant regions?
 </details>
 
 #### Phylogenetic Analysis of Gubbins Output
-We can use another phylogenetic tool--`iqtree`--to visualise the relationships between the recombination-masked isolates from Gubbins.
+We can use another phylogenetic tool `iqtree` to visualise the relationships
+between the recombination-masked isolates from Gubbins.
+
 ```
 iqtree \
-    -m HKY \ # substituion model
-    -bb 1000 \ # bootstrap iterations
-    -alrt 1000 \ # likelihood ratio test
-    -alninfo \ # log aln ino
-    -s ./results/ont/klebsiella/gubbins/core-snp.masked.aln \ # input seq aln
-    -nt 2 \ # number of threads
-    -redo \ # overwrite existing output
-    -pre ./results/ont/klebsiella/iqtree/core-snp # prefix for ouputs
+    -m HKY \
+    -bb 1000 \
+    -alrt 1000 \
+    -alninfo \
+    -s ./results/ont/klebsiella/gubbins/core-snp.masked.aln \
+    -nt 2 \
+    -redo \
+    -pre ./results/ont/klebsiella/iqtree/core-snp
 ```
+
 > **Note:** It is important to use phylogenetic algorithms that take into account SNP alignments. These algorithms usually include some form of ascertainment bias correction that corrects for the 'missing' nucleotides in the alignment that were masked/removed because they did not show polymorphism.
 
