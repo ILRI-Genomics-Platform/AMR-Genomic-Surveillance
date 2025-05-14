@@ -877,24 +877,24 @@ echo "Node list: $SLURM_JOB_NODELIST"
 ### Bioinformatics Workflows with SLURM
 ---
 
-Now let us practice some scripting. In this case we will create a script that will submit a through `slurm` to the HPC.
+#### Running Bioinformatics Tools with SLURM
+
+Now let us practice some scripting. In this case we will create a script that will submit a "**job**" through `slurm` to the HPC.
 
 **Problem statement:** We have some reads and we need to align them to a reference genome and generate some summary statistics. To break it down further, our script will have the following features:  
 
- - Start with a shebang  
- - Set some slurm sbatch parameters  
- - Load the needed modules
- - Set some paths to the reference genome and the reads as variables
- - Make sure you have created an output directory
- - Record the start time of the analysis
- - Peform the actual analysis: index the genome, align the reads, index the BAM file, calculate the analysis statistics. (Just as you would in an actual pipeline.)
+ - Start with a shebang.  
+ - Set some `slurm` `sbatch` parameters.  
+ - Load the needed modules.
+ - Set the paths to the reference genome and the reads as variables.
+ - Make sure you have created an output directory.
+ - Record the start time for the analysis.
+ - Peform the actual analysis: **index the genome**, **align the reads**, **index the BAM file**, **calculate the analysis statistics**.   
  - Record the end time of the analysis and calculate how long it took and report.
 
 **Reference genome:** `test_data/reference/genome.fa`  
 **Input Reads:** `test_data/fastq/sample1_R1.fastq.gz` and `test_data/fastq/sample1_R2.fastq.gz`  
 **Tools:** `samtools/1.17` and `bwa/0.7.19`  
-
-#### Running Bioinformatics Tools with SLURM
 
 **Example: DNA Sequence Alignment**
 
