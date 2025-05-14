@@ -119,7 +119,23 @@ Run the script to install Miniforge.
 bash Miniforge3-$(uname)-$(uname -m).sh
 ```
 
-Followign successful Miniforge installation, we can use `conda` to install the tools we need to an environment in your local computer.
+If you are using MacOS, install Miniforge by first installing Homebrew:
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Once already installed, install Miniforge as follows:
+```
+brew install miniforge
+```
+
+Finally run this command:
+```
+conda init zsh
+```
+Restart your terminal.
+
+Following successful Miniforge installation, we can use `conda` to install the tools we need to an environment in your local computer.
 Install the tools as follows:
 
 ```
