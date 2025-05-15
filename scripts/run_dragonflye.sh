@@ -23,6 +23,8 @@ WORKDIR="/var/scratch/$USER/ACDC_AMR2025"
 OUTDIR="${WORKDIR}/output/dragonflye"
 fastq="${WORKDIR}/results/ont/klebsiella/nanoq/SRR28370682_filt.fastq.gz"
 
+DATADIR="${WORKDIR}/data/klebs/ont"
+
 # check if output directory exists and create if not
 if [ -d ${OUTDIR} ]; then
   echo -e "${OUTDIR}"
@@ -32,10 +34,13 @@ fi
 
 
 # run the assembly process
+
+for fastq in $DATADIR/*.fastq.gz; do
+  sample=$(basename $fastq .fastq.gz)
 echo -e dragonflye \
     --reads ${fastq} \
     --gsize 5700000 \
-    --prefix SRR28370682 \
+    --prefix $sample \
     --outdir ${OUTDIR} \
     --assembler flye \
     --tmpdir ${WORKDIR} \
@@ -53,3 +58,4 @@ echo -e dragonflye \
     --cpus 4 \
     --ram 7 \
     --noreorient
+done
