@@ -120,7 +120,7 @@ Note: With SRA, first download SRA general format using `wget`, then convert SRA
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR323/053/SRR32302053/SRR32302053_1.fastq.gz ./
 wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR323/053/SRR32302053/SRR32302053_2.fastq.gz ./
 ```
-<details>
+</details>
 
 
 ### Assessing Read Quality using fastqc before quality trimming  
