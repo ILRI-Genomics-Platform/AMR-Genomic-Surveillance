@@ -316,13 +316,15 @@ Now let us practice some scripting. In this case we will create a script that wi
 module load samtools/1.17 bwa/0.7.19
 
 # Set variables
+WORKDIR="/var/scratch/$USER/"
 REFERENCE="./test_data/reference/genome.fa"
 SAMPLE_ID="sample1"
 READ1="./test_data/fastq/${SAMPLE_ID}_R1.fastq.gz"
 READ2="./test_data/fastq/${SAMPLE_ID}_R2.fastq.gz"
 OUTPUT_DIR="./test_data/output"
 
-# Create output directory
+# Change into work directory and Create output directory
+cd $WORKDIR
 mkdir -p $OUTPUT_DIR
 
 # Start timing
