@@ -191,26 +191,23 @@ module load seqkit/0.11.0
 ### Step 2: Retrieve reference genome in GenBank and FASTA format
 
 ```
-mkdir -p ./data/klebs/reference
+mkdir -p ./genomes/klebs
 ```
 
 ```
-wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz \
--P ./data/klebs/reference
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz -P  ./genomes/klebs
 ```
 
 ```
-gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff.gz > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff
-```
-
-
-```
-wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.fna.gz \
--P ./data/klebs/reference
+gzip -c -d ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.gbff.gz > ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.gbff
 ```
 
 ```
-gzip -c -d ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna.gz > ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.fna.gz -P  ./genomes/klebs
+```
+
+```
+gzip -c -d ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna.gz > ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna
 ```
 
 
@@ -255,8 +252,7 @@ rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-re
 For example:
 
 ```
-rsync -avzP \
-    jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
+rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
 ```
 
 **Remove adapters**
@@ -305,7 +301,17 @@ NanoPlot \
 ```
 
 Let's copy the second round of quality assessment results to our local computers, as before.
+> Note: Ensure you change the `jjuma` to your `user` name allocated on the `hpc`
 
+```
+rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-final_NanoPlot-report.html ~/
+```
+
+For example:
+
+```
+rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-final_NanoPlot-report.html ~/
+```
 
 ### Step 4: Genome Assembly
 
