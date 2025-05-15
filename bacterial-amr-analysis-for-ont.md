@@ -249,9 +249,7 @@ On the terminal of your local machine transfer the QC report file as below.
 **Copy the NanoPlot report to your `home` directory on `local pc`**
 
 ```
-rsync -avzP \
-    jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html \
-    ~/
+rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
 ```
 
 For example:
