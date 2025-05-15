@@ -137,6 +137,7 @@ fastqc \
     ./data/ecoli/illumina/SRR25008769_1.fastq.gz \
     ./data/ecoli/illumina/SRR25008769_2.fastq.gz
 ```
+Takes less than 1 minute
 
  - Now download the results of the fastqc command to your local laptop for evaluation. The results are in a `HTML` file.  
  - First copy to `~/`(home).
@@ -150,6 +151,7 @@ cp ./results/illumina/ecoli/fastqc/*html ~/
 rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR25008769*.html ~/
 ```
  - Open the HTML file and explore.
+ - Links available online: [SRR25008769_1_fastqc.html](https://hpc.ilri.cgiar.org/~gkibet/AMR-Genomic-Surveillance/SRR25008769_1_fastqc.html); [SRR25008769_2_fastqc.html](https://hpc.ilri.cgiar.org/~gkibet/AMR-Genomic-Surveillance/SRR25008769_2_fastqc.html)  
 
 ### Quality Trimming fastq files with fastp and Trims adapter sequences
 
@@ -174,6 +176,7 @@ fastp \
     --length_required 20 \
     2>&1 | tee ./results/illumina/ecoli/fastp/SRR25008769.fastp.log
 ```
+Takes less than 1 minute
 
  - `fastp` also generates a report in `HTML` format. Let us download it and explore. First copy it to home (`~/`)
 
@@ -186,6 +189,8 @@ cp ./results/illumina/ecoli/fastp/SRR25008769.fastp.html ~/
 ```bash
 rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR25008769.fastp.html ~/
 ```
+ - Examine the report.
+ - Links available online: [SRR25008769.fastp.html](https://hpc.ilri.cgiar.org/~gkibet/AMR-Genomic-Surveillance/SRR25008769.fastp.html)
 
 ### De novo assembly pipeline for Illumina paired reads
 Assemble bacterial isolate genomes from Illumina paired-end reads

@@ -23,6 +23,7 @@ The first *E. coli* genome **(strain K-12 derivative MG1655)** was published in 
 - **Contains:** ~3,600 to 6,000 genes
 - **Only 20% of genes are shared among all strains**
 - **Shigella genus is genetically related to *E. coli***  
+- **GC Content:** ~50%
 
 Based on **Escherichia coli Reference Collection (ECOR) strains**, *E. coli* is divided into **five phylogroups**:
 - **A**
