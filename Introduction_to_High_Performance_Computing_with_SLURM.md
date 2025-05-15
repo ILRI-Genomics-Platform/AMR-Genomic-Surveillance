@@ -309,7 +309,7 @@ Now let us practice some scripting. In this case we will create a script that wi
 #SBATCH --job-name=bwa_align
 #SBATCH --output=bwa_align_%j.log
 #SBATCH --time=04:00:00
-#SBATCH --cpus-per-task=8
+#SBATCH --ntasks=2
 #SBATCH --mem=16G
 
 # Load modules
@@ -336,8 +336,13 @@ bwa index $REFERENCE
 
 # Run alignment
 echo "Starting alignment for $SAMPLE_ID"
-bwa mem -t $SLURM_CPUS_PER_TASK $REFERENCE $READ1 $READ2 | \
-    samtools sort -@ $SLURM_CPUS_PER_TASK -o $OUTPUT_DIR/${SAMPLE_ID}.bam -
+bwa mem -t $SLURM_NTASKS \
+	$REFERENCE \
+	$READ1 \
+	$READ2 > $OUTPUT_DIR/${SAMPLE_ID}.sam
+
+# Sort the SAM file and output a BAM file
+samtools sort -@ $SLURM_NTASKS -o $OUTPUT_DIR/${SAMPLE_ID}.bam  $OUTPUT_DIR/${SAMPLE_ID}.sam
 
 # Index BAM file
 samtools index $OUTPUT_DIR/${SAMPLE_ID}.bam
