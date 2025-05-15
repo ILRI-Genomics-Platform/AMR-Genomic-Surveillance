@@ -1,23 +1,81 @@
 
-# *E. coli* AMR analysis workflow using Illumina data
+# Bioinformatics Analysis for Antimicrobial Resistance Genomic Surveillance: Illumina data; *Escherichia coli*
 ---  
 
 ###### **_Trainers_**: [John Juma](https://github.com/ajodeh-juma), [Kennedy Mwangi](https://github.com/wanjauk), [Ouso Daniel](https://github.com/ousodaniel) & [Gilbert Kibet](https://github.com/kibet-gilbert)
 
 ---
 
-# Set up directories
-Before starting the analysis, ensure that you are logged into the HPC, create an interactive session on the assigned compute node, and change directory to the project folder which is `ACDC_AMR2025`.
+## Introduction  
+
+Escherichia coli (*E. coli*) is a **gram-negative, facultative anaerobic, rod-shaped, coliform bacterium**. It is **mostly harmless** and can be found in various environments such as **soil, water, vegetables, undercooked meats, and milk**.  
+
+In humans, *E. coli* is a **common component of the gut microbiota**, aiding in the **synthesis of vitamins**. However, some strains are **pathogenic**, particularly in **infants, the elderly, and immunocompromised individuals**, leading to **intestinal and extraintestinal diseases** such as:  
+- **Urinary tract infections (UTI)**
+- **Pneumonia**
+- **Bacteremia**
+- **Peritonitis**
+- **Nosocomial infections**
+
+Additionally, *E. coli* has demonstrated **resistance to beta-lactamase antibiotics** (e.g., **cephalosporins, monobactams**) and **carbapenems** (e.g., **imipenem, ertapenem, meropenem**).
+
+You can read more about it's genome structure, diversity, strains (phylogroups, pathogenicity and serotypes) here: [Introduction to *E. coli*](Intro_Escherichia_coli.md)
+
+---
+
+## Scope of the Tutorial
+
+By now we have done whole-genome assembly of *K. pneumoniae* based on long read ONT data. Now we will explore the alternative of using short read Illumina data. For this we will focus on *E. coli*. We will explore the tools and steps used in such analysis and ultimately conduct AMR analysis.
+
+
+## Setting up the Bioinformatics analysis environment
+
+### Set up directories  
+
+ - Before starting the analysis, ensure that you are logged into the HPC, create an interactive session on the assigned compute node, and change directory to the project folder which is `ACDC_AMR2025`.  
+ - First log in to the HPC.   
 
 ```
+ssh <user_name>@hpc.ilri.cgiar.org
+```
+ - Now let us secure a four of CPUs in one of the HPC nodes.  
+
+If your username (`user**`) ends with an ***Odd Number*** (1,3,5,7,9) use `compute05` and if it ends with n ***even number*** (2,4,6,8,0) use `compute06`.   
+>Compute05  
+```
+interactive -w compute05 -c 2 -J amr-surveillance -p batch
+```
+>Compute06  
+```
+interactive -w compute06 -c 2 -J amr-surveillance -p batch
+```
+ - Setting up the project directory structure.  
+
+We will be conducting our a anlysis from a directory in the `scratch` space of the HPC. It is a temporary storage area designed for high-speed data access and short-term file storage. It is cleaned continually (say every night) of files older than *X* time (90 days).
+
+ - Ensure the course directory is created and change into it:
+
+```bash
+mkdir -p /var/scratch/$USER/ACDC_AMR2025
+cd /var/scratch/$USER/ACDC_AMR2025
+```
+
+ - Within our project directory let us create a structured project directories:
+
+```bash
 mkdir -p \
 results/illumina/ecoli/{fastqc,fastp,fastq-scan,shovill,prokka,resfinder,amrfinder,mlst,tmp/{shovill,prokka,resfinder,amrfinder}}
-
-ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* .
 ```
 
+ - Then let us link some data.  
+ 
+Our analysis data is in the path `/var/scratch/global/jjuma/ACDC_AMR2025/`. We will create a symbolic link of the folders with data to current directory.
 
-# Load modules
+```bash
+ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dps]* .
+```
+
+### Load modules
 
 ```
 module load fastqc/0.11.9
@@ -30,8 +88,47 @@ module load mlst/2.23.0
 module load amrfinder/4.0.22
 ```
 
-# Quality control
+## Bioinformatics Analysis
+
+- If by any chance you wish to explore other `E. coli` datasets from SRA or ENA:
+
+<details>
+    <summary>
+        Click to toggle contents of 
+        <b style='color: blue'> Downloading data from SRA or ENA
+        </b>
+    </summary>
+    You can access public *E. coli* data directly from SRA or ENA as follows:
+
+### Download data from NCBI/ENA:  
+### Option 1: SRA
+ - Go to SRA (https://www.ncbi.nlm.nih.gov/sra)  
+ - search: `Escherichia coli 0157`  
+ - checkboxes to check in SRA:  
+`   - Type`: `genome`;  
+    - `Library Layout`: `paired`;
+    - `Platform`: `Illumina`;
+    - `File Type`: `fastq` 
+    - Based on the description, identify a good dataset e.g there is one that is described as "Sequencing of E. coli resistant to 3rd generation cephalosporins isolated from blood culture"; SRA accession: `SRR32302053`. Click on it.
+
+Note: With SRA, first download SRA general format using `wget`, then convert SRA format to FASTQ using `fastq-dump`
+
+### Option 2: ENA
+ - Download the fastq.gz directly from  the European Nucleotide Archive (ENA) - which mirrors many datasets in NCBI's SRA. Search the accession identified from SRA above in ENA site: https://www.ebi.ac.uk/ena/browser/home
+
 ```
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR323/053/SRR32302053/SRR32302053_1.fastq.gz ./
+wget ftp://ftp.sra.ebi.ac.uk/vol1/fastq/SRR323/053/SRR32302053/SRR32302053_2.fastq.gz ./
+```
+<details>
+
+
+### Assessing Read Quality using fastqc before quality trimming  
+
+The **raw `FASTQ`** files have sequences as generated by the sequencer. They include **poor quality reads**, **adapters**, **PhiX** and some reads may be **duplicates**. We need to check the quality of these suquences and clean up if we need to.  
+We will use our first module - **`FASTQC`**, a bioinformatics software used to analyse quality of raw FASTQ format reads and generate visual plots. The report generated by this step will have information on **Number of reads**,**Sequence Quality**, **Sequence length**, **GC content**, **Adapter content**, **duplication rate** and others. Run the command below to execute fastqc on our reads:
+
+```bash
 fastqc \
     -o ./results/illumina/ecoli/fastqc \
     --noextract \
@@ -41,7 +138,24 @@ fastqc \
     ./data/ecoli/illumina/SRR25008769_2.fastq.gz
 ```
 
+ - Now download the results of the fastqc command to your local laptop for evaluation. The results are in a `HTML` file.  
+ - First copy to `~/`(home).
+
+```bash
+cp ./results/illumina/ecoli/fastqc/*html ~/
 ```
+ - Now copy the report to a directory on **`local pc`**
+
+```bash
+rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR25008769*.html ~/
+```
+ - Open the HTML file and explore.
+
+### Quality Trimming fastq files with fastp and Trims adapter sequences
+
+After assessing the quality, we will proceed and do some Quality Control (QC). With **`fastp`** module we will trim reads with qualities less than 20 phred score, remove adapters, remove duplicates and remove PhiX if any.
+
+```bash
 fastp \
     --in1 ./data/ecoli/illumina/SRR25008769_1.fastq.gz \
     --in2 ./data/ecoli/illumina/SRR25008769_2.fastq.gz \
@@ -61,7 +175,19 @@ fastp \
     2>&1 | tee ./results/illumina/ecoli/fastp/SRR25008769.fastp.log
 ```
 
-# De novo assembly pipeline for Illumina paired reads
+ - `fastp` also generates a report in `HTML` format. Let us download it and explore. First copy it to home (`~/`)
+
+```bash
+cp ./results/illumina/ecoli/fastp/SRR25008769.fastp.html ~/
+```
+
+ - Then download:
+
+```bash
+rsync -avP --partial <USERXX>@hpc.ilri.cgiar.org:~/SRR25008769.fastp.html ~/
+```
+
+### De novo assembly pipeline for Illumina paired reads
 Assemble bacterial isolate genomes from Illumina paired-end reads
 
 Shovill is a pipeline which uses SPAdes at its core, but alters the steps before
@@ -76,7 +202,7 @@ It will NOT work on metagenomes or larger genomes.
 Please use Megahit directly instead.
 
 
-# Main steps
+#### Main steps
 
 1. Estimate genome size and read length from reads (unless --gsize provided) - mash
 2. Reduce FASTQ files to a sensible depth (default --depth 100) - seqtk
@@ -87,7 +213,6 @@ Please use Megahit directly instead.
 7. Correct minor assembly errors by mapping reads back to contigs (bwa-mem + pilon)
 8. Remove contigs that are too short, too low coverage, or pure homopolymers
 9. Produce final FASTA with nicer names and parseable annotations
-
 
 
 ```
@@ -117,7 +242,7 @@ shovill \
 mv ./results/illumina/ecoli/shovill/SRR25008769/contigs.fa ./results/illumina/ecoli/shovill/SRR25008769/SRR25008769.fa
 ```
 
-# Assembly evaluation
+### Assembly evaluation
 
 ```
 stats.sh in=./results/illumina/ecoli/shovill/SRR25008769/SRR25008769.fa
@@ -129,7 +254,7 @@ should be a length and L50 should be a count. The results table below shows the
 corrected values based on stats.sh outputs.
 
 
-# Annotation
+### Annotation
 ```
 export TMPDIR=./results/illumina/ecoli/tmp/prokka/
 ```
@@ -148,7 +273,7 @@ prokka \
     ./results/illumina/ecoli/shovill/SRR25008769/SRR25008769.fa
 ```
 
-# AMR genes detection using ResFinder
+### AMR genes detection using ResFinder
 
 ```
 python -m resfinder \
@@ -165,7 +290,7 @@ python -m resfinder \
     --point
 ```
 
-# Full AMRFinderPlus search combining results
+### Full AMRFinderPlus search combining results
 
 Identify acquired antimicrobial resistance genes in bacterial protein and/or assembled nucleotide sequences as well as known resistance-associated point mutations for several taxa. With AMRFinderPlus we added select members of additional classes of genes such as virulence factors, biocide, heat, acid, and metal resistance genes.
 
@@ -202,7 +327,7 @@ amrfinder \
     --name SRR25008769 > ./results/illumina/ecoli/amrfinder/SRR25008769.tsv
 ```
 
-# Multilocus sequence typing
+### Multilocus sequence typing
 
 ```
 MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
