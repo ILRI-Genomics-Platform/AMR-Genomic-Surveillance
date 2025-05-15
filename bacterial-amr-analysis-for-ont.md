@@ -576,7 +576,7 @@ Here we will use 11 Klebs isolates collected in Kenya between January 14 and Jan
 https://pathogen.watch/genomes/all?country=ke&genusId=570&maxDate=2019-01-31T20%3A59%3A59.999Z&minDate=2018-12-31T21%3A00%3A00.000Z&sort=date&speciesId=573
 
 ```
-mkdir -p ./data/klebs/pathogenwatch/assemblies-to-test
+mkdir -p ./pathogenwatch/klebs/assemblies-to-test
 ```
 
 
@@ -585,15 +585,15 @@ mkdir -p ./data/klebs/pathogenwatch/assemblies-to-test
 ```
 rsync -avP --partial \
     ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
-    ./data/klebs/pathogenwatch/assemblies-to-test/SRR28370682.fasta
+    ./pathogenwatch/klebs/assemblies-to-test/SRR28370682.fasta
 ```
 
 2. add reference genome assembly to the directory for global assemblies
 
 ```
 rsync -avP --partial \
-    ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.fna \
-    ./data/klebs/pathogenwatch/assemblies-to-test/Reference.fasta
+    ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna \
+    ./pathogenwatch/klebs/assemblies-to-test/Reference.fasta
 ```
 
 3. select assemblies to test and add to the directory for global assemblies
@@ -603,14 +603,14 @@ rsync -avP --partial \
 ```
 rsync -avP --partial \
     ./data/klebs/pathogenwatch/genomes/*.fasta \
-    ./data/klebs/pathogenwatch/assemblies-to-test/
+    ./pathogenwatch/klebs/assemblies-to-test/
 ```
 
 
 # Batch AMR detection 
 
 ```
-for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
+for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
     sample=$(basename $fn)
     sample="${sample%.*}"
     echo -e "-------------------------------\n"
@@ -641,14 +641,8 @@ Multi-Locus Sequence Typing (MLST) is an essential tool in analyzing multiple an
 
 MLST is a molecular typing method that characterizes bacterial isolates by sequencing internal fragments (typically 450-500 bp) of multiple housekeeping genes (usually 7-8 genes). Each unique sequence for a gene is assigned an allele number, and the combination of allele numbers defines the sequence type (ST) of an isolate.
 
-Create a database directory and extract a pre-downloaded MLST databse into it:
-
 ```
-mkdir -p ./databases/mlst/database
-```
-
-```
-MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
+MLST_DB=$(find /export/apps/mlst/2.23.0/db -name "mlst.fa" | sed 's=blast/mlst.fa==')
 ```
 
 ```
@@ -657,7 +651,7 @@ mlst \
     --blastdb $MLST_DB/blast/mlst.fa \
     --datadir $MLST_DB/pubmlst \
     --scheme klebsiella \
-    --minid 95 \
+    --minid 100 \
     --mincov 10 \
     --minscore 50 \
     ./results/ont/klebsiella/prokka/SRR28370682.fna \
@@ -668,7 +662,7 @@ mlst \
 **Batch MLST**
 
 ```
-for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
+for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
     sample=$(basename $fn)
     sample="${sample%.*}"
     echo -e "-------------------------------\n"
@@ -726,7 +720,7 @@ A number of visualisation tools are available, examples:
 - [**goeBURST**](https://www.phyloviz.net/goeburst/#Software): a classic tool for visualizing MLST data that focuses on identifying clonal complexes
 
 ##### MLST Interpretation Limitations
-When analyzing MLST results, be aware of ceratain limitations:
+When analyzing MLST results, be aware of certain limitations:
 
 - Limited Resolution: MLST may not distinguish between closely related isolates
 - Temporal Dynamics: Does not capture all evolutionary changes over time
@@ -786,7 +780,7 @@ Contig-based variant calling with `snippy`:
 
 
 ```
-for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
+for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
     sample=$(basename $fn)
     sample="${sample%.*}"
     echo -e "-------------------------------\n"
@@ -798,11 +792,11 @@ for fn in ./data/klebs/pathogenwatch/assemblies-to-test/*.fasta; do
         --prefix $sample \
         --mapqual 60 \
         --basequal 13 \
-        --cpus 4 \
-        --ram 4 \
+        --cpus 2 \
+        --ram 8 \
         --tmpdir $TMPDIR \
         --outdir ./results/ont/klebsiella/snippy/$sample \
-        --reference ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff \
+        --reference ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.gbff \
         --ctgs $fn
     echo -e "\n-------------------------------\n"
 done
@@ -841,7 +835,45 @@ File | Description
 
 ##### Visualising the Snippy Variants
 
-Download the reference file and it's index
+Copy the following files from the output directory to your `home` directory on
+`hpc`:
+
+- Reference genome file `ref.fa` and Reference genome index file `ref.fa.fai`
+
+```
+rsync \
+    -avP \
+    --partial \
+    ./results/ont/klebsiella/snippy/SRR28370682/reference/ref.fa \
+    ./results/ont/klebsiella/snippy/SRR28370682/reference/ref.fa.fai \
+    ~/
+```
+
+- BAM file `SRR28370682.bam` and Indexed BAM file `SRR28370682.bam.bai`
+
+```
+rsync \
+    -avP \
+    --partial \
+    ./results/ont/klebsiella/snippy/SRR28370682/SRR28370682.bam* \
+    ~/
+```
+
+
+> Note. On a new terminal session outside the `hpc`. Replace **jjuma** with your
+> `user` name
+
+Copy the files from your `home` directory on `hpc` to your `home` directory on
+`local` machine:
+
+```
+rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/ref.fa* ~/
+```
+
+```
+rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682.bam* ~/
+```
+
 
 1. Go to https://igv.org/app/
 2. Load the Genome `ref.fa` in the `Genome` tab
@@ -881,7 +913,7 @@ It is derived from the XLSX file from https://gph.niid.go.jp/tgs-tb/
 snippy-core \
     --maxhap 100 \
     --mask-char N \
-    --ref ./data/klebs/reference/GCF_000016305.1_ASM1630v1_genomic.gbff \
+    --ref ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.gbff \
     --prefix ./results/ont/klebsiella/snippy-core/core-snp \
     ./results/ont/klebsiella/snippy/*
 ```
@@ -920,7 +952,7 @@ Predicting recombination regions:
 
 ```
 run_gubbins.py \
-    --threads 8 \
+    --threads 2 \
     --prefix ./results/ont/klebsiella/gubbins/core-snp \
     --iterations 5 \
     --min-snps 3 \
