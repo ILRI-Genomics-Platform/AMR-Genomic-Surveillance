@@ -160,6 +160,7 @@ Please find here linked the tutorials for Introduction to Linux and for respecti
 2. Environment Management Systems
    - [Environment Manament with Conda](Introduction_environment_managament_systems.md)
    - [HPC Module System](Intro_Module_System.md)
+   - [Running Jobs in the HPC using SLURM](Introduction_to_High_Performance_Computing_with_SLURM.md)
 3. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
 4. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
 5. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
