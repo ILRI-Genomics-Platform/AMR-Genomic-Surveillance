@@ -265,7 +265,7 @@ echo "Node list: $SLURM_JOB_NODELIST"
 ```
 
 ---
-### Bioinformatics Workflows with SLURM
+### Exercise: Bioinformatics Workflows with SLURM
 ---
 
 #### Running Bioinformatics Tools with SLURM
@@ -286,8 +286,18 @@ Now let us practice some scripting. In this case we will create a script that wi
 **Reference genome:** `test_data/reference/genome.fa`  
 **Input Reads:** `test_data/fastq/sample1_R1.fastq.gz` and `test_data/fastq/sample1_R2.fastq.gz`  
 **Tools:** `samtools/1.17` and `bwa/0.7.19`  
+**Script:** Give an appropriate name for your script. e.g `sequence_mapping.sbatch`
 
-**Example: DNA Sequence Alignment**
+**Example: Sequence Reads Alignment**
+
+
+<details>
+    <summary>
+        Click to toggle contents of 
+        <b style='color: blue'> An Example
+        </b>
+    </summary>
+    When put together it should look something like:
 
 ```bash
 #!/bin/bash
@@ -334,3 +344,4 @@ elapsed_time=$((end_time - start_time))
 echo "Job completed in $elapsed_time seconds"
 ```
 
+</details>
