@@ -250,7 +250,8 @@ On the terminal of your local machine transfer the QC report file as below.
 
 ```
 rsync -avzP \
-    <hpc_user_name>@hpc.ilri.cgiar.org:<path_to_files_in_hpc> <local_path>
+    jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html \
+    ~/
 ```
 
 For example:
