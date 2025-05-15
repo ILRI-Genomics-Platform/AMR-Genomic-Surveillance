@@ -54,7 +54,7 @@ echo -e dragonflye \
     --minquality 0 \
     --racon 1 \
     --medaka 0 \
-    --namefmt "SRR28370682_%05d" \
+    --namefmt "${sample}_%05d" \
     --cpus 4 \
     --ram 7 \
     --noreorient
