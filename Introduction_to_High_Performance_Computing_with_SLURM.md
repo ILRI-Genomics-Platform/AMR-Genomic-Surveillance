@@ -95,7 +95,7 @@ interactive -w compute06 -c 2 -J amr-surveillance -p batch
 ```
  - Setting up the project directory structure.  
 
-We will be conducting our a anlysis from a directory in the `scratch` space of the HPC. It is a temporary storage area designed for high-speed data access and short-term file storage. It is cleaned continually (say every night) of files older than X time (90 days).
+We will be conducting our a anlysis from a directory in the `scratch` space of the HPC. It is a temporary storage area designed for high-speed data access and short-term file storage. It is cleaned continually (say every night) of files older than *X* time (90 days).
 ```
 mkdir -p /var/scratch/$USER
 cd /var/scratch/$USER
@@ -106,30 +106,34 @@ cd /var/scratch/$USER
 Our test data is in the path `/var/scratch/global/gkibet/ACDC_AMR2025/data/test_data`. We will copy the folder to current directory.
 
 ```bash
-pwd # Ensure you are in /var/scratch/$USER/
-
+# Check and Ensure you are in /var/scratch/$USER/
+pwd
+```
+```
 # Copy data
 cp -rf /var/scratch/global/gkibet/ACDC_AMR2025/data/test_data/ ./
-
+```
+```
 # Check that data is copied
 ls test_data
-
+```
+```
 # List the contents of the directory to make sure all files are there:  
 ls test_data/*/
 ```
 
 **Basic SLURM Script Structure**
 
-To submit a job to the `HPC` via `slurm` job scheduler you may use a script. The script will list the parameters that slurm needd to process that job and the commands it will execute. This script is reffered to as an **sbatch script**. It may be given a suffix like `.sbatch` but is ideally a bash executable script.
+To submit a job to the `HPC` via `slurm` job scheduler you may use a script. The script will list the parameters that slurm needs to process that job and the commands it will execute. This script is reffered to as an **sbatch script**. It may be given a suffix like `.sbatch` but is ideally a bash executable script.
 
 We can break down an sbatch script into the following segments: 
 
- - shebang  
+ - The **shebang**  
 
 ```bash
 #!/bin/bash
 ```
- - sbatch parameters - set by starting a line with `#SBATCH` followed by the option and argument: `#SBATCH --OPTION=ARGUMENT`.
+ - **sbatch parameters** - set by starting a line with `#SBATCH` followed by the option and argument: `#SBATCH --OPTION=ARGUMENT`.
 
 ```bash
 #SBATCH --job-name=myanalysis      # Job name
@@ -143,14 +147,14 @@ We can break down an sbatch script into the following segments:
 #SBATCH --partition=normal         # Partition/queue name
 ```
 
- - Loading specific software modules and versions
+ - **Loading specific software modules and versions**
 
 ```bash
 # Load any required modules
 module load samtools/1.17 bwa/0.7.19
 ```
 
- - Preliminary bash commands - helps report on errors or basic settings as set in sbatch segment above.
+ - **Preliminary bash commands** - helps report on errors or basic settings as set in sbatch segment above.
 
 ```bash
 # Run commands
@@ -159,7 +163,7 @@ echo "Running on host: $(hostname)"
 echo "Working directory: $(pwd)"
 ```
 
- - Actual bioinformatics analysis commands
+ - Actual **bioinformatics analysis pipeline**
 
 ```bash
 # Use bwa to index a reference genome
@@ -174,7 +178,8 @@ bwa mem -t $SLURM_CPUS_PER_TASK \
 samtools sort -@ $SLURM_CPUS_PER_TASK -o output.bam output.sam
 samtools index output.bam
 ```
- - Post analysis bash commands e.g reporting results or copying it to more permanent storage
+ - **Post analysis bash commands** - reports results, run time or copys results to more permanent storage  
+
 ```bash
 echo "Job finished at $(date)"
 ```
@@ -345,3 +350,20 @@ echo "Job completed in $elapsed_time seconds"
 ```
 
 </details>
+
+##### Execute the script.  
+
+To execute the script run the command below: 
+
+```bash
+sbatch -w <computenode> </path/to/name_of_sbatch_script>
+```
+This will start a job in the HPC and reports to you a job id as it launches the job.
+
+If you notice any errors or wish to cancel the job at any moment run the command below in the HPC:
+
+```bash
+scancel <JOBID>
+```
+**Now you are able to launch jobs in the HPC using `slurm`**
+Hurray!!!
