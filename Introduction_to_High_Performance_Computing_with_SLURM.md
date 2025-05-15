@@ -372,5 +372,8 @@ If you notice any errors or wish to cancel the job at any moment run the command
 ```bash
 scancel <JOBID>
 ```
-**Now you are able to launch jobs in the HPC using `slurm`**
+
+You can access some sbatch scripts here: [scripts](/scripts/)  
+
+**Now you are able to launch jobs in the HPC using `slurm`**  
 Hurray!!!
