@@ -185,6 +185,7 @@ bwa mem -t $SLURM_CPUS_PER_TASK \
 samtools sort -@ $SLURM_CPUS_PER_TASK -o output.bam output.sam
 samtools index output.bam
 ```
+
  6. **Post analysis bash commands** - reports results, run time or copys results to more permanent storage  
 
 ```bash
@@ -233,10 +234,11 @@ samtools index output.bam
 
 echo "Job finished at $(date)"
 ```
-
 </details>
+
 ---
----
+ - **Other SLURM Directives**
+
 <details>
     <summary>
         Click to toggle contents of 
@@ -264,8 +266,8 @@ echo "Job finished at $(date)"
 | `--dependency` | Job dependencies | `--dependency=afterok:12345` |
 
 </details>
----
 
+---
 ### **Environment Variables**
 
 SLURM sets environment variables that can be used in your script:
@@ -365,8 +367,8 @@ echo "Job completed in $elapsed_time seconds"
 ```
 
 </details>
----
 
+---
 ### Execute the script.  
 
 To execute the script run the command below: 
