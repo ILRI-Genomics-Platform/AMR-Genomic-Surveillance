@@ -163,7 +163,7 @@ Please find here linked the tutorials for Introduction to Linux and for respecti
    - [Running Jobs in the HPC using SLURM](Introduction_to_High_Performance_Computing_with_SLURM.md)
 3. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
    - [Introduction to *E. coli*](Intro_Escherichia_coli.md)
-   - [*E. coli* Bacterial Whole Genome Assembly and AMR analysis]((bacterial-amr-analysis-for-illumina.md)
+   - [*E. coli* Bacterial Whole Genome Assembly and AMR analysis](bacterial-amr-analysis-for-illumina.md)
 4. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
    - [Introduction to *K. pneumoniae*](Intro_Klebsiella_pneumoniae.md)
    - [*K. pneumoniae* Bacterial Whole Genome Assembly and AMR analysis](bacterial-amr-analysis-for-ont.md)
