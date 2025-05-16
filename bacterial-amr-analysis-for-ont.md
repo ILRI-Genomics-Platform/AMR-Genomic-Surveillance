@@ -246,7 +246,7 @@ On the terminal of your local machine transfer the QC report file as below.
 **Copy the NanoPlot report to your `home` directory on `local pc`**
 
 ```
-rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
+rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
 ```
 
 For example:
@@ -302,12 +302,6 @@ NanoPlot \
 
 Let's copy the second round of quality assessment results to our local computers, as before.
 > Note: Ensure you change the `jjuma` to your `user` name allocated on the `hpc`
-
-```
-rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-final_NanoPlot-report.html ~/
-```
-
-For example:
 
 ```
 rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-final_NanoPlot-report.html ~/
@@ -979,7 +973,8 @@ Convert Gubbins GFF to BED format
 
 ```
 python gubbins_to_bed.py \
-    ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \ > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
+    ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \ 
+    > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
 ```
 
 
