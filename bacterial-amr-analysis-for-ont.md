@@ -143,7 +143,7 @@ cd /var/scratch/$USER/ACDC_AMR2025
 
 ```
 mkdir -p \
-results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
+results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,resfinder,iqtree,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
 ```
 
 3. *Create symblic links to the required resources
@@ -187,7 +187,6 @@ module load resfinder/4.6.0
 module load amrfinder/4.0.22
 module load mlst/2.23.0
 module load seqkit/0.11.0
-module load R/4.2
 ```
 
 
@@ -974,27 +973,30 @@ mask_gubbins_aln.py \
 ```
 
 
-<!-- We can then convert the Gubbins `.gff` masking feature output into a `BED`
+We can then convert the Gubbins `.gff` masking feature output into a `BED`
 format file usable with `snippy` as argument to the `--mask` option.
 
 Convert Gubbins GFF to BED format
 
 ```
-python gubbins_to_bed.py \
-    ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \ 
-    > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
-``` -->
+gff2bed < ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
+```
 
-<!-- <details>
+<details>
     <summary>Click to toggle a <b style='color:blue'>Challenge</b>
     </summary>
 
 Now, can you use the resultant `BED` file to re-run Snippy all the way to building a phylogenrtic tree. How do the trees compare with(out) masking of recombinant regions?
-</details> -->
+</details>
 
 #### Phylogenetic Analysis of Gubbins Output
 We can use another phylogenetic tool `iqtree` to visualise the relationships
 between the recombination-masked isolates from Gubbins.
+
+```
+module purge
+module load iqtree/1.6.12
+```
 
 ```
 iqtree \
@@ -1011,6 +1013,11 @@ iqtree \
 > **Note:** It is important to use phylogenetic algorithms that take into account SNP alignments. These algorithms usually include some form of ascertainment bias correction that corrects for the 'missing' nucleotides in the alignment that were masked/removed because they did not show polymorphism.
 
 # Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
+
+```
+module purge
+module load R/4.2
+```
 
 ```
 Rscript ./scripts/visualizeAMR.R \
