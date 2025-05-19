@@ -974,8 +974,8 @@ mask_gubbins_aln.py \
 ```
 
 
-We can then convert the Gubbins `.gff` masking feature output into a `BED`
-format file usable with `snippy` as arguement to the `--mask` option.
+<!-- We can then convert the Gubbins `.gff` masking feature output into a `BED`
+format file usable with `snippy` as argument to the `--mask` option.
 
 Convert Gubbins GFF to BED format
 
@@ -983,15 +983,14 @@ Convert Gubbins GFF to BED format
 python gubbins_to_bed.py \
     ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \ 
     > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
-```
+``` -->
 
-
-<details>
+<!-- <details>
     <summary>Click to toggle a <b style='color:blue'>Challenge</b>
     </summary>
 
 Now, can you use the resultant `BED` file to re-run Snippy all the way to building a phylogenrtic tree. How do the trees compare with(out) masking of recombinant regions?
-</details>
+</details> -->
 
 #### Phylogenetic Analysis of Gubbins Output
 We can use another phylogenetic tool `iqtree` to visualise the relationships
