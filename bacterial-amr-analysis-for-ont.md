@@ -972,14 +972,12 @@ mask_gubbins_aln.py \
 
 
 We can then convert the Gubbins `.gff` masking feature output into a `BED`
-format file usable with `snippy` as arguement to the `--mask` option.
+format file usable with `snippy` as argument to the `--mask` option.
 
-Convert Gubbins GFF to BED format
+Convert Gubbins GFF to BED format: `module load bedops`
 
 ```
-python gubbins_to_bed.py \
-    ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \ 
-    > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
+gff2bed < ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
 ```
 
 
