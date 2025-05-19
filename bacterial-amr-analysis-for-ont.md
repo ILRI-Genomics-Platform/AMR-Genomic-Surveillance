@@ -460,38 +460,6 @@ Prokka generates multiple output files in standard bioinformatics formats:
 `.tbl` | Feature Table | Feature table for GenBank submission
 `.txt` | Text | Statistics of the annotation run
 
-
-
-### Step 6: AMR genes detection
-
-
-#### AMR genes detection using ResFinder
-
-Now that we have an annotated genome, we can query it for antimicrobial
-resistance. There a variety of tools for the task. We will use commonly used
-tools whose AMR databases are regularly/frequently.
-
-[**ResFinder**](https://genepi.dk/resfinder) identifies acquired genes and/or finds chromosomal mutations mediating antimicrobial resistance in total or partial DNA sequence of bacteria.
-
-```
-python -m resfinder \
-    -ifa ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
-    -o ./results/ont/klebsiella/resfinder/SRR28370682 \
-    -s klebsiella \
-    --min_cov 0.6 \
-    --threshold 0.9 \
-    --min_cov_point 0.6 \
-    --threshold_point 0.9 \
-    --ignore_stop_codons \
-    --ignore_indels \
-    --acquired \
-    --point
-```
-
-
-#### AMR Detection using CARD/RGI web resource
-[**CARD/RGI**](https://card.mcmaster.ca/analyze/rgi) can be used to predict resistomes from protein or nucleotide data based on homology and SNP models.
-
 # Add additional genomes from pathogenwatch
 
 Here we will use 11 Klebs isolates collected in Kenya between January 14 and January 31, 2019
@@ -527,6 +495,37 @@ rsync -avP --partial \
     ./data/klebs/pathogenwatch/genomes/*.fasta \
     ./pathogenwatch/klebs/assemblies-to-test/
 ```
+
+
+### Step 6: AMR genes detection
+
+
+#### AMR genes detection using ResFinder
+
+Now that we have an annotated genome, we can query it for antimicrobial
+resistance. There a variety of tools for the task. We will use commonly used
+tools whose AMR databases are regularly/frequently.
+
+[**ResFinder**](https://genepi.dk/resfinder) identifies acquired genes and/or finds chromosomal mutations mediating antimicrobial resistance in total or partial DNA sequence of bacteria.
+
+```
+python -m resfinder \
+    -ifa ./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+    -o ./results/ont/klebsiella/resfinder/SRR28370682 \
+    -s klebsiella \
+    --min_cov 0.6 \
+    --threshold 0.9 \
+    --min_cov_point 0.6 \
+    --threshold_point 0.9 \
+    --ignore_stop_codons \
+    --ignore_indels \
+    --acquired \
+    --point
+```
+
+
+#### AMR Detection using CARD/RGI web resource
+[**CARD/RGI**](https://card.mcmaster.ca/analyze/rgi) can be used to predict resistomes from protein or nucleotide data based on homology and SNP models.
 
 
 # Batch AMR detection 
