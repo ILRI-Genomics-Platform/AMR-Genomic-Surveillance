@@ -1007,7 +1007,7 @@ iqtree \
     -s ./results/ont/klebsiella/gubbins/core-snp.masked.aln \
     -nt 2 \
     -redo \
-    -pre ./results/ont/klebsiella/iqtree
+    -pre ./results/ont/klebsiella/iqtree/core-snp
 ```
 
 > **Note:** It is important to use phylogenetic algorithms that take into account SNP alignments. These algorithms usually include some form of ascertainment bias correction that corrects for the 'missing' nucleotides in the alignment that were masked/removed because they did not show polymorphism.
