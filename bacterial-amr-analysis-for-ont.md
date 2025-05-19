@@ -22,18 +22,20 @@
       - [Step 1: Data Quality Assessment](#step-1-data-quality-assessment)
       - [Step 2: Genome Assembly](#step-2-genome-assembly)
       - [Step 3: Genome Annotation](#step-3-genome-annotation)
-      - [Step 4: AMR Detection](#step-4-amr-detection)
-          - [Output Formart](#output-format)
-          - [AMR Dectection with ResFinder](#amr-detection-with-resfinder)
-          - [AMR Dectection with CARD/RGI](#amr-detection-with-card/rgi)
-      - [step 5: Pathogen Relatedness](#step-5-pathogen-relatedness)
+      - [Step 4: Pathogen Relatedness](#step-5-pathogen-relatedness)
           - [MLST](#mlst)
               - [MLST Output Format](#mlst-output-format)
               - [MLST Results Interpretation](#mlst-results-interpretation)
               - [Visualising MLST Results](#visualising-mlst-results)
-              - [MLST Interpretation Limitations](#mslt-interpretation-limitations)
-  - [Step 6: Variant Calling and Consensus Assemblies](#step-6-variant-calling-and-consensus-assemblies)
-      - [Fast Bacterial Variant Calling with Contigs](#fast-bacterial-variant-calling-with-contigs)
+              - [MLST Interpretation
+                Limitations](#mslt-interpretation-limitations)
+      - [Step 5: Genome Annotation](#step-4-amr-detection)
+      - [Step 6: AMR Detection](#step-4-amr-detection)
+          - [Output Formart](#output-format)
+          - [AMR Dectection with ResFinder](#amr-detection-with-resfinder)
+          - [AMR Dectection with CARD/RGI](#amr-detection-with-card/rgi)
+      - [Step 7: Variant Calling and Consensus Assemblies](#step-6-variant-calling-and-consensus-assemblies)
+       - [Fast Bacterial Variant Calling with Contigs](#fast-bacterial-variant-calling-with-contigs)
           - [Snippy Outputs](#snippy-outputs)
           - [Visualising Snippy Variants](#visualising-snippy-variants)
           - [Build Core and Whole Genome Alignments from Snippy Output](#build-core-and-whole-genome-alignments-from-snippy-output)
@@ -41,7 +43,7 @@
           - [Snippy Core Outputs](#snippy-core-outputs)
           - [Cleanup the Snippy SNP Alignment Intermediates](#cleanup-the-snippy-snp-alignment-intermediates)
           - [Compute Pairwise SNP Distances](#compute-pairwise-snp-distances)
-- [Step 7: Dealing with Recombination](#step-7-dealing-with-recombination)
+- [Step 8: Dealing with Recombination](#step-7-dealing-with-recombination)
     - [Phylogenetic Analysis of Gubbins Output](#phylogenetic-analysis-of-gubbins-output)
     
 
@@ -496,8 +498,121 @@ rsync -avP --partial \
     ./pathogenwatch/klebs/assemblies-to-test/
 ```
 
+### Step 6: Pathogen Typing
 
-### Step 6: AMR genes detection
+Understanding the differences and relationships within circulating pathogens is an important aspect of genomics epidemiology. Whole-genome comparison has better resolution for pathogen characterisation than fragments per genome equivalent (FPGE) or gene-based or multi-locus sequence typing (MLST). Distances between genomes can be compared based a reference or _de novo_; _k-mer_-composition-based and _core-genome_ assembly-based.
+
+#### MLST 
+
+Multi-Locus Sequence Typing (MLST) is an essential tool in analyzing multiple antimicrobial resistant (MAR) bacterial isolates. It provides a standardized approach to characterizing bacterial strains based on the sequences of multiple housekeeping genes. It focuses on bacterial population structure and evolutionary relationships.
+
+MLST is a molecular typing method that characterizes bacterial isolates by sequencing internal fragments (typically 450-500 bp) of multiple housekeeping genes (usually 7-8 genes). Each unique sequence for a gene is assigned an allele number, and the combination of allele numbers defines the sequence type (ST) of an isolate.
+
+```
+MLST_DB=$(find /export/apps/mlst/2.23.0/db -name "mlst.fa" | sed 's=blast/mlst.fa==')
+```
+
+```
+mlst \
+    --threads 2 \
+    --blastdb $MLST_DB/blast/mlst.fa \
+    --datadir $MLST_DB/pubmlst \
+    --scheme klebsiella \
+    --minid 100 \
+    --mincov 10 \
+    --minscore 50 \
+    ./results/ont/klebsiella/prokka/SRR28370682.fna \
+    > ./results/ont/klebsiella/mlst/SRR28370682.tsv
+```
+
+
+**Batch MLST**
+
+```
+for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
+    sample=$(basename $fn)
+    sample="${sample%.*}"
+    echo -e "-------------------------------\n"
+    echo -e "running mlst on: $sample - $fn"
+
+    mlst \
+        --threads 2 \
+        --blastdb $MLST_DB/blast/mlst.fa \
+        --datadir $MLST_DB/pubmlst \
+        --scheme klebsiella \
+        --minid 100 \
+        --mincov 10 \
+        --minscore 50 \
+        $fn \
+        > ./results/ont/klebsiella/mlst/${sample}.tsv
+done
+```
+
+
+##### MLST Output Format
+
+The standard output of MLST analysis is a tabular plain text file with the following columns.
+
+Column | Description
+--- | ---
+FILE | Input sequence name
+SCHEME | The specific bacterial species or genus
+ST | Sequence type number
+Allelic profile | Depends on how many gene are used in the scheme
+
+> **Note:** When reporting MLST results the scheme used for the profiling must be provided for accurate results interpretation.
+
+<details>
+  <summary>
+    Click to toggle <b style="color:blue">BIGSdb platform for assigning STs</b>
+  </summary>
+  <p>
+    <a href="https://bigsdb.pasteur.fr/klebsiella" target="_blank">BIGSdb</a> is curated by the Institut Pasteur.
+  </p>
+</details>
+
+##### MLST Result Interpretation
+The most important information of the results in the ST:
+- **Know STs:** which matches a database hit a number is assigned.
+- **Novel allele combinations:** may be represented as `?` or `novel` if no known database profile is matched
+- **Incomplete matches:** may be shown as `ST-like` or with an `*` (asterisk) if most but not all allele profiles match a known database ST
+- **Coverage, identity and depth:** are importance to consider in interpratation
+- Look out for **STs with specific characteristics**, eg., _K. pneumoniae_ ST258 is a major global clone carrying KPC carbapenemases
+- **Clonal complexes:** STs sharing alleles at most loci, usually sharing identical alleles at 5 or more loci; reported as `CC` followed by the number of the central/founding ST
+- MLST reuslts can indicate evolutionary relationships
+
+##### Visualising MLST Results
+A number of visualisation tools are available, examples:
+- [**GrapeTree**](https://achtman-lab.github.io/GrapeTree/MSTree_holder.html): creates hierarchical clustering of MLST data
+- [**goeBURST**](https://www.phyloviz.net/goeburst/#Software): a classic tool for visualizing MLST data that focuses on identifying clonal complexes
+
+##### MLST Interpretation Limitations
+When analyzing MLST results, be aware of certain limitations:
+
+- Limited Resolution: MLST may not distinguish between closely related isolates
+- Temporal Dynamics: Does not capture all evolutionary changes over time
+- Geographic Bias: Some STs may be overrepresented in databases due to sampling bias
+- Horizontal Gene Transfer: May complicate interpretation of evolutionary
+  relationships
+
+
+
+
+#### Merge MLST reports
+
+```
+cat \
+    ./results/ont/klebsiella/mlst/*.tsv > \
+    ./results/ont/klebsiella/mlst/klebs-mlst.txt
+```
+
+#### Assign sequence types using web resources
+
+BIGSdb platform curated by the Institute Pasteur
+(https://bigsdb.pasteur.fr/klebsiella)
+
+
+### Step 7: AMR genes detection
 
 
 #### AMR genes detection using ResFinder
@@ -630,118 +745,6 @@ HMM id | Identifier of HMM used for detection (if applicable)
 HMM description | Description of HMM (if applicable)
 
 
-### Step 7: Pathogen Typing
-
-Understanding the differences and relationships within circulating pathogens is an important aspect of genomics epidemiology. Whole-genome comparison has better resolution for pathogen characterisation than fragments per genome equivalent (FPGE) or gene-based or multi-locus sequence typing (MLST). Distances between genomes can be compared based a reference or _de novo_; _k-mer_-composition-based and _core-genome_ assembly-based.
-
-#### MLST 
-
-Multi-Locus Sequence Typing (MLST) is an essential tool in analyzing multiple antimicrobial resistant (MAR) bacterial isolates. It provides a standardized approach to characterizing bacterial strains based on the sequences of multiple housekeeping genes. It focuses on bacterial population structure and evolutionary relationships.
-
-MLST is a molecular typing method that characterizes bacterial isolates by sequencing internal fragments (typically 450-500 bp) of multiple housekeeping genes (usually 7-8 genes). Each unique sequence for a gene is assigned an allele number, and the combination of allele numbers defines the sequence type (ST) of an isolate.
-
-```
-MLST_DB=$(find /export/apps/mlst/2.23.0/db -name "mlst.fa" | sed 's=blast/mlst.fa==')
-```
-
-```
-mlst \
-    --threads 2 \
-    --blastdb $MLST_DB/blast/mlst.fa \
-    --datadir $MLST_DB/pubmlst \
-    --scheme klebsiella \
-    --minid 100 \
-    --mincov 10 \
-    --minscore 50 \
-    ./results/ont/klebsiella/prokka/SRR28370682.fna \
-    > ./results/ont/klebsiella/mlst/SRR28370682.tsv
-```
-
-
-**Batch MLST**
-
-```
-for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
-    sample=$(basename $fn)
-    sample="${sample%.*}"
-    echo -e "-------------------------------\n"
-    echo -e "running mlst on: $sample - $fn"
-
-    mlst \
-        --threads 2 \
-        --blastdb $MLST_DB/blast/mlst.fa \
-        --datadir $MLST_DB/pubmlst \
-        --scheme klebsiella \
-        --minid 100 \
-        --mincov 10 \
-        --minscore 50 \
-        $fn \
-        > ./results/ont/klebsiella/mlst/${sample}.tsv
-done
-```
-
-
-##### MLST Output Format
-
-The standard output of MLST analysis is a tabular plain text file with the following columns.
-
-Column | Description
---- | ---
-FILE | Input sequence name
-SCHEME | The specific bacterial species or genus
-ST | Sequence type number
-Allelic profile | Depends on how many gene are used in the scheme
-
-> **Note:** When reporting MLST results the scheme used for the profiling must be provided for accurate results interpretation.
-
-<details>
-  <summary>
-    Click to toggle <b style="color:blue">BIGSdb platform for assigning STs</b>
-  </summary>
-  <p>
-    <a href="https://bigsdb.pasteur.fr/klebsiella" target="_blank">BIGSdb</a> is curated by the Institut Pasteur.
-  </p>
-</details>
-
-##### MLST Result Interpretation
-The most important information of the results in the ST:
-- **Know STs:** which matches a database hit a number is assigned.
-- **Novel allele combinations:** may be represented as `?` or `novel` if no known database profile is matched
-- **Incomplete matches:** may be shown as `ST-like` or with an `*` (asterisk) if most but not all allele profiles match a known database ST
-- **Coverage, identity and depth:** are importance to consider in interpratation
-- Look out for **STs with specific characteristics**, eg., _K. pneumoniae_ ST258 is a major global clone carrying KPC carbapenemases
-- **Clonal complexes:** STs sharing alleles at most loci, usually sharing identical alleles at 5 or more loci; reported as `CC` followed by the number of the central/founding ST
-- MLST reuslts can indicate evolutionary relationships
-
-##### Visualising MLST Results
-A number of visualisation tools are available, examples:
-- [**GrapeTree**](https://achtman-lab.github.io/GrapeTree/MSTree_holder.html): creates hierarchical clustering of MLST data
-- [**goeBURST**](https://www.phyloviz.net/goeburst/#Software): a classic tool for visualizing MLST data that focuses on identifying clonal complexes
-
-##### MLST Interpretation Limitations
-When analyzing MLST results, be aware of certain limitations:
-
-- Limited Resolution: MLST may not distinguish between closely related isolates
-- Temporal Dynamics: Does not capture all evolutionary changes over time
-- Geographic Bias: Some STs may be overrepresented in databases due to sampling bias
-- Horizontal Gene Transfer: May complicate interpretation of evolutionary
-  relationships
-
-
-
-
-#### Merge MLST reports
-
-```
-cat \
-    ./results/ont/klebsiella/mlst/*.tsv > \
-    ./results/ont/klebsiella/mlst/klebs-mlst.txt
-```
-
-#### Assign sequence types using web resources
-
-BIGSdb platform curated by the Institute Pasteur
-(https://bigsdb.pasteur.fr/klebsiella)
 
 
 ### Step 8: Variant Calling and Consensus Assemblies
