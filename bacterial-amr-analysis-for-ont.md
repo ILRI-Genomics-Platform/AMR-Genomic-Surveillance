@@ -185,6 +185,7 @@ module load resfinder/4.6.0
 module load amrfinder/4.0.22
 module load mlst/2.23.0
 module load seqkit/0.11.0
+module load R/4.2
 ```
 
 
@@ -488,79 +489,6 @@ python -m resfinder \
 ```
 
 
-#### AMR genes detection using AMRFinder
-
-NCBI--[***AMRFinderPlus***](https://github.com/ncbi/amr/wiki/Home). It
-identifies acquired antimicrobial resistance genes in bacterial protein and/or
-assembled nucleotide sequences as well as known resistance-associated point
-mutations for several taxa.
-
-The most critical part of any AMR tool is the underlying database. So we take time to understand the databse on which AMRFinderPlus is based.
-
-"This database is derived from the [Pathogen Detection Reference Gene Catalog](https://www.ncbi.nlm.nih.gov/pathogens/isolates#/refgene/), [Pathogen Detection Reference Gene Hierarchy](https://www.ncbi.nlm.nih.gov/pathogens/genehierarchy/), and [Reference HMM Catalog](https://www.ncbi.nlm.nih.gov/pathogens/hmm/) and is used by the [Pathogen Detection](https://ncbi.nlm.nih.gov/pathogens/) isolate analysis system to provide results to the [Isolates browser](https://www.ncbi.nlm.nih.gov/pathogens/isolates) and [MicroBIGG-E](https://www.ncbi.nlm.nih.gov/pathogens/microbigge) as well as the command-line version of AMRFinderPlus. The 'core' subset version focuses on acquired or intrinsic AMR gene products including point mutations in a limited set of taxa. As of version 4.0 AMRFinderPlus also includes [StxTyper](https://github.com/ncbi/stxtyper) which has a separate DNA-sequence database and algorithm for typing Stx operons.
-
-The 'plus' subset include a less-selective set of genes of interest including genes involved in virulence, biocide, heat, metal, and acid resistance.
-
->**Note:** that AMRFinderPlus reports gene and point mutation presence/absence; it does not infer phenotypic resistance. Many of the resistance genes detected by AMRFinderPlus may not be relevant for clinical management or antimicrobial surveillance, AMRFinderPlus.
-
-Let's get started by defining a temporary directory for the tool and define DB
-path:
-
-
-```
-export TMPDIR=./results/ont/klebsiella/tmp/amrfinder/
-```
-
-
-```
-AMRFINDER_DB=$(find ./databases/amrfinderplus/2023-11-15.1/ -name "AMR.LIB" | sed 's=AMR.LIB==')
-```
-
-
-You can update the database before the analysis to ensure the latest
-information using the command `amrfinder --update`
-
-```
-amrfinder \
-    --nucleotide ./results/ont/klebsiella/prokka/SRR28370682.fna \
-    --protein ./results/ont/klebsiella/prokka/SRR28370682.faa \
-    --gff ./results/ont/klebsiella/prokka/SRR28370682.gff \
-    --annotation_format prokka \
-    --organism Klebsiella_pneumoniae \
-    --plus \
-    --ident_min -1 \
-    --coverage_min 0.5 \
-    --translation_table 11 \
-    --database $AMRFINDER_DB \
-    --threads 2 \
-    --name SRR28370682 > ./results/ont/klebsiella/amrfinder/SRR28370682.tsv
-```
-
-
-#### Output Format
-AMRFinderPlus produces a tab-separated output file with detailed information:
-Column | Description
----|---
-Protein identifier | Protein/contig identifier in the input sequence
-Gene symbol | Gene symbol for the AMR gene
-Sequence name | Matching sequence name in the AMR database
-Scope | Core, Plus (e.g., virulence factors)
-Element type | AMR gene class (e.g., AMR, STRESS, VIRULENCE)
-Element subtype | Specific resistance mechanism
-Class | Antibiotic class
-Subclass | Specific antibiotic subclass
-Method | Detection method used (PARTIALP, EXACTP, BLASTX, HMM)
-Target length | Reference sequence length
-Reference sequence length | Length of matching reference
-% Coverage of reference | Percentage of reference covered by alignment
-% Identity to reference | Percent identity to reference sequence
-Alignment length | Length of the alignment
-Accession of closest sequence | Accession number of the matching sequence
-Name of closest sequence | Name of the matching sequence
-HMM id | Identifier of HMM used for detection (if applicable)
-HMM description | Description of HMM (if applicable)
-
-
 #### AMR Detection using CARD/RGI web resource
 [**CARD/RGI**](https://card.mcmaster.ca/analyze/rgi) can be used to predict resistomes from protein or nucleotide data based on homology and SNP models.
 
@@ -624,6 +552,84 @@ for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
         --point
 done
 ```
+
+```
+module unload prokka/1.14.6
+module unload amrfinder/4.0.22
+module load amrfinder/4.0.22
+```
+
+#### AMR genes detection using AMRFinder
+
+NCBI--[***AMRFinderPlus***](https://github.com/ncbi/amr/wiki/Home). It
+identifies acquired antimicrobial resistance genes in bacterial protein and/or
+assembled nucleotide sequences as well as known resistance-associated point
+mutations for several taxa.
+
+The most critical part of any AMR tool is the underlying database. So we take time to understand the databse on which AMRFinderPlus is based.
+
+"This database is derived from the [Pathogen Detection Reference Gene Catalog](https://www.ncbi.nlm.nih.gov/pathogens/isolates#/refgene/), [Pathogen Detection Reference Gene Hierarchy](https://www.ncbi.nlm.nih.gov/pathogens/genehierarchy/), and [Reference HMM Catalog](https://www.ncbi.nlm.nih.gov/pathogens/hmm/) and is used by the [Pathogen Detection](https://ncbi.nlm.nih.gov/pathogens/) isolate analysis system to provide results to the [Isolates browser](https://www.ncbi.nlm.nih.gov/pathogens/isolates) and [MicroBIGG-E](https://www.ncbi.nlm.nih.gov/pathogens/microbigge) as well as the command-line version of AMRFinderPlus. The 'core' subset version focuses on acquired or intrinsic AMR gene products including point mutations in a limited set of taxa. As of version 4.0 AMRFinderPlus also includes [StxTyper](https://github.com/ncbi/stxtyper) which has a separate DNA-sequence database and algorithm for typing Stx operons.
+
+The 'plus' subset include a less-selective set of genes of interest including genes involved in virulence, biocide, heat, metal, and acid resistance.
+
+>**Note:** that AMRFinderPlus reports gene and point mutation presence/absence; it does not infer phenotypic resistance. Many of the resistance genes detected by AMRFinderPlus may not be relevant for clinical management or antimicrobial surveillance, AMRFinderPlus.
+
+Let's get started by defining a temporary directory for the tool and define DB
+path:
+
+
+```
+export TMPDIR=./results/ont/klebsiella/tmp/amrfinder/
+```
+
+<!-- ```
+AMRFINDER_DB=$(find ./databases/amrfinderplus/2023-11-15.1/ -name "AMR.LIB" | sed 's=AMR.LIB==')
+``` -->
+
+
+You can update the database before the analysis to ensure the latest
+information using the command `amrfinder --update`
+
+```
+amrfinder \
+    --nucleotide ./results/ont/klebsiella/prokka/SRR28370682.fna \
+    --protein ./results/ont/klebsiella/prokka/SRR28370682.faa \
+    --gff ./results/ont/klebsiella/prokka/SRR28370682.gff \
+    --annotation_format prokka \
+    --organism Klebsiella_pneumoniae \
+    --plus \
+    --ident_min -1 \
+    --coverage_min 0.5 \
+    --translation_table 11 \
+    --database $AMRFINDER_DB \
+    --threads 2 \
+    --name SRR28370682 > ./results/ont/klebsiella/amrfinder/SRR28370682.tsv
+```
+
+
+#### Output Format
+AMRFinderPlus produces a tab-separated output file with detailed information:
+Column | Description
+---|---
+Protein identifier | Protein/contig identifier in the input sequence
+Gene symbol | Gene symbol for the AMR gene
+Sequence name | Matching sequence name in the AMR database
+Scope | Core, Plus (e.g., virulence factors)
+Element type | AMR gene class (e.g., AMR, STRESS, VIRULENCE)
+Element subtype | Specific resistance mechanism
+Class | Antibiotic class
+Subclass | Specific antibiotic subclass
+Method | Detection method used (PARTIALP, EXACTP, BLASTX, HMM)
+Target length | Reference sequence length
+Reference sequence length | Length of matching reference
+% Coverage of reference | Percentage of reference covered by alignment
+% Identity to reference | Percent identity to reference sequence
+Alignment length | Length of the alignment
+Accession of closest sequence | Accession number of the matching sequence
+Name of closest sequence | Name of the matching sequence
+HMM id | Identifier of HMM used for detection (if applicable)
+HMM description | Description of HMM (if applicable)
+
 
 ### Step 7: Pathogen Typing
 
@@ -1003,3 +1009,14 @@ iqtree \
 
 > **Note:** It is important to use phylogenetic algorithms that take into account SNP alignments. These algorithms usually include some form of ascertainment bias correction that corrects for the 'missing' nucleotides in the alignment that were masked/removed because they did not show polymorphism.
 
+# Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
+
+```
+Rscript ./scripts/visualizeAMR.R \
+    --tree ./results/ont/klebsiella/iqtree/core-snp.treefile \
+    --mlst ./results/ont/klebsiella/mlst/*.tsv \
+    --pointfinder ./results/ont/klebsiella/resfinder/*/PointFinder_results.txt \
+    --resfinder ./results/ont/klebsiella/resfinder/*/ResFinder_results_tab.txt \
+    --prefix phylogeny-amr \
+    --outdir ./results/ont/klebsiella/plots
+```
