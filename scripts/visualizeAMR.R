@@ -32,24 +32,24 @@ ipak <- function(pkg, cran=TRUE){
   }
 }
 
-pkgs <- c("pacman")
+pkgs <- c("pacman", "argparse", "ggplot2", "tidyverse", "ape")
 ipak(pkg = pkgs, cran=TRUE)
 
-pkgs <- c("ComplexHeatmap")
+pkgs <- c("ComplexHeatmap", "ggtree", "treeio", "ggtreeExtra", "ggnewscale", "splitstackshape")
 ipak(pkg = pkgs, cran=FALSE)
 
-pacman::p_load(
-  argparse,        # parse command line options
-  colorspace,      # color palettes
-  ggplot2,         # to plot
-  tidyverse,       # general data management and visualization
-  ape,             # to import and export phylogenetic files
-  ggtree,          # to visualize phylogenetic files
-  treeio,          # to visualize phylogenetic files
-  ggtreeExtra,     # to visualize phylogenetic files
-  ggnewscale,      # to add additional layers of color schemes
-  splitstackshape  # stack and reshape dataframe
-)
+# pacman::p_load(
+#   argparse,        # parse command line options
+#   colorspace,      # color palettes
+#   ggplot2,         # to plot
+#   tidyverse,       # general data management and visualization
+#   ape,             # to import and export phylogenetic files
+#   ggtree,          # to visualize phylogenetic files
+#   treeio,          # to visualize phylogenetic files
+#   ggtreeExtra,     # to visualize phylogenetic files
+#   ggnewscale,      # to add additional layers of color schemes
+#   splitstackshape  # stack and reshape dataframe
+# )
 
 
 usage <- function() {

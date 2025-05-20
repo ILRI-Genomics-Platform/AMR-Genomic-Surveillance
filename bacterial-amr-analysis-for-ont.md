@@ -1045,8 +1045,6 @@ We will copy the `mlst`, `core-snp.treefile` and `resfinder` results from the
 compute nodes (`compute05` or `compute06`) to the head node (`hpc`) to our
 `home` directory interactively as follows:
 
-
-
 ```
 rsync -avP --partial \
     /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/mlst ~/
@@ -1064,12 +1062,7 @@ rsync -avP --partial \
 
 
 
-We will the script on the `Terminal` of  `rstudio` server.
-
-
-1. Login to the rstudio server 
-2. Start the Terminal on the rstudio
-3. Symbolically link the script to the `scripts` directory in the `home` directory
+Symbolically link the script to the `scripts` directory in the `home` directory
 
 
 ```
@@ -1079,8 +1072,18 @@ ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
 ```
 
 
->**Note: RUN THE COMMAND ON THE TERMINAL OF THE RSTUDIO SERVER**
+# Run the script interactively
 
 ```
-sbatch ~/scripts/visualizeAMR.sh
+module load R/4.3
+```
+
+```
+Rscript ~/scripts/visualizeAMR.R \
+    --tree ~/iqtree/core-snp.treefile \
+    --mlst ~/mlst/*.tsv \
+    --pointfinder ~/resfinder/*/PointFinder_results.txt \
+    --resfinder ~/resfinder/*/ResFinder_results_tab.txt \
+    --prefix phylogeny-amr \
+    --outdir ~/plots
 ```
