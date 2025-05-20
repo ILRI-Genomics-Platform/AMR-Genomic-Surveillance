@@ -1041,44 +1041,19 @@ iqtree \
 # Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
 
 
-We will submit the job using the job scheduler SLURM. 
-
-1. Download the `visualizeAMR.R` script
-
-```
-mkdir ~/scripts
-wget -c -N https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.R \
--P ~/scripts/
-```
-
-2. Download the `visualizeAMR.sh` to a scripts directory in your home directory
-
-```
-mkdir ~/scripts
-wget -c -N https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.sh \
--P ~/scripts/
-```
-
-3. Edit the downloaded script
-
->Note Ensure that you edit the partition option `-w` in the script accordingly to
->correspond to the compute node that you were assigned.
-
-
-4. Submit it as a job
-
-```
-sbatch ~/scripts/visualizeAMR.sh
-```
-
->**Note: DO NOT RUN THE SCRIPT INTERACTIVELY**
-
-
 Interactively, we'd have run the job as follows:
 
 ```
+cd /var/scratch/$USER/ACDC_AMR2025
+```
+
+```
+ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR.R ./scripts/
+```
+
+```
 module purge
-module load R/4.2
+module load R/4.3
 ```
 
 ```

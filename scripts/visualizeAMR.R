@@ -5,10 +5,13 @@
 user <- Sys.getenv('USER')
 
 # check version, install and load libraries
-version <- as.numeric(paste0(version$major, '.', 
+version <- as.numeric(paste0(version$major, '.',
                        strsplit(version$minor, "\\.")[[1]][1]))
+
+# define library path for installing packages
 userLibrary <- paste0("/home/", user, "/R/x86_64-pc-linux-gnu-library/", version)
 
+# reorder the lipaths
 .libPaths(c(userLibrary, .libPaths()))
 
 repos='http://cran.us.r-project.org'
@@ -18,7 +21,8 @@ ipak <- function(pkg, cran=TRUE){
   new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
   if (cran){
     if (length(new.pkg)) 
-      install.packages(new.pkg, dependencies = TRUE, repos = repos)
+      install.packages(new.pkg, dependencies = TRUE, repos = repos, 
+                       lib = userLibrary)
     sapply(pkg, require, character.only = TRUE)
   }
   else {
@@ -28,60 +32,59 @@ ipak <- function(pkg, cran=TRUE){
   }
 }
 
-pkgs <- c("pacman", "argparse", "colorspace", "ggplot2", "tidyverse",
-          "ape", "ggnewscale", "scales", "splitstackshape")
+pkgs <- c("pacman")
 ipak(pkg = pkgs, cran=TRUE)
 
-pkgs <- c("ComplexHeatmap", "treeio", "ggtree", "ape", "ggtreeExtra")
+pkgs <- c("ComplexHeatmap")
 ipak(pkg = pkgs, cran=FALSE)
 
-# pacman::p_load(
-#   argparse,        # parse command line options
-#   colorspace,      # color palettes
-#   ggplot2,         # to plot
-#   tidyverse,       # general data management and visualization
-#   ape,             # to import and export phylogenetic files
-#   ggtree,          # to visualize phylogenetic files
-#   treeio,          # to visualize phylogenetic files
-#   ggtreeExtra,     # to visualize phylogenetic files
-#   ggnewscale,      # to add additional layers of color schemes
-#   scales,          # functions for visualization
-#   splitstackshape  # stack and reshape dataframe
-# )
+pacman::p_load(
+  argparse,        # parse command line options
+  colorspace,      # color palettes
+  ggplot2,         # to plot
+  tidyverse,       # general data management and visualization
+  ape,             # to import and export phylogenetic files
+  ggtree,          # to visualize phylogenetic files
+  treeio,          # to visualize phylogenetic files
+  ggtreeExtra,     # to visualize phylogenetic files
+  ggnewscale,      # to add additional layers of color schemes
+  scales,          # functions for visualization
+  splitstackshape  # stack and reshape dataframe
+)
 
 
 usage <- function() {
-  usage.text <- '\nUsage: visualizeAMR.R 
+  usage.text <- '\nUsage: visualizeAMR.R
     --tree <path to the core SNP newick file>
-    --mlst <paths to MLST reports (.tsv)> 
-    --pointfinder <paths to PointFinder results (PointFinder_results.txt) files> 
-    --resfinder <paths to ResFinder results (ResFinder_results_tab.txt) files> 
-    --prefix <prefix to the output filename> 
+    --mlst <paths to MLST reports (.tsv)>
+    --pointfinder <paths to PointFinder results (PointFinder_results.txt) files>
+    --resfinder <paths to ResFinder results (ResFinder_results_tab.txt) files>
+    --prefix <prefix to the output filename>
     --outdir <path to the output directory name>\n\n'
   return(usage.text)
 }
 
 parser <- ArgumentParser()
-parser$add_argument("--tree", 
-                    default=NULL, 
+parser$add_argument("--tree",
+                    default=NULL,
                     help="paths to tree file in newick format")
-parser$add_argument("--mlst", 
-                    nargs="+", 
-                    default=NULL, 
+parser$add_argument("--mlst",
+                    nargs="+",
+                    default=NULL,
                     help="paths to MLST reports (.tsv)")
-parser$add_argument("--pointfinder", 
-                    nargs="+", 
-                    default=NULL, 
+parser$add_argument("--pointfinder",
+                    nargs="+",
+                    default=NULL,
                     help="paths to PointFinder results (PointFinder_results.txt) files")
-parser$add_argument("--resfinder", 
-                    nargs="+", 
-                    default=NULL, 
+parser$add_argument("--resfinder",
+                    nargs="+",
+                    default=NULL,
                     help="paths to ResFinder results (ResFinder_results_tab.txt) files")
-parser$add_argument("--prefix", 
-                    default="AMR-plots", 
+parser$add_argument("--prefix",
+                    default="AMR-plots",
                     help="prefix to the output filename")
-parser$add_argument("--outdir", 
-                    default="./", 
+parser$add_argument("--outdir",
+                    default="./",
                     help="output directory path")
 args <- parser$parse_args()
 
@@ -99,8 +102,8 @@ if (length(mlstFiles) == 0) {
 }
 if (!all(file.exists(mlstFiles))) {
   parser$print_help()
-  stop(paste("The following mlst files don't exist:", 
-             paste(mlstFiles[!file.exists(mlstFiles)], 
+  stop(paste("The following mlst files don't exist:",
+             paste(mlstFiles[!file.exists(mlstFiles)],
                    sep='', collapse=' '), sep=' '), call.=FALSE)
 }
 
@@ -112,8 +115,8 @@ if (length(PointFinderFiles) == 0) {
 }
 if (!all(file.exists(PointFinderFiles))) {
   parser$print_help()
-  stop(paste("The following PointFinder results files don't exist:", 
-             paste(PointFinderFiles[!file.exists(PointFinderFiles)], 
+  stop(paste("The following PointFinder results files don't exist:",
+             paste(PointFinderFiles[!file.exists(PointFinderFiles)],
                    sep='', collapse=' '), sep=' '), call.=FALSE)
 }
 
@@ -124,8 +127,8 @@ if (length(ResFinderFiles) == 0) {
 }
 if (!all(file.exists(ResFinderFiles))) {
   parser$print_help()
-  stop(paste("The following mlst files don't exist:", 
-             paste(ResFinderFiles[!file.exists(ResFinderFiles)], 
+  stop(paste("The following mlst files don't exist:",
+             paste(ResFinderFiles[!file.exists(ResFinderFiles)],
                    sep='', collapse=' '), sep=' '), call.=FALSE)
 }
 
@@ -144,7 +147,7 @@ if (!file.exists(treeFile)) {
   parser$print_help()
   stop("You must provide a tree file", call.=FALSE)
 }
- 
+
 
 # baseDir <- file.path("~/trainings/ACDC_AMR2025/results/ont/klebsiella")
 
@@ -162,18 +165,18 @@ mlstList <- list()
 for (i in 1:length(mlstFiles)){
   fn <- mlstFiles[i]
   # sample <- strsplit(basename(fn), ".", fixed=T)[[1]][1]
-  df <- read.table(fn, 
-                   check.names=F, 
-                   sep='\t', header=F, 
-                   col.names = c("path", "organism", "ST", 
-                                 "gapA", "infB", "mdh", 
-                                 "pgi", "phoE", "rpoB", 
+  df <- read.table(fn,
+                   check.names=F,
+                   sep='\t', header=F,
+                   col.names = c("path", "organism", "ST",
+                                 "gapA", "infB", "mdh",
+                                 "pgi", "phoE", "rpoB",
                                  "tonB"))
-  df$path <- sapply(strsplit(as.character(df$path), 
+  df$path <- sapply(strsplit(as.character(df$path),
                              ".", fixed = TRUE), `[`, 2)
   df$Sample <- basename(df$path)
   df <- df |> dplyr::select(c(11,3,4,5,6,7,8,9,10))
-  
+
   mlstList[[i]] <- df
 }
 mlst <- do.call(rbind, mlstList)
@@ -284,7 +287,7 @@ for (i in 1:length(ResFinderFiles)){
 }
 ResFinderData <- do.call(rbind, ResFinderList)
 
-# summarize 
+# summarize
 ResistanceGenes <- ResFinderData |>
   dplyr::group_by(Sample) |>
   summarize(genes = paste(sort(unique(AMR_Gene)), collapse=", "))
@@ -492,32 +495,32 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 
 
 # figuresDir <- file.path(baseDir, "figures")
-# if (!dir.exists(figuresDir)) 
+# if (!dir.exists(figuresDir))
 # dir.create(figuresDir, recursive = TRUE)
-# 
-# 
+#
+#
 # ####################### load data ##########################
-# 
-# 
-# 
+#
+#
+#
 # ############################################################
 # ######### read sequence types outputs from mlst ############
 # ############################################################
 # mlstFile <- file.path(baseDir, "mlst/klebs-mlst.txt")
 # mlstDF <- read.table(mlstFile, check.names=F, sep='\t', header=F,
-#                      col.names = c("path", "organism", "ST", 
-#                     "gapA", "infB", "mdh", 
-#                     "pgi", "phoE", "rpoB", 
+#                      col.names = c("path", "organism", "ST",
+#                     "gapA", "infB", "mdh",
+#                     "pgi", "phoE", "rpoB",
 #                     "tonB"))
-# mlstDF$path <- sapply(strsplit(as.character(mlstDF$path), ".", 
+# mlstDF$path <- sapply(strsplit(as.character(mlstDF$path), ".",
 #                                fixed = TRUE), `[`, 2)
 # mlstDF$Sample <- basename(mlstDF$path)
 # mlstDF <- mlstDF |> dplyr::select(c(11,3,4,5,6,7,8,9,10))
-# 
-# 
-# 
+#
+#
+#
 # # ref <- readLines("~/ResFinder_results_table.txt")
-# # drugClasses <- c("Aminoglycoside", "Beta-lactam", "Colistin", 
+# # drugClasses <- c("Aminoglycoside", "Beta-lactam", "Colistin",
 # #                  "Fosfomycin", "Fusidic Acid",
 # #                  "MLS - Macrolide, Lincosamide and Streptogramin B",
 # #                  "Misc", "Nitroimidazole", "Oxazolidinone",
@@ -525,7 +528,7 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 # #                  "Sulphonamide", "Tetracycline", "Trimethoprim",
 # #                  "Glycopeptide", "Pseudomonic Acid"
 # #                  )
-# 
+#
 # # dataList <- list()
 # # for (drugClass in drugClasses){
 # #   idx1 <- which(ref == drugClass)
@@ -534,21 +537,21 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 # #   print(idx2)
 # #   idx3 <- idx2[idx2>idx1][1]-1
 # #   print(idx3)
-# #   df <- read.csv(text=gsub("\\.,", ",", sub("\\s*,$", "", ref[idx1:idx3])), 
+# #   df <- read.csv(text=gsub("\\.,", ",", sub("\\s*,$", "", ref[idx1:idx3])),
 # #                  header=FALSE, sep = "\t")
 # # }
-# 
-# 
+#
+#
 
 # # merge dataframes: mlst, point mutations and amr genes
 # sample_data <- c(list(mlstDF[,c(1,2)]), pointMutationsDFs)
 # SampleData <- sample_data %>% reduce(left_join, by='Sample')
-# 
-# 
+#
+#
 # # ResFinder results
-# ResFinderFiles <- file.path(file.path(baseDir, "resfinder"), 
+# ResFinderFiles <- file.path(file.path(baseDir, "resfinder"),
 #                             list.files(path = file.path(baseDir, "resfinder"),
-#                                        recursive = TRUE, 
+#                                        recursive = TRUE,
 #                                        pattern = "ResFinder_results_tab.txt"))
 # ResFinderList <- list()
 # for (i in 1:length(ResFinderFiles)){
@@ -556,85 +559,85 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #   sample <- basename(dirname(fn))
 #   data <- data.table::fread(fn)
 #   data$Sample <- sample
-#   
+#
 #   # select AMR genes with 100.00 Identity and 100% coverage
 #   data <- data[(data$Identity == 100.00) & (data$Coverage == 100.00000),]
-#   
+#
 #   # rename the columns and select columns
-#   data <- data |> 
+#   data <- data |>
 #     dplyr::rename(
 #       "AMR_Gene" = "Resistance gene",
 #       "Length" = "Alignment Length/Gene Length"
 #   )
-#   data <- data |> 
+#   data <- data |>
 #     dplyr::select(Sample, AMR_Gene, Phenotype)
 #   ResFinderList[[i]] <- data
 # }
 # ResFinderData <- do.call(rbind, ResFinderList)
-# 
+#
 # ResistanceGenes <- ResFinderData |>
 #   dplyr::group_by(Sample) |>
 #   summarize(genes = paste(sort(unique(AMR_Gene)), collapse=", "))
-# 
+#
 # ResistanceGenesSplit <- cSplit_e(ResistanceGenes, 'genes',
 #                             sep= ',', type = 'character',
 #                             fill = 0, drop = TRUE)
-# 
+#
 # names(ResistanceGenesSplit) <- sub('genes_', '', names(ResistanceGenesSplit))
-# 
-# 
+#
+#
 # # merge dataframes (Sequence Types, Point Mutations conferring resistance and AMR genes)
-# # SampleData <- dplyr::left_join(mlstDF[,c(1,2)], PointMutations, 
+# # SampleData <- dplyr::left_join(mlstDF[,c(1,2)], PointMutations,
 # #                        by=c("name"="Sample"))
 # # SampleData <- dplyr::left_join(SampleData, ResistanceGenes,
 # #                                by=c("name"="Sample"))
-# 
-# 
-# 
+#
+#
+#
 # # plot tree
 # treeFile <- file.path(baseDir, "iqtree/core-snp.treefile")
 # tree <- read.tree(treeFile)
-# 
+#
 # # match tip labels with sample names
 # all(tree$tip.label == SampleData$Sample)
 # SampleData <- SampleData[match(tree$tip.label, SampleData$Sample),]
 # all(tree$tip.label == SampleData$Sample)
-# 
-# 
-# 
+#
+#
+#
 # # create dataframe for sequence types
 # sequence_type <- data.frame("ST" = SampleData[,c("ST")])
 # rownames(sequence_type) <- SampleData$Sample
 # sequence_type$ST <- as.factor(sequence_type$ST)
-# 
-# # create a dataframe for mutations in the acrR gene, 
+#
+# # create a dataframe for mutations in the acrR gene,
 # # which confer Fluoroquinolone resistance:
 # acrR_fluoroquinolone <- data.frame(
 #   "acrR_fluoroquinolone" = SampleData[,c("acrR_Fluoroquinolone_mutations")])
 # rownames(acrR_fluoroquinolone) <- SampleData$Sample
-# 
-# 
-# # create a dataframe for mutations in the ompK36 gene, 
+#
+#
+# # create a dataframe for mutations in the ompK36 gene,
 # # which confer Carbapenem resistance:
 # ompK36_carbapenem <- data.frame(
 #   "ompK36_carbapenem" = SampleData[,c("ompK36_Carbapenem_mutations")])
 # rownames(ompK36_carbapenem) <- SampleData$Sample
-# 
-# 
-# # create a dataframe for mutations in the ompK36 gene, 
+#
+#
+# # create a dataframe for mutations in the ompK36 gene,
 # # which confer Cephalosporin resistance:
 # ompK36_cephalosporin <- data.frame(
 #   "ompK36_cephalosporin" = SampleData[,c("ompK36_Cephalosporins_mutations")])
 # rownames(ompK36_cephalosporin) <- SampleData$Sample
-# 
-# 
-# # create a dataframe for mutations in the ompK37 gene, 
+#
+#
+# # create a dataframe for mutations in the ompK37 gene,
 # # which confer Carbapenem resistance:
 # ompK37_carbapenem <- data.frame(
 #   "ompK37_carbapenem" = SampleData[,c("ompK37_Carbapenem_mutations")])
 # rownames(ompK37_carbapenem) <- SampleData$Sample
-# 
-# 
+#
+#
 # p <- ggtree(tree) %<+% SampleData +
 #   geom_tiplab(size = 3,
 #               linesize = .05,
@@ -647,23 +650,23 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #   xlim(0, 0.015)+
 #   theme(legend.position = "none",
 #         axis.title.y = element_blank(),
-#         plot.title = element_text(size = 12, 
+#         plot.title = element_text(size = 12,
 #                                   face = "bold",
 #                                   hjust = 0.5,
 #                                   vjust = -15))
 # p
-# p <- p + 
+# p <- p +
 #   ggnewscale::new_scale_fill()
-# 
-# 
-# h1 <-  gheatmap(p, sequence_type, 
+#
+#
+# h1 <-  gheatmap(p, sequence_type,
 #                 offset = 0.003,
-#                 width = 0.1, 
-#                 color="black", 
+#                 width = 0.1,
+#                 color="black",
 #                 colnames = FALSE)+
 #   scale_fill_manual(name = "Sequence Type",
-#                     values = c('skyblue2', 'yellow2', 'brown4', 
-#                                'lightblue1', 'navajowhite2', 
+#                     values = c('skyblue2', 'yellow2', 'brown4',
+#                                'lightblue1', 'navajowhite2',
 #                                'magenta3', 'purple3',
 #                                'green3', 'hotpink3'),
 #                     breaks = sort(unique(SampleData$ST)),
@@ -671,10 +674,10 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #   theme(legend.position = "bottom",
 #         legend.title = element_text(size = 12),
 #         legend.text = element_text(size = 10),
-#         legend.box = "vertical", 
+#         legend.box = "vertical",
 #         legend.margin = margin())
 # h1
-# 
+#
 # h2 <- h1 + ggnewscale::new_scale_fill()
 # h3 <- gheatmap(h2, acrR_fluoroquinolone,
 #                offset = 0.004,
@@ -691,10 +694,10 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #         legend.box = "vertical", legend.margin = margin())+
 #   guides(fill = guide_legend(nrow = 2, byrow = TRUE))
 # h3
-# 
+#
 # h4 <- h3 + ggnewscale::new_scale_fill()
-# h5 <- gheatmap(h4, ompK36_carbapenem,   
-#                offset = 0.005, 
+# h5 <- gheatmap(h4, ompK36_carbapenem,
+#                offset = 0.005,
 #                width = 0.1,
 #                color = "black",
 #                colnames = FALSE)+
@@ -708,8 +711,8 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #         legend.box = "vertical", legend.margin = margin())+
 #   guides(fill = guide_legend(nrow = 2, byrow = TRUE))
 # h5
-# 
-# 
+#
+#
 # h6 <- h5 + ggnewscale::new_scale_fill()
 # h7 <- gheatmap(h6, ompK37_carbapenem,
 #                offset = 0.006,
@@ -726,7 +729,7 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #         legend.box = "vertical", legend.margin = margin())+
 #   guides(fill = guide_legend(nrow = 2, byrow = TRUE))
 # h7
-# 
+#
 # h8 <- h7 + ggnewscale::new_scale_fill()
 # h9 <- gheatmap(h8, ompK36_cephalosporin,
 #                offset = 0.007,
@@ -743,20 +746,20 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #         legend.box = "vertical", legend.margin = margin())+
 #   guides(fill = guide_legend(nrow = 4, byrow = TRUE))
 # h9
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# p <- ggtree(tree) + 
+#
+#
+#
+#
+#
+#
+#
+# p <- ggtree(tree) +
 #   xlim(0, 0.010) + # to allow more space for labels
 #   geom_treescale() # adds the scale
 # p
-# 
-# 
-# p <- p %<+% mlstDF + 
+#
+#
+# p <- p %<+% mlstDF +
 #   geom_tiplab(align = TRUE,
 #               linesize = .05,
 #               geom = "text",
@@ -773,24 +776,24 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #   theme(legend.position = c(0.5,0.2)) + # no keys
 #   guides(color = guide_legend(override.aes = list(size=4),
 #                               title = "Sample"))
-# 
-# 
-# sequencetype <- mlstDF |> 
-#   dplyr::select(c("name", "ST")) %>% 
+#
+#
+# sequencetype <- mlstDF |>
+#   dplyr::select(c("name", "ST")) %>%
 #   remove_rownames %>% column_to_rownames(var="name")
 # sequencetype$ST <- as.factor(sequencetype$ST)
-# 
-# 
-# 
-# p <- p + 
+#
+#
+#
+# p <- p +
 #   ggnewscale::new_scale_fill()
-# 
+#
 # # serotype annotation
-# p1 <- gheatmap(p + theme(legend.position = "none"), 
+# p1 <- gheatmap(p + theme(legend.position = "none"),
 #                sequencetype,
-#                offset=0.001*2, 
+#                offset=0.001*2,
 #                width=0.25,
-#                colnames_angle = 0, 
+#                colnames_angle = 0,
 #                colnames_position = "top",
 #                font.size = 8,
 #                family = "Helvetica",
@@ -803,13 +806,13 @@ ggsave(file.path(outdir, paste0(prefix, ".MLST.PointMutations.pdf")),
 #                              nrow = 3,
 #                              override.aes = list(size = 9)))
 # p1
-# 
-# 
-# 
-# # 
-# 
-# 
-# 
+#
+#
+#
+# #
+#
+#
+#
 
 DataMatrixPointMutations <- dplyr::left_join(mlst[,c(1,2)],
                                              ResistanceGenesSplit,
@@ -831,14 +834,14 @@ mat <- t(mat)
 annotation <-  DataMatrixPointMutations |> dplyr::select(ST)
 
 colours <- list(
-  ST = c('17'='skyblue2', 
-         '38'='yellow2', 
+  ST = c('17'='skyblue2',
+         '38'='yellow2',
          '39'='brown4',
-         '45' = 'lightblue1', 
+         '45' = 'lightblue1',
          '48'='navajowhite2',
-         '54'='magenta3', 
+         '54'='magenta3',
          '258'='purple3',
-         '1427'='green3', 
+         '1427'='green3',
          '6155'='hotpink3')
   )
 
