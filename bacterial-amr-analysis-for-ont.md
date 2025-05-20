@@ -1043,7 +1043,14 @@ iqtree \
 
 We will submit the job using the job scheduler SLURM. 
 
-1. Download the `visualizeAMR.sh` to a scripts directory in your home directory
+1. Download the `visualizeAMR.R` script
+
+```
+wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.R \
+~/scripts/
+```
+
+2. Download the `visualizeAMR.sh` to a scripts directory in your home directory
 
 ```
 mkdir ~/scripts
@@ -1051,13 +1058,13 @@ wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Survei
 -P ~/scripts/
 ```
 
-2. Edit the downloaded script
+3. Edit the downloaded script
 
 >Note Ensure that you edit the partition option `-w` in the script accordingly to
 >correspond to the compute node that you were assigned.
 
 
-3. Submit it as a job
+4. Submit it as a job
 
 ```
 sbatch ~/scripts/visualizeAMR.sh
