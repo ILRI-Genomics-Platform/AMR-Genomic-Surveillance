@@ -1053,9 +1053,7 @@ rsync -avP --partial \
 ```
 
 ```
-rsync -avP --partial \
-    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/resfinder \
-    exclude="*_blast*" ~/
+rsync -avP --partial /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/resfinder --exclude="*_blast*" ~/
 ```
 
 
@@ -1084,11 +1082,5 @@ ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
 >**Note: RUN THE COMMAND ON THE TERMINAL OF THE RSTUDIO SERVER**
 
 ```
-Rscript ~/scripts/visualizeAMR.R \
-    --tree ~/iqtree/core-snp.treefile \
-    --mlst ~/mlst/*.tsv \
-    --pointfinder ~/resfinder/*/PointFinder_results.txt \
-    --resfinder ~/resfinder/*/ResFinder_results_tab.txt \
-    --prefix phylogeny-amr \
-    --outdir ~/plots
+sbatch ~/scripts/visualizeAMR.sh
 ```
