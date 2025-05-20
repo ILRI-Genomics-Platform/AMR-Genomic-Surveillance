@@ -1048,28 +1048,19 @@ compute nodes (`compute05` or `compute06`) to the head node (`hpc`) to our
 
 
 ```
-rsync \ 
-    -avP \
-    --partial \
-    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/mlst \
-    ~/
+rsync -avP --partial \
+    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/mlst ~/
 ```
 
 ```
-rsync \ 
-    -avP \
-    --partial \
-    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/resfinder \
-    ~/
+rsync -avP --partial \
+    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/resfinder ~/
 ```
 
 
 ```
-rsync \ 
-    -avP \
-    --partial \
-    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/iqtree \
-    ~/
+rsync -avP --partial \
+    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/iqtree ~/
 ```
 
 
