@@ -2,14 +2,14 @@
 
 #' @author John Juma
 
-user <- Sys.getenv('USER')
+# user <- Sys.getenv('USER')
 
-# check version, install and load libraries
-version <- as.numeric(paste0(version$major, '.', 
-                       strsplit(version$minor, "\\.")[[1]][1]))
-userLibrary <- paste0("/home/", user, "/R/x86_64-pc-linux-gnu-library/", version)
+# # check version, install and load libraries
+# version <- as.numeric(paste0(version$major, '.', 
+#                        strsplit(version$minor, "\\.")[[1]][1]))
+# userLibrary <- paste0("/home/", user, "/R/x86_64-pc-linux-gnu-library/", version)
 
-.libPaths(c(userLibrary, .libPaths()))
+# .libPaths(c(userLibrary, .libPaths()))
 
 repos='http://cran.us.r-project.org'
 
