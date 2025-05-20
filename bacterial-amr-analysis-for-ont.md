@@ -254,7 +254,7 @@ rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoP
 For example:
 
 ```
-rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
+rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
 ```
 
 **Remove adapters**
@@ -303,10 +303,10 @@ NanoPlot \
 ```
 
 Let's copy the second round of quality assessment results to our local computers, as before.
-> Note: Ensure you change the `jjuma` to your `user` name allocated on the `hpc`
+> Note: Ensure you change the `<user_name>` to your `user` name allocated on the `hpc`
 
 ```
-rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682-final_NanoPlot-report.html ~/
+rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682-final_NanoPlot-report.html ~/
 ```
 
 ### Step 4: Genome Assembly
@@ -861,18 +861,18 @@ rsync \
 ```
 
 
-> Note. On a new terminal session outside the `hpc`. Replace **jjuma** with your
+> Note. On a new terminal session outside the `hpc`. Replace **<user_name>** with your
 > `user` name
 
 Copy the files from your `home` directory on `hpc` to your `home` directory on
 `local` machine:
 
 ```
-rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/ref.fa* ~/
+rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/ref.fa* ~/
 ```
 
 ```
-rsync -avP --partial jjuma@hpc.ilri.cgiar.org:~/SRR28370682.bam* ~/
+rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682.bam* ~/
 ```
 
 
@@ -1047,17 +1047,17 @@ compute nodes (`compute05` or `compute06`) to the head node (`hpc`) to our
 
 ```
 rsync -avP --partial \
-    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/mlst ~/
+    /var/scratch/$USER/ACDC_AMR2025/results/ont/klebsiella/mlst ~/
 ```
 
 ```
-rsync -avP --partial /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/resfinder --exclude="*_blast*" ~/
+rsync -avP --partial /var/scratch/$USER/ACDC_AMR2025/results/ont/klebsiella/resfinder --exclude="*_blast*" ~/
 ```
 
 
 ```
 rsync -avP --partial \
-    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/iqtree ~/
+    /var/scratch/$USER/ACDC_AMR2025/results/ont/klebsiella/iqtree ~/
 ```
 
 
@@ -1072,7 +1072,7 @@ ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
 ```
 
 
-# Run the script interactively
+>**Note: Run the script interactively on the `rstudio` server `Terminal`** 
 
 ```
 module load R/4.3
