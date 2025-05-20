@@ -1047,7 +1047,7 @@ We will submit the job using the job scheduler SLURM.
 
 ```
 wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.R \
-~/scripts/
+-P ~/scripts/
 ```
 
 2. Download the `visualizeAMR.sh` to a scripts directory in your home directory
