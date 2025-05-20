@@ -106,67 +106,21 @@ wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Survei
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt
 ```
 
-### Creating a conda environment
-First, we will need to install Miniforge. Please follow the instructions below which are obtained from miniforge [GitHub repository](https://github.com/conda-forge/miniforge?tab=readme-ov-file#unix-like-platforms-macos-linux--wsl)
-
-Download the installation bash script.
-```
-wget "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh"
-```
-
-Run the script to install Miniforge.
-```
-bash Miniforge3-$(uname)-$(uname -m).sh
-```
-
-If you are using MacOS, install Miniforge by first installing Homebrew:
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-Once already installed, install Miniforge as follows:
-```
-brew install miniforge
-```
-
-Finally run this command:
-```
-conda init zsh
-```
-Restart your terminal.
-
-Following successful Miniforge installation, we can use `conda` to install the tools we need to an environment in your local computer.
-Install the tools as follows:
-
-```
-conda env create -f environment.yml
-conda env create -f snippy-environment.yml
-conda env create -f artic-mpox-environment.yml
-```
-
-### Creating a Python environment
-We also need to create a python environment to install Python packages that are needed by some python scripts we will run in some analysis steps.
-```
-python3 -m venv ./py3env
-source ./py3env/bin/activate
-python3 -m pip install -r ./artic-requirements.txt
-```
-
-
 ## Analysis tutorials
 Please find here linked the tutorials for Introduction to Linux and for respective organisms. Right click on the link and open it in a new tab on your browser.
 
 1. [Introduction to Linux](linux_hpc_intro.md)
 2. Environment Management Systems
+   - [Setting up `Conda`](Setting_up_conda.md)
    - [Environment Manament with Conda](Introduction_environment_managament_systems.md)
-   - [HPC Module System](Intro_Module_System.md)
+   - [Introduction to HPC Module System](Intro_Module_System.md)
    - [Running Jobs in the HPC using SLURM](Introduction_to_High_Performance_Computing_with_SLURM.md)
-3. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md)
-   - [Introduction to *E. coli*](Intro_Escherichia_coli.md)
-   - [*E. coli* Bacterial Whole Genome Assembly and AMR analysis](bacterial-amr-analysis-for-illumina.md)
-4. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) 
+3. [*Klebsiella pneumoniae*](bacterial-amr-analysis-for-ont.md) - Long Reads (ONT)
    - [Introduction to *K. pneumoniae*](Intro_Klebsiella_pneumoniae.md)
    - [*K. pneumoniae* Bacterial Whole Genome Assembly and AMR analysis](bacterial-amr-analysis-for-ont.md)
+4. [*Escherichia coli*](bacterial-amr-analysis-for-illumina.md) - Short Reads (Illumina)
+   - [Introduction to *E. coli*](Intro_Escherichia_coli.md)
+   - [*E. coli* Bacterial Whole Genome Assembly and AMR analysis](bacterial-amr-analysis-for-illumina.md)
 5. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
 6. [Bacterial Genome and AMR Analysis Terms](bacterial_genome_terms.md)
 
