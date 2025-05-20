@@ -2,7 +2,14 @@
 
 #' @author John Juma
 
+user <- Sys.getenv('USER')
 
+# check version, install and load libraries
+version <- as.numeric(paste0(version$major, '.', 
+                       strsplit(version$minor, "\\.")[[1]][1]))
+userLibrary <- paste0("/home/", user, "/R/x86_64-pc-linux-gnu-library/", version)
+
+.libPaths(c(userLibrary, .libPaths()))
 
 repos='http://cran.us.r-project.org'
 
@@ -21,25 +28,26 @@ ipak <- function(pkg, cran=TRUE){
   }
 }
 
-pkgs <- c("pacman")
+pkgs <- c("pacman", "argparse", "colorspace", "ggplot2", "tidyverse",
+          "ape", "ggnewscale", "scales", "splitstackshape")
 ipak(pkg = pkgs, cran=TRUE)
 
-pkgs <- c("ComplexHeatmap")
+pkgs <- c("ComplexHeatmap", "treeio", "ggtree", "ape", "ggtreeExtra")
 ipak(pkg = pkgs, cran=FALSE)
 
-pacman::p_load(
-  argparse,        # parse command line options
-  colorspace,      # color palettes
-  ggplot2,         # to plot
-  tidyverse,       # general data management and visualization
-  ape,             # to import and export phylogenetic files
-  ggtree,          # to visualize phylogenetic files
-  treeio,          # to visualize phylogenetic files
-  ggtreeExtra,     # to visualize phylogenetic files
-  ggnewscale,      # to add additional layers of color schemes
-  scales,          # functions for visualization
-  splitstackshape  # stack and reshape dataframe
-)
+# pacman::p_load(
+#   argparse,        # parse command line options
+#   colorspace,      # color palettes
+#   ggplot2,         # to plot
+#   tidyverse,       # general data management and visualization
+#   ape,             # to import and export phylogenetic files
+#   ggtree,          # to visualize phylogenetic files
+#   treeio,          # to visualize phylogenetic files
+#   ggtreeExtra,     # to visualize phylogenetic files
+#   ggnewscale,      # to add additional layers of color schemes
+#   scales,          # functions for visualization
+#   splitstackshape  # stack and reshape dataframe
+# )
 
 
 usage <- function() {
