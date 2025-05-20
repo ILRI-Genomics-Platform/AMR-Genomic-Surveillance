@@ -27,7 +27,7 @@ ipak <- function(pkg, cran=TRUE){
   }
   else {
     if (length(new.pkg)) 
-      BiocManager::install(new.pkg, dependencies = TRUE)
+      BiocManager::install(new.pkg, dependencies = TRUE, lib = userLibrary)
     sapply(pkg, require, character.only = TRUE)
   }
 }
