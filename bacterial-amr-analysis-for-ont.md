@@ -197,7 +197,7 @@ mkdir -p ./genomes/klebs
 ```
 
 ```
-wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz -P  ./genomes/klebs
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.gbff.gz -P ./genomes/klebs
 ```
 
 ```
@@ -205,7 +205,7 @@ gzip -c -d ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.gbff.gz > ./genomes
 ```
 
 ```
-wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.fna.gz -P  ./genomes/klebs
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/016/305/GCF_000016305.1_ASM1630v1/GCF_000016305.1_ASM1630v1_genomic.fna.gz -P ./genomes/klebs
 ```
 
 ```
@@ -953,25 +953,27 @@ Predicting recombination regions:
 
 We will submit the job using the job scheduler SLURM. 
 
-1. Download the `visualizeAMR.sh` to your `scripts` directory
+1. Download the `run_gubbins.sh` to a scripts directory in your home directory
 
 ```
-https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/run_gubbins.sh
+mkdir ~/scripts
+wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/run_gubbins.sh \
+-P ~/scripts/
 ```
 
 2. Edit the downloaded script
 
->Note Ensure that you edit the `batch` parameter in the script accordingly to
+>Note Ensure that you edit the partition option `-w` in the script accordingly to
 >correspond to the compute node that you were assigned.
 
 
 3. Submit it as a job
 
 ```
-sbatch ./scripts/run_gubbins.sh
+sbatch ~/scripts/run_gubbins.sh
 ```
 
->Note: DO NOT RUN THE SCRIPT INTERACTIVELY
+>**Note: DO NOT RUN THE SCRIPT INTERACTIVELY**
 
 Interactively, we'd have run the job as follows:
 
@@ -1041,25 +1043,29 @@ iqtree \
 
 We will submit the job using the job scheduler SLURM. 
 
-1. Download the `visualizeAMR.sh` to your `scripts` directory
+1. Download the `visualizeAMR.sh` to a scripts directory in your home directory
 
 ```
-wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.sh
+mkdir ~/scripts
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.sh \
+-P ~/scripts/
 ```
 
 2. Edit the downloaded script
 
->Note Ensure that you edit the `batch` parameter in the script accordingly to
+>Note Ensure that you edit the partition option `-w` in the script accordingly to
 >correspond to the compute node that you were assigned.
 
 
 3. Submit it as a job
 
 ```
-sbatch ./scripts/visualizeAMR.sh
+sbatch ~/scripts/visualizeAMR.sh
 ```
 
->Note: DO NOT RUN THE SCRIPT INTERACTIVELY
+>**Note: DO NOT RUN THE SCRIPT INTERACTIVELY**
+
+
 Interactively, we'd have run the job as follows:
 
 ```
