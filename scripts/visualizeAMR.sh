@@ -12,7 +12,7 @@
 
 
 # load the required module(s)
-module load R/4.2
+module load R/4.3
 
 
 # I/O
