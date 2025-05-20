@@ -19,9 +19,13 @@ module load gubbins/3.4
 WORKDIR="/var/scratch/$USER/ACDC_AMR2025"
 OUTDIR="${WORKDIR}/results/ont/klebsiella/gubbins"
 
+echo -r "working directory: ${WORKDIR}"
+echo -r "output directory: ${OUTDIR}"
+
+
 
 # run gubbins to predict recombination spots
-run_gubbins.py \
+echo run_gubbins.py \
     --threads $SLURM_CPUS_PER_TASK \
     --prefix $OUTDIR/core-snp \
     --iterations 5 \
