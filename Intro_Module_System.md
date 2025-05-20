@@ -165,7 +165,7 @@ echo "module load python/3.10" >> ~/.bashrc
 ```
 
 ---
-## Execises: We will now try to load differnt softwares we may need in the AMR analysis and resolve conflicts.
+## Exercises: We will now try to load differnt softwares we may need in the AMR analysis and resolve conflicts.
 
 **Problem Statement:** You are preparing to execute some analysis steps for bacterial AMR based on ONT data. Here are some of the packages that will be needed: `samtools/1.9`, `racon/1.5.0`, `unicycler/0.4.7`, `prodigal/2.6.3`, `fastp/0.22.0`, `porechop/0.2.4`, `minimap2/2.13`, `spades/3.13.0`, `mlst/2.23.0`, `infernal/1.1.2`, `fastqc/0.11.9`, `any2fasta/0.4.2`, `medaka/0.8.2`, `velvet/1.2.10`, `hmmer/3.3`, `prokka/1.14.6`, `lighter/1.1.2`,  `flye/2.4.2`, `megahit/1.2.9`, `bowtie2/2.3.4.1`, `bedtools/2.29.0`,  `flash/1.2.11`, `miniasm/0.3`, `nanoplot/1.42.0`, `nanoq/0.10.0` and `porechop`. Please load them using `module load` command, identify dependancies and conflicts where there are any.
 
