@@ -1041,7 +1041,41 @@ iqtree \
 # Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
 
 
+We will copy the `mlst`, `core-snp.treefile` and `resfinder` results from the 
+compute nodes (`compute05` or `compute06`) to the head node (`hpc`) to our
+`home` directory interactively as follows:
+
+
+
+```
+rsync \ 
+    -avP \
+    --partial \
+    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/mlst \
+    ~/
+```
+
+```
+rsync \ 
+    -avP \
+    --partial \
+    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/resfinder \
+    ~/
+```
+
+
+```
+rsync \ 
+    -avP \
+    --partial \
+    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/iqtree \
+    ~/
+```
+
+
+
 We will the script on the `Terminal` of  `rstudio` server.
+
 
 1. Login to the rstudio server 
 2. Start the Terminal on the rstudio
@@ -1054,17 +1088,15 @@ mkdir ~/scripts
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
 ```
 
-```
-module purge
-module load R/4.3
-```
+
+>**Note: RUN THE COMMAND ON THE TERMINAL OF THE RSTUDIO SERVER**
 
 ```
 Rscript ~/scripts/visualizeAMR.R \
-    --tree ./results/ont/klebsiella/iqtree/core-snp.treefile \
-    --mlst ./results/ont/klebsiella/mlst/*.tsv \
-    --pointfinder ./results/ont/klebsiella/resfinder/*/PointFinder_results.txt \
-    --resfinder ./results/ont/klebsiella/resfinder/*/ResFinder_results_tab.txt \
+    --tree ~/iqtree/core-snp.treefile \
+    --mlst ~/mlst/*.tsv \
+    --pointfinder ~/resfinder/*/PointFinder_results.txt \
+    --resfinder ~/resfinder/*/ResFinder_results_tab.txt \
     --prefix phylogeny-amr \
-    --outdir ./results/ont/klebsiella/plots
+    --outdir ~/plots
 ```
