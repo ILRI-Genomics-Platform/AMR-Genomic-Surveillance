@@ -16,13 +16,21 @@ module load R/4.3
 
 
 # I/O
-WORKDIR="/var/scratch/$USER/ACDC_AMR2025"
-OUTDIR="${WORKDIR}/results/ont/klebsiella"
+# WORKDIR="/var/scratch/$USER/ACDC_AMR2025"
+# OUTDIR="${WORKDIR}/results/ont/klebsiella"
+
+# Rscript ~/scripts/visualizeAMR.R \
+#     --tree ${OUTDIR}/iqtree/core-snp.treefile \
+#     --mlst ${OUTDIR}/mlst/*.tsv \
+#     --pointfinder ${OUTDIR}/resfinder/*/PointFinder_results.txt \
+#     --resfinder ${OUTDIR}/resfinder/*/ResFinder_results_tab.txt \
+#     --prefix phylogeny-amr \
+#     --outdir ${OUTDIR}/plots
 
 Rscript ~/scripts/visualizeAMR.R \
-    --tree ${OUTDIR}/iqtree/core-snp.treefile \
-    --mlst ${OUTDIR}/mlst/*.tsv \
-    --pointfinder ${OUTDIR}/resfinder/*/PointFinder_results.txt \
-    --resfinder ${OUTDIR}/resfinder/*/ResFinder_results_tab.txt \
+    --tree ~/iqtree/core-snp.treefile \
+    --mlst ~/mlst/*.tsv \
+    --pointfinder ~/resfinder/*/PointFinder_results.txt \
+    --resfinder ~/resfinder/*/ResFinder_results_tab.txt \
     --prefix phylogeny-amr \
-    --outdir ${OUTDIR}/plots
+    --outdir ~/plots
