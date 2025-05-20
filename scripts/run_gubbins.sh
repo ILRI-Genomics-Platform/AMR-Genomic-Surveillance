@@ -19,7 +19,6 @@ module load gubbins/3.4
 WORKDIR="/var/scratch/$USER/ACDC_AMR2025"
 OUTDIR="${WORKDIR}/results/ont/klebsiella/gubbins"
 
-
 run_gubbins.py \
     --threads 2 \
     --prefix $OUTDIR/core-snp \
