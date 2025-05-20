@@ -19,7 +19,7 @@ module load R/4.2
 WORKDIR="/var/scratch/$USER/ACDC_AMR2025"
 OUTDIR="${WORKDIR}/results/ont/klebsiella"
 
-Rscript ./scripts/visualizeAMR.R \
+Rscript ~/scripts/visualizeAMR.R \
     --tree ${OUTDIR}/iqtree/core-snp.treefile \
     --mlst ${OUTDIR}/mlst/*.tsv \
     --pointfinder ${OUTDIR}/resfinder/*/PointFinder_results.txt \
