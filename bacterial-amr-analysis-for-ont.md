@@ -1051,7 +1051,7 @@ We will the script on the `Terminal` of  `rstudio` server.
 ```
 cd
 mkdir ~/scripts
-ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR.R ~/scripts/
+ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
 ```
 
 ```
