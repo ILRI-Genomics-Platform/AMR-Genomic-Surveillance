@@ -168,4 +168,5 @@ Please find here linked the tutorials for Introduction to Linux and for respecti
    - [Introduction to *K. pneumoniae*](Intro_Klebsiella_pneumoniae.md)
    - [*K. pneumoniae* Bacterial Whole Genome Assembly and AMR analysis](bacterial-amr-analysis-for-ont.md)
 5. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
+6. [Bacterial Genome and AMR Analysis Terms](bacterial_amr_prediction.md)
 
