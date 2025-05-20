@@ -951,6 +951,30 @@ Gubbins:
 
 Predicting recombination regions:
 
+We will submit the job using the job scheduler SLURM. 
+
+1. Download the `visualizeAMR.sh` to your `scripts` directory
+
+```
+https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/run_gubbins.sh
+```
+
+2. Edit the downloaded script
+
+>Note Ensure that you edit the `batch` parameter in the script accordingly to
+>correspond to the compute node that you were assigned.
+
+
+3. Submit it as a job
+
+```
+sbatch ./scripts/run_gubbins.sh
+```
+
+>Note: DO NOT RUN THE SCRIPT INTERACTIVELY
+
+Interactively, we'd have run the job as follows:
+
 ```
 run_gubbins.py \
     --threads 2 \
@@ -1013,6 +1037,30 @@ iqtree \
 > **Note:** It is important to use phylogenetic algorithms that take into account SNP alignments. These algorithms usually include some form of ascertainment bias correction that corrects for the 'missing' nucleotides in the alignment that were masked/removed because they did not show polymorphism.
 
 # Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
+
+
+We will submit the job using the job scheduler SLURM. 
+
+1. Download the `visualizeAMR.sh` to your `scripts` directory
+
+```
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.sh
+```
+
+2. Edit the downloaded script
+
+>Note Ensure that you edit the `batch` parameter in the script accordingly to
+>correspond to the compute node that you were assigned.
+
+
+3. Submit it as a job
+
+```
+sbatch ./scripts/visualizeAMR.sh
+```
+
+>Note: DO NOT RUN THE SCRIPT INTERACTIVELY
+Interactively, we'd have run the job as follows:
 
 ```
 module purge

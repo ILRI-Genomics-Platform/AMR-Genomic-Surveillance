@@ -6,7 +6,7 @@
 #SBATCH --error=stderr_%j.err
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
 #SBATCH --partition=batch
 
@@ -55,7 +55,7 @@ echo -e dragonflye \
     --racon 1 \
     --medaka 0 \
     --namefmt "${sample}_%05d" \
-    --cpus 4 \
+    --cpus $SLURM_CPUS_PER_TASK \
     --ram 7 \
     --noreorient
 done
