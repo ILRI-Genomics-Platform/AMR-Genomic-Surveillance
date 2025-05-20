@@ -1041,14 +1041,17 @@ iqtree \
 # Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
 
 
-Interactively, we'd have run the job as follows:
+We will the script on the `Terminal` of  `rstudio` server.
+
+1. Login to the rstudio server 
+2. Start the Terminal on the rstudio
+3. Symbolically link the script to the `scripts` directory in the `home` directory
+
 
 ```
-cd /var/scratch/$USER/ACDC_AMR2025
-```
-
-```
-ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR.R ./scripts/
+cd
+mkdir ~/scripts
+ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR.R ~/scripts/
 ```
 
 ```
@@ -1057,7 +1060,7 @@ module load R/4.3
 ```
 
 ```
-Rscript ./scripts/visualizeAMR.R \
+Rscript ~/scripts/visualizeAMR.R \
     --tree ./results/ont/klebsiella/iqtree/core-snp.treefile \
     --mlst ./results/ont/klebsiella/mlst/*.tsv \
     --pointfinder ./results/ont/klebsiella/resfinder/*/PointFinder_results.txt \
