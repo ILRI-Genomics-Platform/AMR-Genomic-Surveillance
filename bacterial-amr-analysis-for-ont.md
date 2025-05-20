@@ -1054,7 +1054,8 @@ rsync -avP --partial \
 
 ```
 rsync -avP --partial \
-    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/resfinder ~/
+    /var/scratch/jjuma/ACDC_AMR2025/results/ont/klebsiella/resfinder \
+    exclude="*_blast*" ~/
 ```
 
 
