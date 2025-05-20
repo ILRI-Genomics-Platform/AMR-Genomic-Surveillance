@@ -957,7 +957,7 @@ We will submit the job using the job scheduler SLURM.
 
 ```
 mkdir ~/scripts
-wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/run_gubbins.sh \
+wget -c -N https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/run_gubbins.sh \
 -P ~/scripts/
 ```
 
@@ -1046,7 +1046,8 @@ We will submit the job using the job scheduler SLURM.
 1. Download the `visualizeAMR.R` script
 
 ```
-wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.R \
+mkdir ~/scripts
+wget -c -N https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.R \
 -P ~/scripts/
 ```
 
@@ -1054,7 +1055,7 @@ wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Sur
 
 ```
 mkdir ~/scripts
-wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.sh \
+wget -c -N https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/visualizeAMR.sh \
 -P ~/scripts/
 ```
 
