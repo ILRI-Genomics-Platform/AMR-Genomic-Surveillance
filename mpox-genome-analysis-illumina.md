@@ -109,7 +109,7 @@ cd /var/scratch/$USER/ACDC_AMR2025
 
 ```
 mkdir -p \
-results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},primertrimmed,primer-trimmed,freebayes}
+results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},tmp/squirrel,primertrimmed,primer-trimmed,freebayes,pathoplexus-data,all_consensus,squirrel}
 ```
 
 3. *Create symblic links to the required resources
@@ -146,7 +146,7 @@ module load seqtk/1.3
 module load bwa/0.7.17
 module load freebayes/1.3.4
 module unload bcftools/1.17
-module unload bcftools/1.13
+module load bcftools/1.13
 module load squirrel/1.1.2
 ```
 
@@ -360,6 +360,12 @@ bcftools consensus \
 #### Coverage metrics and visualization with IGV
 
 ### Step 10: Squirrel - Some QUIck Reconstruction to Resolve Evolutionary Links
+The MPXV genome is pretty challenging to work with and do reliable phylogenetics
+on. It is large (~200kb), has tracts of low complexity and repetitive regions,
+and has large deletions, which can lead to difficulties producing a reliable
+alignment. With squirrel, we provide a rapid way of producing reliable
+alignments for MPXV and also enable maximum-likelihood phylogenetics pipeline
+tree estimation.
 
 ```
 export XDG_CACHE_HOME=$PWD/.cache
@@ -367,16 +373,49 @@ export XDG_CACHE_HOME=$PWD/.cache
 
 #### Add additional sequences retrieved from Pathoplexus
 
+```
+wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/mpoxv/mpox_nuc_DRC_2024.fasta \
+-P ./results/mpox/pathoplexus-data/
+```
 
+```
+wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/mpoxv/mpox_metadata_DRC_2024.txt \
+-P ./results/mpox/pathoplexus-data/
+```
+
+# Concatenate consensus fasta files
+
+```
+cat \
+    ./results/mpox/pathoplexus-data/*.fasta \
+    ./results/mpox/freebayes/SRR21755837.consensus.fa \
+    > ./results/mpox/all_consensus/mpxv_all_consensus.fasta
+```
+
+Enrichment of APOBEC3-mutations in the MPXV population are a signature of
+sustained human-to-human transmission. Identifying APOBEC3-like mutations in
+MPXV genomes from samples in a new outbreak can be a piece of evidence to
+support sustained human transmission of mpox. Squirrel can run an
+APOBEC3-reconstruction and map these mutations onto the phylogeny.
+
+Squirrel maps each query genome in the input file against a reference genome specific to each clade using minimap2. Using gofasta, the mapping file is then converted into a multiple sequence alignment.
+
+For Clade II, the reference used is NC_063383 and for Clade I, we use NC_003310.
+This means that all coordinates within an alignment will be relative to these
+references. A benefit of this is that within a clade, alignment files and be
+combined without having to recalculate the alignment.
 
 ```
 squirrel \
-    mpxv1.all_consensus.fasta \
+    results/mpox/all_consensus/mpxv_all_consensus.fasta \
     --no-mask \
     --seq-qc \
     -o squirrel \
     --outfile all_consensus.aln.fasta \
-    --tempdir squirrel_tmp \
+    --tempdir results/mpox/tmp/squirrel/ \
     -t 2 \
-    --clade cladeii
+    --run-phylo \
+    --run-apobec3-phylo \
+    --outgroups KJ642617,KJ642615 \
+    --clade split
 ```
