@@ -109,7 +109,7 @@ cd /var/scratch/$USER/ACDC_AMR2025
 
 ```
 mkdir -p \
-results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},tmp/squirrel,primertrimmed,primer-trimmed,freebayes,pathoplexus-data,all_consensus,squirrel}
+results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},tmp/squirrel,primertrimmed,primer-trimmed,freebayes,data/{ncbi,pathoplexus,all-consensus},squirrel}
 ```
 
 3. *Create symblic links to the required resources
@@ -375,21 +375,42 @@ export XDG_CACHE_HOME=$PWD/.cache
 
 ```
 wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/mpoxv/mpox_nuc_DRC_2024.fasta \
--P ./results/mpox/pathoplexus-data/
+-P ./results/mpox/data/pathoplexus
 ```
 
 ```
 wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/mpoxv/mpox_metadata_DRC_2024.txt \
--P ./results/mpox/pathoplexus-data/
+-P ./results/mpox/data/pathoplexus/
 ```
+
+```
+wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/mpoxv/MPOXV-accessions.txt \
+-P ./results/mpox/data/ncbi/
+```
+
+
+# fetch genome sequences
+```
+python ./scripts/fetch-genomes.py \
+    ./results/mpox/data/ncbi/MPOXV-accessions.txt \
+    ./results/mpox/data/ncbi/
+```
+
+
 
 # Concatenate consensus fasta files
 
 ```
 cat \
-    ./results/mpox/pathoplexus-data/*.fasta \
+    ./results/mpox/data/ncbi/KJ6* \
+    ./results/mpox/data/pathoplexus/*.fasta \
     ./results/mpox/freebayes/SRR21755837.consensus.fa \
-    > ./results/mpox/all_consensus/mpxv_all_consensus.fasta
+    > ./results/mpox/data/all-consensus/all_consensus.fasta
+```
+
+```
+sed 's/\.1.*//g' ./results/mpox/data/all-consensus/all_consensus.fasta \
+    > ./results/mpox/data/all-consensus/mpxv_all_consensus.fasta
 ```
 
 Enrichment of APOBEC3-mutations in the MPXV population are a signature of
@@ -407,15 +428,22 @@ combined without having to recalculate the alignment.
 
 ```
 squirrel \
-    results/mpox/all_consensus/mpxv_all_consensus.fasta \
+    results/mpox/data/all-consensus/mpxv_all_consensus.fasta \
     --no-mask \
     --seq-qc \
-    -o squirrel \
+    --outdir results/mpox/squirrel \
     --outfile all_consensus.aln.fasta \
-    --tempdir results/mpox/tmp/squirrel/ \
-    -t 2 \
+    --threads 2 \
     --run-phylo \
     --run-apobec3-phylo \
-    --outgroups KJ642617,KJ642615 \
-    --clade split
+    --outgroups KJ642617,KJ642615,KJ642616 \
+    --clade cladei
+```
+
+```
+rsync -avP --partial ./results/mpox/squirrel ~/
+```
+
+```
+rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/squirrel ~/ --exclude="*.fasta" --exclude="*.state"
 ```
