@@ -6,16 +6,139 @@
 
 ---
 
-# Set up directories
-Before starting the analysis, ensure that you are logged into the HPC, create an interactive session on the assigned compute node, and change directory to the project folder which is `ACDC_AMR2025`.
+## Table of Contents
+  - [Overview](#overview)
+  - [Learning Objectives](#learning-objectives)
+  - [Prerequisites](#background)
+  - [prerequisites](#prerequisites)
+  - [Scope of the Tutorial](#scope-of-the-tutorial)
+  - [Set-up](#set-up)
+      - [Workshop Environment](#workshop-environment)
+      - [Logging into the HPC](#logging-into-the-hpc)
+      - [Compute Node](compute-node)
+      - [Project organisation](#project-organisation)
+  - [Bioinformatics Analysis](#bioinformatics-analysis)
+      - [About the Sample](#about-the-sample)
+      - [Step 1: Data Quality Assessment](#step-1-data-quality-assessment)
+      - [Step 2: Genome Assembly](#step-2-genome-assembly)
+      - [Step 3: Genome Annotation](#step-3-genome-annotation)
+      - [Step 4: Pathogen Relatedness](#step-5-pathogen-relatedness)
+          - [MLST](#mlst)
+              - [MLST Output Format](#mlst-output-format)
+              - [MLST Results Interpretation](#mlst-results-interpretation)
+              - [Visualising MLST Results](#visualising-mlst-results)
+              - [MLST Interpretation
+                Limitations](#mslt-interpretation-limitations)
+      - [Step 5: Genome Annotation](#step-4-amr-detection)
+      - [Step 6: AMR Detection](#step-4-amr-detection)
+          - [Output Formart](#output-format)
+          - [AMR Dectection with ResFinder](#amr-detection-with-resfinder)
+          - [AMR Dectection with CARD/RGI](#amr-detection-with-card/rgi)
+      - [Step 7: Variant Calling and Consensus Assemblies](#step-6-variant-calling-and-consensus-assemblies)
+       - [Fast Bacterial Variant Calling with Contigs](#fast-bacterial-variant-calling-with-contigs)
+          - [Snippy Outputs](#snippy-outputs)
+          - [Visualising Snippy Variants](#visualising-snippy-variants)
+          - [Build Core and Whole Genome Alignments from Snippy Output](#build-core-and-whole-genome-alignments-from-snippy-output)
+          - [Run Snippy-core](#run-snippy-core)
+          - [Snippy Core Outputs](#snippy-core-outputs)
+          - [Cleanup the Snippy SNP Alignment Intermediates](#cleanup-the-snippy-snp-alignment-intermediates)
+          - [Compute Pairwise SNP Distances](#compute-pairwise-snp-distances)
+- [Step 8: Dealing with Recombination](#step-7-dealing-with-recombination)
+    - [Phylogenetic Analysis of Gubbins Output](#phylogenetic-analysis-of-gubbins-output)
+
+## Set-up  
+### Workshop Environmnet
+The workshop is mainly based on working in a HPC environment. However, local
+set-ups will be provisioned, although some steps of the workflows may be
+impossible to execute on laptops. For access to the HPC, you will use your
+personal computers to log into the ILRI HPC cluster, which operates on a Linux
+operating system. If using a non-Unix operating system you will require a
+program that enables interfacing with the Linux HPC environment.
+
+
+### Logging into the HPC  
+To log in to the HPC, you use the provided details (username and password) with the below command. The username follows the parttern `Bio4InfoXX`, where `XX` is a number.
+```
+ssh <user_name>@hpc.ilri.cgiar.org
+```
+- Replace `<user_name>` in the command with the provided username and execute (press enter). 
+- Next, you will be prompted for the password.  
+ >***Note:*** The password will not be visible to you as you type--just a little faith.
+
+### Compute Node
+There are two nodes to choose from: `compute05`  and `compute06`. If your username (`Bio4InfoXX`) ends with an ***Odd Number*** (1,3,5,7,9...) use `compute05` and if it ends with an ***even number*** (2,4,6,8...) use `compute06`. For the purposes of this workshop we will each avail four vCPUs (two CPU cores).  
+>Compute05
+```
+interactive -w compute05 -c 2 -J amr-surveillance -p batch
+```
+>Compute06
+```
+interactive -w compute06 -c 2 -J amr-surveillance -p batch
+```
+- `-w compute05`: specifically request to run the session on `compute05`.
+- `-c 2`: allocate 2 CPU cores.
+- `-J amr-surveillance`: names the job _amr-surveillance_.
+- `-p batch`: specifies the `SLURM` partition (queue) to use, here `batch`.
+
+<details>
+    <summary>
+        Click to toggle <b style='color:blue'>Modules to load</b>
+    </summary>
+</details>
+
+### Project Organisation  
+For any Bioinformatics project, it's good practice to have a structured file system to ensure proper logical separation of components. By so doing, we enhance clarity, collaboration and reproducibility. Before commencing our analysis, we will start by setting up the project directory structure. Widely adopted project structure include the following directories:
+- `data`: stores copy of the original raw data
+- `scripts`: stores utility scrippts and code
+- `results`/`outputs`: stores analysis results/output
+- `logs`: stores reference logs
+- `tmp`/`scratch`: stores tempoary/intermediate process outputs
+
+1. *Create a course directory called `ACDC_AMR2025`:*
+
+```
+mkdir -p /var/scratch/$USER/ACDC_AMR2025
+```
+
+# Change directory into the created directory
+
+```
+cd /var/scratch/$USER/ACDC_AMR2025
+```
+
+>**Note** Once inside the `hpc`, all instances of ```$USER``` will be equivalent to the `hpc` username that you were assigned. Your username, by default, is stored in a variable called `USER`. By using it, you will not have to type your username, rather, your shell will automatically retrieve your username which is the value stored in the `USER` variable. The `$` (dollar) prefix is used to retrieve the value of that variable.
+
+2. *Create project sub-directories:*
 
 ```
 mkdir -p \
 results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},primertrimmed,primer-trimmed,freebayes}
+```
 
+3. *Create symblic links to the required resources
+
+```
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* . 
+```
 
+
+4. *Retrieve files from the GitHub repository
+
+```
+mkdir -p ./utils
+```
+
+<!-- ```
+mkdir -p ./utils
+wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-mpox-environment.yml -P ./utils
+``` -->
+
+<!-- ```
 cp /var/scratch/global/jjuma/ACDC_AMR2025/artic-requirements.txt . 
+``` -->
+
+```
+wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt -P ./utils
 ```
 
 # Load modules
@@ -27,6 +150,7 @@ module load bwa/0.7.17
 module load freebayes/1.3.4
 module unload bcftools/1.17
 module unload bcftools/1.13
+module load squirrel/1.1.2
 ```
 
 ## Create a virtual and install dependencies
@@ -40,7 +164,7 @@ source ./py3env/bin/activate
 ```
 
 ```
-python3 -m pip install -r ./artic-requirements.txt
+python3 -m pip install -r ./utils/artic-requirements.txt
 ```
 
 # Remove human reads
