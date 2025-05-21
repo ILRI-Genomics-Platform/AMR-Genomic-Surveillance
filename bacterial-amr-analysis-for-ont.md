@@ -83,7 +83,7 @@ In this workshop we will tackle, hands-on, the basic principles employed to gene
 
 ## Set-up  
 ### Workshop Environmnet
-The workshop is mainly based on working in a HPC envirnment. However, local set-ups will be provisioned, although some steps of the workflows may be impossible to execute on laptops. For access to the HPC, you will use your personal computers to log into the ILRI HPC cluster, which operates on a Linux operating system. If using a non-Unix operating system you will require a program that enables interfacing with the Linux HPC environment.
+The workshop is mainly based on working in a HPC environment. However, local set-ups will be provisioned, although some steps of the workflows may be impossible to execute on laptops. For access to the HPC, you will use your personal computers to log into the ILRI HPC cluster, which operates on a Linux operating system. If using a non-Unix operating system you will require a program that enables interfacing with the Linux HPC environment.
 
 <!-- ## Analysis preprations -->
 
