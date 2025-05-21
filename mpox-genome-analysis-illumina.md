@@ -19,32 +19,29 @@
       - [Project organisation](#project-organisation)
   - [Bioinformatics Analysis](#bioinformatics-analysis)
       - [About the Sample](#about-the-sample)
-      - [Step 1: Data Quality Assessment](#step-1-data-quality-assessment)
-      - [Step 2: Genome Assembly](#step-2-genome-assembly)
-      - [Step 3: Genome Annotation](#step-3-genome-annotation)
-      - [Step 4: Pathogen Relatedness](#step-5-pathogen-relatedness)
-          - [MLST](#mlst)
-              - [MLST Output Format](#mlst-output-format)
-              - [MLST Results Interpretation](#mlst-results-interpretation)
-              - [Visualising MLST Results](#visualising-mlst-results)
-              - [MLST Interpretation
-                Limitations](#mslt-interpretation-limitations)
-      - [Step 5: Genome Annotation](#step-4-amr-detection)
-      - [Step 6: AMR Detection](#step-4-amr-detection)
-          - [Output Formart](#output-format)
-          - [AMR Dectection with ResFinder](#amr-detection-with-resfinder)
-          - [AMR Dectection with CARD/RGI](#amr-detection-with-card/rgi)
-      - [Step 7: Variant Calling and Consensus Assemblies](#step-6-variant-calling-and-consensus-assemblies)
-       - [Fast Bacterial Variant Calling with Contigs](#fast-bacterial-variant-calling-with-contigs)
-          - [Snippy Outputs](#snippy-outputs)
-          - [Visualising Snippy Variants](#visualising-snippy-variants)
-          - [Build Core and Whole Genome Alignments from Snippy Output](#build-core-and-whole-genome-alignments-from-snippy-output)
-          - [Run Snippy-core](#run-snippy-core)
-          - [Snippy Core Outputs](#snippy-core-outputs)
-          - [Cleanup the Snippy SNP Alignment Intermediates](#cleanup-the-snippy-snp-alignment-intermediates)
-          - [Compute Pairwise SNP Distances](#compute-pairwise-snp-distances)
-- [Step 8: Dealing with Recombination](#step-7-dealing-with-recombination)
-    - [Phylogenetic Analysis of Gubbins Output](#phylogenetic-analysis-of-gubbins-output)
+      - [Step 1: Load required modules](#step-1-load-required-modules)
+      - [Step 2: Create a virtual environment and install dependencies](#step-2-create-a-virtual-environment-and-install-dependencies)
+      - [Step 3: Remove human reads](#step-3-remove-human-reads)
+      - [Step 4: Trim adapter sequences](#step-4-trim-adapter-sequences)
+      - [Step 5: Get primer scheme](#step-5-get-primer-scheme)
+      - [Step 6: Alignment of reads](#step-6-alignment-of-reads)
+        - [Index the reference genome](#index-the-reference-genome)
+        - [Align reads to the reference genome](#align-reads-to-the-reference-genome)
+        - [Sort alignment](#sort-alignment)
+        - [Index alignment](#index-alignment)
+      - [Step 7: Trim alignments from an amplicon scheme](#step-7-trim-alignments-from-an-amplicon-scheme)
+      - [Step 8: Call variants](#step-9-call-variants)
+        - [Make depth mask, split variants into ambiguous/consensus](#make-depth-mask-split-variants-into-ambiguous-consensus)
+        - [Normalize variant records into canonical VCF representation](#normalize-variant-records-into-canonical-vcf-representation)
+      - [Step 9: Generate consensus genome](#step-9-generate-consensus-genome)
+        - [Apply ambiguous variants first using IUPAC codes](#apply-ambiguous-variants-first-using-iupac-codes)
+        - [Get viral contig name from reference](#get-viral-contig-name-from-reference)
+        - [Apply remaning variants, including
+          indels](#apply-remaning-variants-including-indels)
+        - [Coverage metrics and visualization with IGV](#coverage-metrics-and-visualization-with-igv)
+      - [Step 10: Squirrel - Some QUIck Reconstruction to Resolve Evolutionary Links](#step-10-squirrel-some-quick-reconstruction-to-resolve-evolutionary-links)
+        - [Add additional sequences retrieved from Pathoplexus](#add-additional-sequences-retrieved-from-pathoplexus)
+      
 
 ## Set-up  
 ### Workshop Environmnet
@@ -141,7 +138,7 @@ cp /var/scratch/global/jjuma/ACDC_AMR2025/artic-requirements.txt .
 wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt -P ./utils
 ```
 
-# Load modules
+### Step 1: Load required modules
 ```
 module load hostile/2.0.0
 module load fastp/0.22.0
@@ -153,7 +150,7 @@ module unload bcftools/1.13
 module load squirrel/1.1.2
 ```
 
-## Create a virtual and install dependencies
+### Step 2: Create a virtual and install dependencies
 
 ```
 python3 -m venv ./py3env
@@ -167,7 +164,7 @@ source ./py3env/bin/activate
 python3 -m pip install -r ./utils/artic-requirements.txt
 ```
 
-# Remove human reads
+### Step 3: Remove human reads
 
 ```
 hostile clean \
@@ -178,24 +175,7 @@ hostile clean \
     --index ./databases/hostile/human-t2t-hla
 ```
 
-# trim adapters using trim galore
-=======
-# Trim adapters using trim galore
->Note cutadapt which is a dependency of trim galore is not properly configured on hpc,
-we opt to use fastp instead
-
-```
-trim_galore \
-    --cores 2 \
-    --output_dir ./results/mpox/trim_galore \
-    --paired \
-    ./results/mpox/hostile/SRR21755837_1.clean_1.fastq.gz \
-    ./results/mpox/hostile/SRR21755837_2.clean_2.fastq.gz
-```
-
-======
-
-# Trim adapters using fastp
+### Step 4: Trim adapter sequences
 
 ```
 fastp \
@@ -214,7 +194,7 @@ fastp \
     2> ./results/mpox/fastp/SRR21755837.fastp.log
 ```
  
-## Get scheme
+### Step 5: Get primer scheme
 
 ```
 python ./scripts/get_scheme.py \
@@ -223,9 +203,9 @@ python ./scripts/get_scheme.py \
     yale-mpox/2000/v1.0.0-cladeii
 ```
 
-# Alignment
+### Step 6: Alignment of reads
 
-## Index the reference genome
+#### Index the reference genome
 
 ```
 cp ./results/mpox/primerschemes/yale-mpox/2000/v1.0.0-cladeii/reference.fasta \
@@ -244,7 +224,7 @@ INDEX=$(find -L ./results/mpox/bwa/index -name "*.amb" | sed 's/.amb//')
 ```
 
 
-## Align
+#### Align reads to the reference genome
 
 ```
 bwa mem \
@@ -258,7 +238,7 @@ bwa mem \
     -o ./results/mpox/bwa/alignment/SRR21755837.bam - 
 ```
 
-## Sort
+#### Sort alignment
 
 ```
 samtools sort \
@@ -268,14 +248,13 @@ samtools sort \
     ./results/mpox/bwa/alignment/SRR21755837.bam
 ```
 
-
-## Index
+#### Index alignment
 
 ```
 samtools index ./results/mpox/bwa/alignment/SRR21755837.sorted.bam
 ```
 
-## Trim alignments from an amplicon scheme
+### Step 7: Trim alignments from an amplicon scheme
 
 ```
 python ./scripts/align_trim.py \
@@ -294,7 +273,7 @@ python ./scripts/align_trim.py \
     && samtools index ./results/mpox/primertrimmed/SRR21755837.primertrimmed.rg.sorted.bam
 ```
 
-## Call variants
+### Step 8: Call variants
 
 ```
 freebayes \
@@ -310,7 +289,7 @@ freebayes \
     > ./results/mpox/freebayes/SRR21755837.gvcf
 ```
 
-## Make depth mask, split variants into ambiguous/consensus
+#### Make depth mask, split variants into ambiguous/consensus
 
 ```
 python ./scripts/process_gvcf.py \
@@ -324,7 +303,7 @@ python ./scripts/process_gvcf.py \
 ```
 
 
-## Normalize variant records into canonical VCF representation
+#### Normalize variant records into canonical VCF representation
 
 ```
 for v in "variants" "consensus"; do
@@ -335,7 +314,7 @@ for v in "variants" "consensus"; do
 done
 ```
 
-## Split the consensus sites file 
+### Step 9: Generate consensus genome 
 The file is split into a set that should be IUPAC codes and all other bases, using the ConsensusTag in the VCF
 
 ```
@@ -350,7 +329,7 @@ for vt in "ambiguous" "fixed"; do
 done
 ```
 
-## Apply ambiguous variants first using IUPAC codes. 
+#### Apply ambiguous variants first using IUPAC codes. 
 This variant set cannot contain indels or the subsequent step will break
 
 ```
@@ -360,14 +339,14 @@ bcftools consensus \
     ./results/mpox/freebayes/SRR21755837.ambiguous.fa
 ```
 
-## Get viral contig name from reference
+#### Get viral contig name from reference
 
 ```
 CTG_NAME=$(head -n1 ./results/mpox/bwa/index/reference.fasta | sed 's/>//')
 ```
 
 
-## Apply remaninng variants, including indels
+#### Apply remaning variants, including indels
 
 ```
 bcftools consensus \
@@ -378,10 +357,26 @@ bcftools consensus \
     ./results/mpox/freebayes/SRR21755837.consensus.fa
 ```
 
-## Coverage metrics and visualization with IGV
+#### Coverage metrics and visualization with IGV
 
-## Squirrel
+### Step 10: Squirrel - Some QUIck Reconstruction to Resolve Evolutionary Links
 
 ```
 export XDG_CACHE_HOME=$PWD/.cache
+```
+
+#### Add additional sequences retrieved from Pathoplexus
+
+
+
+```
+squirrel \
+    mpxv1.all_consensus.fasta \
+    --no-mask \
+    --seq-qc \
+    -o squirrel \
+    --outfile all_consensus.aln.fasta \
+    --tempdir squirrel_tmp \
+    -t 2 \
+    --clade cladeii
 ```
