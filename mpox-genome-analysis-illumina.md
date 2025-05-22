@@ -150,14 +150,14 @@ module load bcftools/1.13
 module load squirrel/1.1.2
 ```
 
-### Step 2: Create a virtual and install dependencies
+### Step 2: Create a virtual environment and install dependencies
 
 ```
-python3 -m venv ./py3env
+python3 -m venv ./mpox
 ```
 
 ```
-source ./py3env/bin/activate
+source ./mpox/bin/activate
 ```
 
 ```
@@ -165,7 +165,9 @@ python3 -m pip install -r ./utils/artic-requirements.txt
 ```
 
 ### Step 3: Remove human reads
-
+For the micro-organism of ineterest in clinical samples, there is inherent contamination with host genome, which may negatively affect downstream analyses.
+Such must be removed to maintain insight fidelity.
+The [Hostile](https://academic.oup.com/bioinformatics/article/39/12/btad728/7457481) is a robust tool that helps with host -sequence removal for long and short reads, with acclaimed efficiency and precision.
 ```
 hostile clean \
     --fastq1 ./data/mpox/illumina/SRR21755837_1.fastq.gz \
@@ -176,7 +178,9 @@ hostile clean \
 ```
 
 ### Step 4: Trim adapter sequences
-
+Sequencing adapters are short sequences added to genomic fragments during library preparation to enable sequencing.
+Being extraneous, adapters must be removed before downstream analysis.
+We will use [Fastp](https://academic.oup.com/bioinformatics/article/34/17/i884/5093234) for QC/QA; a fast and comprehensive tools for read preprocessing.
 ```
 fastp \
     --in1 ./results/mpox/hostile/SRR21755837_1.clean_1.fastq.gz \
@@ -239,7 +243,7 @@ bwa mem \
 ```
 
 #### Sort alignment
-
+`samtools` sorts `BAM` files by coordinate or read name—required for indexing and downstream analyses.
 ```
 samtools sort \
     --threads 2 \
@@ -249,13 +253,13 @@ samtools sort \
 ```
 
 #### Index alignment
-
+Indexing allows for the quick access to alignments.
 ```
 samtools index ./results/mpox/bwa/alignment/SRR21755837.sorted.bam
 ```
 
 ### Step 7: Trim alignments from an amplicon scheme
-
+To enable accurate variant calling, the pipeline requires the removal of amplification primers, dealing with biased read coverage and quality controlling the alignment for clearner `BAM` output.
 ```
 python ./scripts/align_trim.py \
     --normalise 200  \
@@ -274,7 +278,8 @@ python ./scripts/align_trim.py \
 ```
 
 ### Step 8: Call variants
-
+Variant calling enables us to detect changes in the genome and profile circulating variants.
+The Genome VCF (GVCF) format includes other genomic regions and not just the variants, which is helpful with consensus generation.
 ```
 freebayes \
     -p 1 \
@@ -290,7 +295,7 @@ freebayes \
 ```
 
 #### Make depth mask, split variants into ambiguous/consensus
-
+FOllowing, we process the GVCF file to identify regions with low coverage, therefore, baring uncertainty, to be masked, generate a standard VCF and the concensus VCF (ref with inserted variants).
 ```
 python ./scripts/process_gvcf.py \
     -d 10 \
@@ -305,6 +310,12 @@ python ./scripts/process_gvcf.py \
 
 #### Normalize variant records into canonical VCF representation
 
+`VCF` normalisation is needed for:
+- Variants annotation accuracy
+- compatibility with downstream tools
+- consistent variants representation (e.g., indels can be written multiple ways)
+- helps with variants comparison across tools and/or studies
+
 ```
 for v in "variants" "consensus"; do
     bcftools norm \
@@ -315,7 +326,7 @@ done
 ```
 
 ### Step 9: Generate consensus genome 
-The file is split into a set that should be IUPAC codes and all other bases, using the ConsensusTag in the VCF
+To generate a reliable consensus, we need to dealianate ambiguous (low-confidence; not used in the consensus) from fixed (high-confidence variants; added to the consensus) variants. The `ConsensusTag` in the `VCF` helps us with this.
 
 ```
 for vt in "ambiguous" "fixed"; do
@@ -392,7 +403,9 @@ cat \
     > ./results/mpox/all_consensus/mpxv_all_consensus.fasta
 ```
 
-Enrichment of APOBEC3-mutations in the MPXV population are a signature of
+APOBEC3 (Apolipoprotein B mRNA Editing Catalytic Polypeptide-like 3) is a family of cytidine deaminases in humans.
+They are part of human innate immunity that restrict viruses by deaminating cytosine (C) to uracil (U) in viral DNA during replication.
+Enrichment of APOBEC3-mutations (C +&rarr; T or G -&rarr; A) in the MPXV population are a signature of
 sustained human-to-human transmission. Identifying APOBEC3-like mutations in
 MPXV genomes from samples in a new outbreak can be a piece of evidence to
 support sustained human transmission of mpox. Squirrel can run an
@@ -402,7 +415,7 @@ Squirrel maps each query genome in the input file against a reference genome spe
 
 For Clade II, the reference used is NC_063383 and for Clade I, we use NC_003310.
 This means that all coordinates within an alignment will be relative to these
-references. A benefit of this is that within a clade, alignment files and be
+references. A benefit of this is that within a clade, alignment files can be
 combined without having to recalculate the alignment.
 
 ```
