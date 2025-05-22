@@ -1,9 +1,8 @@
 ## **What is Monkeypox**
-**According to Africa CDC:** "Monkeypox was first discovered in 1958 when two outbreaks of a pox-like disease occurred in **colonies of monkeys** kept for polio virus research in Singapore, hence the name ‘monkeypox.’ The **first human case of monkeypox was recorded in 1970 in the Democratic Republic of the Congo (DRC)**, which has subsequently spread to other *central and western African countries*. In the interim period *outbreaks were reported in lab animals in the United States* and *in a zoo in Rotterdam*.  
-There are two known clades of the virus: **clade I** - **subclades Ia and Ib** - and **clade II** - **subclades IIa and IIb**. The clade I is most frequently reported from countries in central Africa and tends to be more severe than clade II. Cameroon is the only country known to harbour both clades."  
+**According to Africa CDC:** "Monkeypox was first discovered in 1958 when two outbreaks of a pox-like disease occurred in **colonies of monkeys** kept for polio virus research in Singapore, hence the name ‘monkeypox.’ The **first human case of monkeypox was recorded in 1970 in the Democratic Republic of the Congo (DRC)**, which has subsequently spread to other *central and western African countries*. In the interim period *outbreaks were reported in lab animals in the United States* and *in a zoo in Rotterdam*. There are two known clades of the virus: **clade I** - **subclades Ia and Ib** - and **clade II** - **subclades IIa and IIb**. The clade I is most frequently reported from countries in central Africa and tends to be more severe than clade II. Cameroon is the only country known to harbour both clades."  
 
-✔ In 2022–2023 a global outbreak of mpox was caused by the clade IIb strain.
-✔ In November 2022, WHO under International Classification of Diseases (ICD), renamed monkeypox disease to **mpox**.
+✔ In **2022–2023** a **global outbreak of mpox** was caused by the clade IIb strain.  
+✔ In November 2022, WHO under International Classification of Diseases (ICD), **renamed monkeypox disease to mpox**.  
 ✔ In 2022, an outbreak of clade I was reported in a refugee camp in Sudan. In the DRC a clade Ib outbreak was reported and now in other countries as of 2024.  
 
 ---
