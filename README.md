@@ -122,5 +122,7 @@ Please find here linked the tutorials for Introduction to Linux and for respecti
    - [Introduction to *E. coli*](Intro_Escherichia_coli.md)
    - [*E. coli* Bacterial Whole Genome Assembly and AMR analysis](bacterial-amr-analysis-for-illumina.md)
 5. [*Monkeypox virus*](mpox-genome-analysis-illumina.md)
+   - [Introduction to *Monkeypox Virus* (MPXV)](Intro_Monkeypox_Virus.md)
+   - [Monkeypox Virus Whole Genome Sequene analysis](mpox-genome-analysis-illumina.md) - Short Reads (Illumina)
 6. [Bacterial Genome and AMR Analysis Terms](bacterial_genome_terms.md)
 
