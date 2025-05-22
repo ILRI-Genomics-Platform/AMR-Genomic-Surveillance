@@ -573,7 +573,7 @@ references. A benefit of this is that within a clade, alignment files and be
 combined without having to recalculate the alignment.
 
 
-#### Create a conda environemnt for squirrel
+<!-- #### Create a conda environemnt for squirrel
 
 ```
 module purge
@@ -590,7 +590,7 @@ mamba create -c bioconda -c conda-forge -n squirrel -y squirrel
 #### Activate the conda environment
 ```
 conda activate squirrel
-```
+``` -->
 
 ```
 squirrel \
@@ -613,4 +613,14 @@ rsync -avP --partial ./results/mpox/squirrel ~/ --exclude="*.fasta" --exclude="*
 
 ```
 rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/squirrel ~/ --exclude="*.fasta" --exclude="*.state"
+```
+
+# Temporal signal
+
+```
+tail -n+2 ./results/mpox/data/pathoplexus/mpox_metadata_DRC_2024.txt | cut -f1,14 > ./results/mpox/data/pathoplexus/dates.txt
+```
+
+```
+
 ```
