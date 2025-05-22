@@ -428,6 +428,14 @@ wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Sur
 
 
 # fetch genome sequences
+
+**Project paper:** [Publication](https://pmc.ncbi.nlm.nih.gov/articles/PMC11484285/pdf/eurosurv-29-38-1.pdf)
+We will use 12 MPOXV genomes sequenced from the DRC. We can either retrieve these
+sequences from the NCBI or Pathoplexus.
+
+
+
+
 ```
 python ./scripts/fetch-genomes.py \
     ./results/mpox/data/ncbi/MPOXV-accessions.txt \
