@@ -9,8 +9,8 @@
 ## Table of Contents
   - [Overview](#overview)
   - [Learning Objectives](#learning-objectives)
-  - [Prerequisites](#background)
-  - [prerequisites](#prerequisites)
+  - [Background](#background)
+  - [Prerequisites](#prerequisites)
   - [Scope of the Tutorial](#scope-of-the-tutorial)
   - [Set-up](#set-up)
       - [Workshop Environment](#workshop-environment)
@@ -43,8 +43,46 @@
         - [Add additional sequences retrieved from Pathoplexus](#add-additional-sequences-retrieved-from-pathoplexus)
       
 
+### Background
+
+Monkeypox virus (MPXV) was first isolated in Denmark in the late 1950s from a
+colony of laboratory monkeys from Singapore that were going to be used for polio
+virus research. During the following decade, additional outbreaks of mpox were
+seen in laboratory animals in the United States as well as zoo animals in
+Rotterdam. MPXV was first identified as a cause of disease in humans in the
+1970s in what is now the Democratic Republic of the Congo (DRC).
+
+
+In November 2022, the World Health Organization, who is responsible for naming and renaming of diseases under the International Classification of Diseases (ICD), changed the name of the disease referred to as “monkeypox” to “mpox” [1]. This change was made to follow current best practices of not naming diseases after animals or geographic locations and to reduce any stigma that could be associated with the original name.
+
+Mpox is an infectious disease caused by the monkeypox virus (MPXV). There are
+two known clades of MPXV: clade I (previously called the Congo Basin clade),
+which includes subclades Ia and Ib; and clade II (previously called the West
+Africa clade), which includes subclades IIa and clade IIb. Historically mpox was
+primarily characterized by spread from animals to humans, but in recent years,
+more and more human-to-human transmission has occurred. It can spread among
+humans through: 
+- direct close physical contact with an infected person, including sexual contact
+- indirect contact, that is, through contact with contaminated materials
+- respiratory contact, through infectious respiratory particles
+- mother-to-child transmission (vertical transmission).
+
+The existence of subclades of clade I was detected during the outbreak in the
+Democratic Republic of the Congo (DRC) that started in 2023. 
+
+#### Epidemiology
+Africa
+
+Outbreak in Central and East Africa starting in 2023 — On August 14, 2024, the
+World Health Organization (WHO) declared for a second time that mpox was a
+global public health emergency[REF]. From January 1, 2024 to August 18, 2024, a
+total of 21,786 laboratory-confirmed mpox cases leading to 607 deaths were
+reported from 12 African countries, with approximately 90 percent of the cases
+occurring in the DRC [REF].
+
+
 ## Set-up  
-### Workshop Environmnet
+### Workshop Environment
 The workshop is mainly based on working in a HPC environment. However, local
 set-ups will be provisioned, although some steps of the workflows may be
 impossible to execute on laptops. For access to the HPC, you will use your
