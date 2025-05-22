@@ -234,27 +234,33 @@ fastp \
  
 ### Step 5: Get primer scheme
 
-```
+<!-- ```
 python ./scripts/get_scheme.py \
     --read-file ./results/mpox/fastp/SRR21755837_R1.trim.fastq.gz \
     --scheme-directory ./results/mpox/primerschemes/ \
     yale-mpox/2000/v1.0.0-cladeii
-```
+``` -->
 
 ### Step 6: Alignment of reads
 
 #### Index the reference genome
 
-```
+<!-- ```
 cp ./results/mpox/primerschemes/yale-mpox/2000/v1.0.0-cladeii/reference.fasta \
     ./results/mpox/bwa/index/
+``` -->
+
+```
+cp ./primer_scheme/reference.fasta \
+    ./primer_scheme/primer.bed \
+    ./results/mpox/primerschemes/
 ```
 
 
 ```
 bwa index \
     -p ./results/mpox/bwa/index/reference \
-    ./results/mpox/bwa/index/reference.fasta
+    ./results/mpox/primerschemes/reference.fasta
 ```
 
 ```
