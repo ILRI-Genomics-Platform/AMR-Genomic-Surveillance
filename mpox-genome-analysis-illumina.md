@@ -303,7 +303,7 @@ samtools index ./results/mpox/bwa/alignment/SRR21755837.sorted.bam
 ```
 python ./scripts/align_trim.py \
     --normalise 200  \
-    ./results/mpox/primerschemes/yale-mpox/2000/v1.0.0-cladeii/primer.bed \
+    ./results/mpox/primerschemes/primer.bed \
     --paired \
     --no-read-groups \
     --primer-match-threshold 35 \
@@ -411,9 +411,9 @@ alignment. With squirrel, we provide a rapid way of producing reliable
 alignments for MPXV and also enable maximum-likelihood phylogenetics pipeline
 tree estimation.
 
-```
+<!-- ```
 export XDG_CACHE_HOME=$PWD/.cache
-```
+``` -->
 
 #### Add additional sequences retrieved from Pathoplexus
 
