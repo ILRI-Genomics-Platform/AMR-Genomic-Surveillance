@@ -27,14 +27,13 @@ Some **sample types:**
 
  - Biological samples collected for **'OMICs'** analysis in various studies like **genomics, transcriptomics, proteomics, and microbiome research** generate bioinformatics data.   
 
-✔ **Example of Key Data in Clinical Sample Collection:**
+### **Example of Key Data in Clinical Sample Collection:**
 1. **Patient Identification & Ethical Consent** – Secure **informed consent** for data use.  
 2. **Sample Acquisition & Labeling** – Use standardized identifiers and ensure anonymization (e.g., **barcode labeling**).  
 3. **Preservation & Transportion metadata** – Follow protocols for **RNA stabilization, freezing, or fixation**.  
 4. **Metadata Logging** – Maintain detailed records in **LIMS (Laboratory Information Management Systems)**.  
 
-✔ **Example:**  
-In a **COVID-19 sequencing project**, patient nasal swabs are collected, labeled with **unique sample IDs**, and stored at -80°C before sequencing.
+**Example:** In a **COVID-19 sequencing project**, patient nasal swabs are collected, labeled with **unique sample IDs**, and stored at -80°C before sequencing.
 
  - During data collection it is critical to ensure **accuracy, consistency, and standardization** across research projects. **Metadata** plays a critical role in this.  
  
@@ -52,8 +51,7 @@ Metadata provides **contextual details** for biological datasets, ensuring usabi
 | **Bioinformatics Workflow Metadata** | Computational pipeline details | Reference genome, alignment tool |
 | **Environmental Metadata** | Context regarding sample origin | pH, temperature, geographical location |
 
-✔ **Example:**  
-In an **E. coli antibiotic resistance study**, metadata includes **sample origin, antibiotic exposure levels, sequencing parameters**, and analysis tools.
+**Example:** In an **E. coli antibiotic resistance study**, metadata includes **sample origin, antibiotic exposure levels, sequencing parameters**, and analysis tools.
 
 ---
 
@@ -66,8 +64,7 @@ Once collected, biological samples undergo **laboratory processing** followed by
 3. **Sequencing (NGS, Sanger):** Generating raw genomic data.  
 4. **Data Quality Control (QC):** **FastQC, MultiQC** for sequencing integrity checks.  
 
-✔ **Example:**  
-In a **whole-genome sequencing project**, microbial DNA is extracted, prepared using **Illumina library kits**, sequenced, and assessed using **FastQC**.
+**Example:** In a **whole-genome sequencing project**, microbial DNA is extracted, prepared using **Illumina library kits**, sequenced, and assessed using **FastQC**.
 
  - During data collection it is critical to ensure **accuracy, consistency, and interoperability** across research projects.  
  
@@ -86,8 +83,7 @@ The **FAIR data principles (Findable, Accessible, Interoperable, Reusable)** ens
 | **Interoperable** | Must be machine-readable & structured | Use of **JSON/XML metadata** in sequencing data |
 | **Reusable** | Must have clear licensing & provenance | Annotated gene expression datasets in **NCBI GEO** |
 
-✔ **Example:**  
-A **Mycobacterium tuberculosis genome** shared in **NCBI GenBank** includes detailed **metadata annotations, unique identifiers, and standardized formats**, ensuring it is FAIR.
+**Example:** A **Mycobacterium tuberculosis genome** shared in **NCBI GenBank** includes detailed **metadata annotations, unique identifiers, and standardized formats**, ensuring it is FAIR.
 
 ---
 
@@ -101,8 +97,7 @@ Frictionless Data aims to **simplify data usability** by reducing complexity and
 ✔ **Metadata Inclusion:** Ensures clarity in dataset interpretation.  
 ✔ **Automated Validation:** Helps detect errors before data submission.  
 
-✔ **Example:**  
-A **clinical sequencing dataset** is prepared in **CSV format with JSON metadata**, making it easily transferable between different research teams.
+**Example:** A **clinical sequencing dataset** is prepared in **CSV format with JSON metadata**, making it easily transferable between different research teams.
 
 ---
 
@@ -120,14 +115,13 @@ NCBI provides repositories for submitting bioinformatics datasets.
 | **BioProject & BioSample** | Tracks metadata for research projects |
 
 ✔ **Steps for NCBI Data Submission**
- 1. **Prepare Data** → Format as **FASTA, FASTQ, BAM, VCF**.  
- 2. **Generate Metadata** → Include sample details, sequencing conditions.  
- 3. **Submit via Web Interface or API** → Use **NCBI SRA Submission Portal**.  
- 4. **Receive Accession Numbers** → Enables dataset retrieval and citation.  
- 5. **Validation** → NCBI checks for consistency before approval.  
+ 1. **Prepare Data:** Format as **FASTA, FASTQ, BAM, VCF**.  
+ 2. **Generate Metadata:** Include sample details, sequencing conditions.  
+ 3. **Submit via Web Interface or API:** Use **NCBI SRA Submission Portal**.  
+ 4. **Receive Accession Numbers:** Enables dataset retrieval and citation.  
+ 5. **Validation:** NCBI checks for consistency before approval.  
 
-✔ **Example:**  
-A researcher submits **Monkeypox virus genome sequences** to **NCBI GenBank**, receives an **accession number (MW123456)**, and makes the dataset accessible for global research.
+**Example:** A researcher submits **Monkeypox virus genome sequences** to **NCBI GenBank**, receives an **accession number (MW123456)**, and makes the dataset accessible for global research.
 
 ---
 
@@ -136,46 +130,46 @@ A researcher submits **Monkeypox virus genome sequences** to **NCBI GenBank**, r
 ### **Raw Data Storage (Sequencing & Experimental Data)**
 ✔ **File Formats:** FASTQ, BAM, VCF, CSV, JSON, HDF5.  
 ✔ **Storage Types:**  
-   - **Local Servers & HPC Clusters** → High-throughput computing environments.  
-   - **Cloud Storage Solutions** → AWS S3, Google Cloud, NCBI SRA.  
-   - **Networked Databases** → Relational (SQL-based), NoSQL databases.  
+   - **Local Servers & HPC Clusters:** High-throughput computing environments.  
+   - **Cloud Storage Solutions:** AWS S3, Google Cloud, NCBI SRA.  
+   - **Networked Databases:** Relational (SQL-based), NoSQL databases.  
 
-✔ **Example:** Whole-genome sequencing (WGS) data from *Klebsiella pneumoniae* is stored in **FASTQ format** in a **secure institutional server**, then submitted to **NCBI Sequence Read Archive (SRA)** for public access.
+**Example:** Whole-genome sequencing (WGS) data from *Klebsiella pneumoniae* is stored in **FASTQ format** in a **secure institutional server**, then submitted to **NCBI Sequence Read Archive (SRA)** for public access.
 
 ### **Metadata Storage Solutions**
 ✔ **Structured Databases:** PostgreSQL, MySQL, MongoDB.  
 ✔ **Metadata Storage Standards:**  
-   - **MIxS (Minimum Information about any Sequence standard)** → Standardizes metadata for genomic sequencing.  
-   - **ISO 8601 Date Standardization** → Ensuring all **timestamps** follow **YYYY-MM-DDTHH:MM:SSZ** to maintain consistency.  
+   - **MIxS (Minimum Information about any Sequence standard):** Standardizes metadata for genomic sequencing.  
+   - **ISO 8601 Date Standardization:** Ensuring all **timestamps** follow **YYYY-MM-DDTHH:MM:SSZ** to maintain consistency.  
 
-✔ **Example:** **Metadata from antibiotic resistance sequencing** is stored in a **PostgreSQL database**, including sample ID, collection date (**2025-05-22T14:30:00Z**), and sequencing platform details.
+**Example:** **Metadata from antibiotic resistance sequencing** is stored in a **PostgreSQL database**, including sample ID, collection date (**2025-05-22T14:30:00Z**), and sequencing platform details.
 
 ---
 
 ## **Data Standardization in Bioinformatics**
 Standardization ensures **consistent data formats**, enabling easy data sharing and interpretation.
 
-### **✔ Standardizing Biological Sample Data**
+### **Standardizing Biological Sample Data**
 ✔ **Unique Identifiers:**  
    - **DOIs (Digital Object Identifiers)** for publications.  
-   - **NCBI Accession Numbers** for genomic sequences.  
+   - **NCBI Accession Numbers** for genomic sequences.   
 ✔ **File Format Standards:**  
    - **FASTA (for DNA sequences)**  
    - **BAM (for aligned sequencing reads)**  
    - **VCF (for variant calling data)**  
 
-✔ **Example:** *Mycobacterium tuberculosis* whole-genome sequencing results follow a standardized pipeline, producing **BAM files**, and storing metadata in the **MIxS-compliant format**.
+**Example:** *Mycobacterium tuberculosis* whole-genome sequencing results follow a standardized pipeline, producing **BAM files**, and storing metadata in the **MIxS-compliant format**.
 
-### **✔ ISO 8601 Date Formats in Bioinformatics**
+### **ISO 8601 Date Formats in Bioinformatics**
 ISO 8601 standard ensures **date uniformity**, preventing misinterpretation across different systems and time zones.
 
-✔ **ISO Date Format Examples:**  
+**ISO Date Format Examples:**  
 | **Format** | **Description** | **Example** |
 |------------|--------------|-------------|
 | **YYYY-MM-DD** | Basic format | `2025-05-22` |
 | **YYYY-MM-DDTHH:MM:SSZ** | Includes time in UTC | `2025-05-22T14:30:00Z` |
 | **YYYY-MM-DDTHH:MM:SS+02:00** | Time with offset | `2025-05-22T14:30:00+02:00` |
 
-✔ **Example:** *E. coli* genomic study records **sample collection timestamps in ISO 8601 format**, ensuring correct interpretation across research databases.
+**Example:** *E. coli* genomic study records **sample collection timestamps in ISO 8601 format**, ensuring correct interpretation across research databases.
 
 ---
