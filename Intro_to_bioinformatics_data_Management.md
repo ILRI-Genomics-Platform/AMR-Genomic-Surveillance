@@ -152,7 +152,8 @@ Standardization ensures **consistent data formats**, enabling easy data sharing 
 ### **Standardizing Biological Sample Data**
 ✔ **Unique Identifiers:**  
    - **DOIs (Digital Object Identifiers)** for publications.  
-   - **NCBI Accession Numbers** for genomic sequences.   
+   - **NCBI Accession Numbers** for genomic sequences.  
+ 
 ✔ **File Format Standards:**  
    - **FASTA (for DNA sequences)**  
    - **BAM (for aligned sequencing reads)**  
