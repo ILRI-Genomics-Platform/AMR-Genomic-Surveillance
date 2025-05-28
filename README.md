@@ -125,4 +125,4 @@ Please find here linked the tutorials for Introduction to Linux and for respecti
    - [Introduction to *Monkeypox Virus* (MPXV)](Intro_Monkeypox_Virus.md)
    - [Monkeypox Virus Whole Genome Sequene analysis](mpox-genome-analysis-illumina.md) - Short Reads (Illumina)
 6. [Bacterial Genome and AMR Analysis Terms](bacterial_genome_terms.md)
-
+7. [Bioinformatics Data Management](Intro_to_bioinformatics_data_Management.md)
