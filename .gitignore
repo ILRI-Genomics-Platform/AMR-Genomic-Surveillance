@@ -12,3 +12,6 @@ databases/
 primer_scheme/
 py3env/
 results/
+
+scripts/*.log
+
