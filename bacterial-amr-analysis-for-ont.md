@@ -302,8 +302,19 @@ NanoPlot \
     --prefix SRR28370682-final_
 ```
 
-Let's copy the second round of quality assessment results to our local computers, as before.
-> Note: Ensure you change the `<user_name>` to your `user` name allocated on the `hpc`
+Let's move the quality assessment report from the `scratch` folder to the `home` directory.  
+
+```
+rsync -avP \
+    --partial \
+    ./results/ont/klebsiella/nanoplot/SRR28370682-final_NanoPlot-report.html \
+    ~/
+```
+
+Now, let's copy the second round of quality assessment results to our local computers, as before.
+> Note: Ensure you change the `<user_name>` to your `user` name allocated on the `hpc`  
+
+Copy the NanoPlot report to your `home` directory on `local pc`
 
 ```
 rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682-final_NanoPlot-report.html ~/
@@ -399,10 +410,9 @@ rsync -avP \
 
 On the terminal of your local machine transfer the assembly as below.
 
-**Copy the NanoPlot report to your `home` directory on `local pc`**
+**Copy the assembly to your `home` directory on `local pc`**
 ```
-rsync -avzP \
-    ./results/ont/klebsiella/dragonflye/SRR28370682.fa ~/
+rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682.fa ~/
 ```
 
 
@@ -411,11 +421,7 @@ rsync -avzP \
 After assembling our genome, we need to characterise it through annotation to enable inferencing. Prokka (Prokaryotic annotation) is a pipeline tool designed for the rapid annotation of prokaryotic genomes, including bacteria and archaea. After Prokka annotation, tools like ABRicate or RGI can be run on the annotated genome to identify resistance genes in their proper genomic context.
 
 Prokka respects the default Linux temporary directory `--TMPDIR`. Therefore we
-assign one if none exists.
-
-```
-${TMPDIR:=/tmp}
-```
+assign one if none exists.  
 
 However, because we are all running the same pipeline and we don't want to
 overwrite each other's files, we will use our project-specific temporary
@@ -427,11 +433,8 @@ export TMPDIR=./results/ont/klebsiella/tmp/prokka/
 
 The tool also comes with its own database which is stored in the variable
 `PROKKA_DBDIR`. To point it to a custom DB, the variable can be tailored and
-exported.
+exported as follows `export PROKKA_DBDIR=<path/to/custom/db>`
 
-```
-export PROKKA_DBDIR=<path/to/custom/db>
-```
 
 ```
 prokka \
@@ -1002,7 +1005,10 @@ mask_gubbins_aln.py \
 We can then convert the Gubbins `.gff` masking feature output into a `BED`
 format file usable with `snippy` as argument to the `--mask` option.
 
-Convert Gubbins GFF to BED format: `module load bedops`
+Convert Gubbins GFF to BED format: 
+```
+module load bedops/2.4.29
+```
 
 ```
 gff2bed < ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff > ./results/ont/klebsiella/gubbins/gubbins_recomb.bed
@@ -1067,7 +1073,7 @@ Symbolically link the script to the `scripts` directory in the `home` directory
 
 ```
 cd
-mkdir ~/scripts
+mkdir -p ~/scripts
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
 ```
 
@@ -1075,7 +1081,7 @@ ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
 >**Note: Run the script interactively on the `rstudio` server `Terminal`** 
 
 ```
-module load R/4.3
+module load R/4.4
 ```
 
 ```
