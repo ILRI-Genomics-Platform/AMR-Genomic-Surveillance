@@ -19,8 +19,8 @@ module load gubbins/3.4
 WORKDIR="/var/scratch/$USER/ACDC_AMR2025"
 OUTDIR="${WORKDIR}/results/ont/klebsiella/gubbins"
 
-echo -r "working directory: ${WORKDIR}"
-echo -r "output directory: ${OUTDIR}"
+echo -e "working directory: ${WORKDIR}"
+echo -e "output directory: ${OUTDIR}"
 
 
 

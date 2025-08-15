@@ -12,7 +12,8 @@
 
 
 # load the required module(s)
-module load R/4.3
+module load R/4.4
+export R_LIBS=/export/apps/R/4.4/training-libs
 
 
 # I/O
