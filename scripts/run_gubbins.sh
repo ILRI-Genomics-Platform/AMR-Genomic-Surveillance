@@ -25,7 +25,7 @@ echo -r "output directory: ${OUTDIR}"
 
 
 # run gubbins to predict recombination spots
-echo run_gubbins.py \
+run_gubbins.py \
     --threads $SLURM_CPUS_PER_TASK \
     --prefix $OUTDIR/core-snp \
     --iterations 5 \
