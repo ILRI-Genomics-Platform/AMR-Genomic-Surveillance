@@ -244,6 +244,7 @@ rsync -avP \
 ```
 
 On the terminal of your local machine transfer the QC report file as below.
+Change **<user_name>** with your actual `username`
 
 **Copy the NanoPlot report to your `home` directory on `local pc`**
 
@@ -251,11 +252,6 @@ On the terminal of your local machine transfer the QC report file as below.
 rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
 ```
 
-For example:
-
-```
-rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682-original_NanoPlot-report.html ~/
-```
 
 **Remove adapters**
 

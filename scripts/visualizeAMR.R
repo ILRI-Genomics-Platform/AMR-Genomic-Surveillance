@@ -12,7 +12,8 @@ version <- as.numeric(paste0(version$major, '.',
 userLibrary <- paste0("/home/", user, "/R/x86_64-pc-linux-gnu-library/", version)
 
 # reorder the lipaths
-.libPaths(c(userLibrary, .libPaths()))
+.libPaths(c('/export/apps/R/4.4/training-libs', userLibrary, .libPaths()))
+
 
 repos='http://cran.us.r-project.org'
 
@@ -32,10 +33,11 @@ ipak <- function(pkg, cran=TRUE){
   }
 }
 
-pkgs <- c("pacman", "argparse", "ggplot2", "tidyverse", "ape")
+pkgs <- c("pacman", "argparse", "ggplot2", "tidyverse", "ape", 
+          "splitstackshape", "ggnewscale", "scales")
 ipak(pkg = pkgs, cran=TRUE)
 
-pkgs <- c("ComplexHeatmap", "ggtree", "treeio", "ggtreeExtra", "ggnewscale", "splitstackshape")
+pkgs <- c("ComplexHeatmap", "ggtree", "treeio")
 ipak(pkg = pkgs, cran=FALSE)
 
 # pacman::p_load(
