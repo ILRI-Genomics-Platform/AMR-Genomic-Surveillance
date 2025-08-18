@@ -316,6 +316,13 @@ export TMPDIR=./results/illumina/ecoli/tmp/amrfinder/
 AMRFINDER_DB=$(find /export/apps/amrfinder/4.0.22/data/2025-03-25.1 -name "AMR.LIB" | sed 's=AMR.LIB==')
 ```
 
+Purge all the loaded modules and load `amrfinder` and `mlst`.
+```
+module purge
+module load mlst/2.23.0
+module load amrfinder/4.0.22
+```
+
 ```
 amrfinder \
     --nucleotide ./results/illumina/ecoli/prokka/SRR25008769.fna \
@@ -335,7 +342,7 @@ amrfinder \
 ### Multilocus sequence typing
 
 ```
-MLST_DB=$(find ./databases/mlst/database/ -name "mlst.fa" | sed 's=blast/mlst.fa==')
+MLST_DB=$(find /export/apps/mlst/2.23.0/db -name "mlst.fa" | sed 's=blast/mlst.fa==')
 ```
 
 ```
