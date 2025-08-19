@@ -523,23 +523,23 @@ The first line of a script (`#!/bin/bash`) tells the system which interpreter to
 
 **Variables and Environment**
 
-***Variable***: a named symbol that stores value which can be evalauted in a command or script.
+***Variable***: a named symbol that stores a value which can be evaluated in a command or script.
 
-***Envirnment***: a collection of key-value pairs that define the behaviour of processes.
+*** Environment ***: a collection of key-value pairs that define the behaviour of processes.
 
 ```bash
 # Set variables
-PROJECT_NAME="Genome Analysis"
-DATA_DIR="/path/to/data"
-NUM_SAMPLES=10
+project_name="Genome Analysis"
+data_dir="/var/scratch/$USER/**/data"
+num_samples=10
 
 # Use variables
-echo "Project: $PROJECT_NAME"
-echo "Analyzing $NUM_SAMPLES samples from $DATA_DIR"
+echo "Project: $project_name"
+echo "Analyzing $num_samples samples from $data_dir"
 
 # Command substitution
-TODAY=$(date +%Y-%m-%d)
-echo "Report date: $TODAY"
+today=$(date +%Y-%m-%d)
+echo "Report date: $today"
 
 # Environment variables
 echo "User home: $HOME"
@@ -548,8 +548,8 @@ echo "Path: $PATH"
 
 # Reading user input
 echo -n "Enter sequence file: "
-read FILENAME
-echo "You selected: $FILENAME"
+read file_name
+echo "You selected: $file_name"
 ```
 
 #### Script Control Structures
@@ -561,22 +561,22 @@ What if you want to do something based on whether some logic evaluates to `true`
 #!/bin/bash
 
 # If-else statement
-FILE="sequence.fa"
-if [ -f "$FILE" ]; then
-    echo "$FILE exists."
+file="/var/scratch/$USER/**/scripting/data/fasta/protein.fa"
+if [ -f "$file" ]; then
+    echo "$file exists."
 else
-    echo "$FILE does not exist."
+    echo "$file does not exist."
     exit 1
 fi
 
 # Check file size
-SIZE=$(stat -c%s "$FILE")
-if [ $SIZE -gt 1000000 ]; then
-    echo "$FILE is large (> 1MB)."
-elif [ $SIZE -gt 1000 ]; then
-    echo "$FILE is medium (> 1KB)."
+size=$(stat -c%s "$file")
+if [ $size -gt 1000000 ]; then
+    echo "$file is large (> 1MB)."
+elif [ $size -gt 1000 ]; then
+    echo "$file is medium (> 1KB)."
 else
-    echo "$FILE is small."
+    echo "$file is small."
 fi
 
 # Test command options
@@ -594,17 +594,17 @@ How can we perform the same operations on some sequence of input?
 #!/bin/bash
 
 # For loop with files
-for FILE in *.fastq; do
-    echo "Found FASTQ: $FILE"
-    BASE=$(basename "$FILE" .fastq)
-    echo "Base name: $BASE"
+for file in /var/scratch/$USER/**/scripting/data/fastq/*.fastq; do
+    echo "Found FASTQ: $file"
+    base=$(basename "$file" .fastq)
+    echo "Base name: $base"
 done
 
 # While loop
-COUNT=1
-while [ $COUNT -le 5 ]; do
-    echo "Count: $COUNT"
-    COUNT=$((COUNT+1))
+count=1
+while [ $count -le 5 ]; do
+    echo "Count: $count"
+    count=$((count+1))
 done
 ```
 
@@ -612,12 +612,12 @@ done
 
 It is possible to substitute the output of a command in another command.
 ```bash
-# Store command output in variable
-NUM_SEQS=$(grep -c "^>" sequence.fa)
-echo "Found $NUM_SEQS sequences"
+# Store command output in a variable
+num_seqs=$(grep -c "^>" /var/scratch/$USER/**/scripting/data/fasta/proteins.fasta)
+echo "Found $num_seqs sequences"
 
 # Use in expressions
-if [ $(wc -l < data.txt) -gt 100 ]; then
+if [ $(wc -l < /var/scratch/$USER/**/scripting/data/file.txt) -gt 100 ]; then
     echo "File has more than 100 lines"
 fi
 ```
@@ -627,7 +627,7 @@ fi
 ```bash
 #!/bin/bash
 # Script: extract_long_seqs.sh
-# Purpose: Extract sequences longer than specified length
+# Purpose: Extract sequences longer than the specified length
 
 # Check arguments
 if [ $# -ne 2 ]; then
@@ -635,22 +635,22 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-FASTA_FILE=$1
-MIN_LENGTH=$2
+fasta_file=$1
+min_length=$2
 
 # Validate input file
-if [ ! -f "$FASTA_FILE" ]; then
-    echo "Error: File '$FASTA_FILE' not found."
+if [ ! -f "$fasta_file" ]; then
+    echo "Error: File '$fasta_file' not found."
     exit 1
 fi
 
 # Create output filename
-OUTPUT="${FASTA_FILE%.fa}_min${MIN_LENGTH}.fa"
-echo "Extracting sequences longer than $MIN_LENGTH bp from $FASTA_FILE"
-echo "Output will be saved to $OUTPUT"
+output="${fasta_file%.fasta}_min${min_length}.fasta"
+echo "Extracting sequences longer than $min_length bp from $fasta_file"
+echo "Output will be saved to $output"
 
 # Process the file
-# Initialize variables
+# Initialise variables
 current_header=""
 current_seq=""
 count=0
@@ -664,9 +664,9 @@ while IFS= read -r line; do
         if [ -n "$current_seq" ]; then
             total=$((total+1))
             length=${#current_seq}
-            if [ $length -ge $MIN_LENGTH ]; then
-                echo "$current_header" >> "$OUTPUT"
-                echo "$current_seq" >> "$OUTPUT"
+            if [ $length -ge $min_length ]; then
+                echo "$current_header" >> "$output"
+                echo "$current_seq" >> "$output"
                 count=$((count+1))
             fi
         fi
@@ -677,15 +677,15 @@ while IFS= read -r line; do
         # Append to current sequence
         current_seq="${current_seq}${line}"
     fi
-done < "$FASTA_FILE"
+done < "$fasta_file"
 
 # Process the last sequence
 if [ -n "$current_seq" ]; then
     total=$((total+1))
     length=${#current_seq}
-    if [ $length -ge $MIN_LENGTH ]; then
-        echo "$current_header" >> "$OUTPUT"
-        echo "$current_seq" >> "$OUTPUT"
+    if [ $length -ge $min_length ]; then
+        echo "$current_header" >> "$output"
+        echo "$current_seq" >> "$output"
         count=$((count+1))
     fi
 fi
@@ -697,7 +697,7 @@ echo "Done. Extracted $count out of $total sequences."
 
 ```bash
 chmod +x extract_long_seqs.sh
-./extract_long_seqs.sh sequences.fa 1000
+./extract_long_seqs.sh /var/scratch/$USER/**/scripting/data/fasta/proteins.fasta 100
 ```
 
 ---
@@ -713,7 +713,7 @@ High-Performance Computing refers to using computing clusters for computationall
 - Processing large datasets that exceed desktop capabilities
 - Running analyses in parallel
 - Access to more memory, storage, and computing power
-- Specialized hardware for specific tasks
+- Specialised hardware for specific tasks
 
 **Cluster Architecture**
 
