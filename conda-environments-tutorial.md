@@ -13,6 +13,14 @@ Run the script to install Miniforge.
 ```
 bash Miniforge3-$(uname)-$(uname -m).sh
 ```
+To add conda to your `.bashrc` for convenient initialization any time you log in to the HPC, please run the following code:
+```
+eval "$(/home/${USER}/miniforge3/bin/conda shell.bash hook)"
+
+conda init 
+
+```
+
 ### MacOS
 If you are using MacOS, install Miniforge by first installing Homebrew:
 ```
