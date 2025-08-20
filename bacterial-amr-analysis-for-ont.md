@@ -1109,6 +1109,21 @@ accuracy.
 We can also use open-source tools to visualize the complex genomic data
 integrated with other data types - AMR profiles, Serotying and MLST information.
 
+1. Login to the Rstudio server https://hpc.ilri.cgiar.org/rstudio/
+2. Start a new `Terminal` session on the `Terminal Tab`
+3. Download the `tree.nwk` file into `home` directory
+
+    ```
+    wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/tree.nwk -P ~/
+    ```
+4. Download the `data.csv` file into `home` directory
+
+    ```
+    wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/data.csv -P ~/
+    ```
+5. Download the `plot_tree.R` script into home directory
+
+
 
 
 # Assignment
@@ -1170,4 +1185,39 @@ Rscript ~/scripts/visualizeAMR.R \
     --resfinder ~/resfinder/*/ResFinder_results_tab.txt \
     --prefix phylogeny-amr \
     --outdir ~/plots
+```
+
+
+# Serotyping using Kaptive
+
+Kaptive is a system for surface polysaccharide typing from bacterial genome
+sequences.
+
+For each input assembly, Kaptive runs the kaptive.assembly.typing_pipeline which does the following:
+
+- Aligns locus gene nucleotide sequences to the assembly contig sequences using minimap2.
+
+- Identifies the best matching locus type using the scoring algorithm.
+
+- Extracts the locus gene sequences from the assembly contig sequences.
+
+- Predicts the serotype/phenotype based on the gene content.
+
+```
+kaptive assembly \
+/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk \
+./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+-o ./results/ont/klebsiella/kaptive/SRR28370682_k_locus.tsv \
+--min-cov 70 \
+-t 2
+```
+
+
+```
+kaptive assembly \
+/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk \
+./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+-o ./results/ont/klebsiella/kaptive/SRR28370682_o_locus.tsv \
+--min-cov 70 \
+-t 2
 ```
