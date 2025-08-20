@@ -22,15 +22,15 @@
       - [Step 1: Data Quality Assessment](#step-1-data-quality-assessment)
       - [Step 2: Genome Assembly](#step-2-genome-assembly)
       - [Step 3: Genome Annotation](#step-3-genome-annotation)
-      - [Step 4: Pathogen Relatedness](#step-5-pathogen-relatedness)
+      - [Step 4: Pathogen Relatedness](#step-4-pathogen-relatedness)
           - [MLST](#mlst)
               - [MLST Output Format](#mlst-output-format)
               - [MLST Results Interpretation](#mlst-results-interpretation)
               - [Visualising MLST Results](#visualising-mlst-results)
               - [MLST Interpretation
                 Limitations](#mslt-interpretation-limitations)
-      - [Step 5: Genome Annotation](#step-4-amr-detection)
-      - [Step 6: AMR Detection](#step-4-amr-detection)
+      - [Step 5: Genome Annotation](#step-3-genome-detection)
+      - [Step 6: AMR Detection](#step-6-amr-detection)
           - [Output Formart](#output-format)
           - [AMR Dectection with ResFinder](#amr-detection-with-resfinder)
           - [AMR Dectection with CARD/RGI](#amr-detection-with-card/rgi)
@@ -1038,11 +1038,80 @@ iqtree \
     -pre ./results/ont/klebsiella/iqtree/core-snp
 ```
 
-> **Note:** It is important to use phylogenetic algorithms that take into account SNP alignments. These algorithms usually include some form of ascertainment bias correction that corrects for the 'missing' nucleotides in the alignment that were masked/removed because they did not show polymorphism.
+> **Note:** It is important to use phylogenetic algorithms that take into
+> account SNP alignments. These algorithms usually include some form of
+> ascertainment bias correction that corrects for the 'missing' nucleotides in
+> the alignment that were masked/removed because they did not show polymorphism.
+
 
 # Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
 
 
+We will explore [**Microreact**](https://microreact.org/) to visualize genomic
+data alongside AMR, typing (MLST, serotyping) and epidemiological data.
+
+
+Microreact is software developed by the Centre for Genomic Pathogen Surveillance
+(CGPS) that allows you to upload, visualise and explore any combination of
+**clustering (trees)**, **geographic (map)** and **temporal (timeline)** data.
+Other metadata variables are displayed in a table. You can specify colours
+and/or shapes to display on the map, tree and/or timeline. A permanent URL is
+produced for you to share your Microreact, or a .microreact file can be
+downloaded for sharing with collaborators.
+
+
+[**Microreact**](https://microreact.org/) is a web-based application for the
+provision of interactive data visualisations. It enables the rapid generation
+and linkage of trees, maps, networks, charts and timelines, enabling
+epidemiologists and key decision makers to react faster and with greater
+accuracy.
+
+
+1. Microreact is freely available (at http://microreact.org).
+2. Microreact – Hierarchical and Geographical Analysis Tool.
+3. Microreact allows you to upload, visualize and explore dendrograms (trees)
+   linked to adata containing geographical locations.
+
+
+1. Download the data to your local computer through either the command line or
+   the **Download button**
+
+```
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/data.csv
+```
+
+```
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/tree.nwk
+```
+
+2. On your preferred web browser (Firefox, Google Chrome, Safari, Microsoft
+   Edge), open a new window and type http://microreact.org on the address bar.
+
+3. Login here: https://microreact.org/api/auth/signin?callbackUrl=/my-account
+
+
+
+# Visualization using other tools
+We can also use open-source tools to visualize the complex genomic data
+integrated with other data types - AMR profiles, Serotying and MLST information.
+
+
+
+
+# Assignment
+
+1. Visualize the generated phylogenetic tree of the 11 samples alongside the
+   metadata in Microreact. 
+
+   - Create a new project and name it accordingly.
+   - Create a metadata with the relevant information. You can be guided on how
+     to prepare your metadata using the guidelines outlined here:
+     https://docs.microreact.org/instructions/creating-a-microreact-project/metadata-column-types
+     
+
+
+
+# We can visualize the data using R 
 We will copy the `mlst`, `core-snp.treefile` and `resfinder` results from the 
 compute nodes (`compute05` or `compute06`) to the head node (`hpc`) to our
 `home` directory interactively as follows:
