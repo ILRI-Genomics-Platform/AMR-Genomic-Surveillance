@@ -1123,7 +1123,14 @@ integrated with other data types - AMR profiles, Serotying and MLST information.
     ```
 5. Download the `plot_tree.R` script into home directory
 
+    ```
+    wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/plot_tree.R -P ~/
+    ```
+6. Navigate to the `Output` pane/panel (Output pane, containing the Files,
+   Plots, Packages, Help, Viewer, and Presentation tabs) on Rstudio and click on
+   the `Refresh icon`
 
+7. Click on the `plot_tree.R` script to open it on the `Source` pane/panel.
 
 
 # Assignment
