@@ -19,22 +19,23 @@
       - [Project organisation](#project-organisation)
   - [Bioinformatics Analysis](#bioinformatics-analysis)
       - [About the Sample](#about-the-sample)
-      - [Step 1: Data Quality Assessment](#step-1-data-quality-assessment)
-      - [Step 2: Genome Assembly](#step-2-genome-assembly)
-      - [Step 3: Genome Annotation](#step-3-genome-annotation)
-      - [Step 4: Pathogen Relatedness](#step-4-pathogen-relatedness)
+      - [Step 1: Load required modules](#step-1-load-required-modules)
+      - [Step 2: Retrieve reference genome in GenBank and FASTA format](#step-2-retrieve-reference-genome-in-genBank-and-fasta-format)
+      - [Step 3: Data Quality Assessment](#step-3-data-quality-assessment)
+      - [Step 4: Genome Assembly](#step-4-genome-assembly)
+      - [Step 5: Genome Annotation](#step-5-genome-annotation)
+      - [Step 6: Pathogen Typing](#step-6-pathogen-typing)
           - [MLST](#mlst)
               - [MLST Output Format](#mlst-output-format)
               - [MLST Results Interpretation](#mlst-results-interpretation)
               - [Visualising MLST Results](#visualising-mlst-results)
               - [MLST Interpretation
                 Limitations](#mslt-interpretation-limitations)
-      - [Step 5: Genome Annotation](#step-3-genome-detection)
-      - [Step 6: AMR Detection](#step-6-amr-detection)
+      - [Step 7: AMR Detection](#step-7-amr-detection)
           - [Output Formart](#output-format)
           - [AMR Dectection with ResFinder](#amr-detection-with-resfinder)
           - [AMR Dectection with CARD/RGI](#amr-detection-with-card/rgi)
-      - [Step 7: Variant Calling and Consensus Assemblies](#step-6-variant-calling-and-consensus-assemblies)
+      - [Step 8: Variant Calling and Consensus Assemblies](#step-8-variant-calling-and-consensus-assemblies)
        - [Fast Bacterial Variant Calling with Contigs](#fast-bacterial-variant-calling-with-contigs)
           - [Snippy Outputs](#snippy-outputs)
           - [Visualising Snippy Variants](#visualising-snippy-variants)
@@ -43,8 +44,15 @@
           - [Snippy Core Outputs](#snippy-core-outputs)
           - [Cleanup the Snippy SNP Alignment Intermediates](#cleanup-the-snippy-snp-alignment-intermediates)
           - [Compute Pairwise SNP Distances](#compute-pairwise-snp-distances)
-- [Step 8: Dealing with Recombination](#step-7-dealing-with-recombination)
-    - [Phylogenetic Analysis of Gubbins Output](#phylogenetic-analysis-of-gubbins-output)
+    - [Step 9: Phylogenetic Analysis](#step-9-phylogenetic-analysis)
+        - [Phylogenetic Analysis of Gubbins
+          Output](#phylogenetic-analysis-of-gubbins-output)
+        - [Maximum likelihood phylogenetic inference](#maximum-likelihood-phylogenetic-inference)
+    - [Step 10: Visualization](#step-10-visualization)
+        - [Visualize the phylogeny alongside typing, antibiotic resistance or
+          epidemiological
+          data](#visualize-the-phylogeny-alongside-typing-antibiotic-resistance-or-epidemiological-data)
+        - [Visualization using other tools](#visualization-using-other-tools)
     
 
 
@@ -175,7 +183,7 @@ ONT library preparation was performed using either Rapid Barcoding Kit V14
 whole-genome sequencing was performed on a MinION Mk1b or GridION using R10.4.1
 MinION flow cells (FLO-MIN114). 
 
-### Step 1: Load required modules
+# Step 1: Load required modules
 
 ```
 module load nanoplot/1.42.0
@@ -190,7 +198,7 @@ module load seqkit/0.11.0
 ```
 
 
-### Step 2: Retrieve reference genome in GenBank and FASTA format
+# Step 2: Retrieve reference genome in GenBank and FASTA format
 
 ```
 mkdir -p ./genomes/klebs
@@ -213,7 +221,7 @@ gzip -c -d ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.fna.gz > ./genomes/
 ```
 
 
-### Step 3: Data Quality Assessment
+# Step 3: Data Quality Assessment
 We start by exploring the quality of the raw sequence reads. We need to know
 whether the data is worth commencing analysis on, or otherwise.
 
@@ -316,7 +324,7 @@ Copy the NanoPlot report to your `home` directory on `local pc`
 rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682-final_NanoPlot-report.html ~/
 ```
 
-### Step 4: Genome Assembly
+# Step 4: Genome Assembly
 
 How do we get genomes from reads?
 Dragonflye is a pipeline for  quick and easy assembling of bacterial genomes from Oxford Nanopore reads.
@@ -412,7 +420,7 @@ rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/SRR28370682.fa ~/
 ```
 
 
-### Step 5: Genome Annotation
+# Step 5: Genome Annotation
 
 After assembling our genome, we need to characterise it through annotation to enable inferencing. Prokka (Prokaryotic annotation) is a pipeline tool designed for the rapid annotation of prokaryotic genomes, including bacteria and archaea. After Prokka annotation, tools like ABRicate or RGI can be run on the annotated genome to identify resistance genes in their proper genomic context.
 
@@ -496,7 +504,7 @@ rsync -avP --partial \
     ./pathogenwatch/klebs/assemblies-to-test/
 ```
 
-### Step 6: Pathogen Typing
+# Step 6: Pathogen Typing
 
 Understanding the differences and relationships within circulating pathogens is an important aspect of genomics epidemiology. Whole-genome comparison has better resolution for pathogen characterisation than fragments per genome equivalent (FPGE) or gene-based or multi-locus sequence typing (MLST). Distances between genomes can be compared based a reference or _de novo_; _k-mer_-composition-based and _core-genome_ assembly-based.
 
@@ -610,7 +618,7 @@ BIGSdb platform curated by the Institute Pasteur
 (https://bigsdb.pasteur.fr/klebsiella)
 
 
-### Step 7: AMR genes detection
+# Step 7: AMR genes detection
 
 
 #### AMR genes detection using ResFinder
@@ -745,7 +753,7 @@ HMM description | Description of HMM (if applicable)
 
 
 
-### Step 8: Variant Calling and Consensus Assemblies
+# Step 8: Variant Calling and Consensus Assemblies
 
 
 Prepare the working environment
@@ -939,7 +947,9 @@ snippy-clean_full_aln \
     ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln
 ```
 
-### Step 9: Detect Recombination and mask recombinant regions
+# Step 9: Phylogenetic analysis
+
+## Detect Recombination and mask recombinant regions
 
 Gubbins (Genealogies Unbiased By recomBinations In Nucleotide Sequences) is a toolfor detecting and accounting for homologous recombination in bacterial whole genome alignments. Since homologous recombination can obscure the true relatedness/vertical inheritance, it may be desirable to find and mask such regions before phylogenetic inference.
 
@@ -1017,7 +1027,9 @@ gff2bed < ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gf
 Now, can you use the resultant `BED` file to re-run Snippy all the way to building a phylogenrtic tree. How do the trees compare with(out) masking of recombinant regions?
 </details>
 
-#### Phylogenetic Analysis of Gubbins Output
+
+## Maximum likelihood phylogenetic inference
+
 We can use another phylogenetic tool `iqtree` to visualise the relationships
 between the recombination-masked isolates from Gubbins.
 
@@ -1044,7 +1056,9 @@ iqtree \
 > the alignment that were masked/removed because they did not show polymorphism.
 
 
-# Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
+# Step 10: Visualization
+
+## Visualize the phylogeny alongside typing, antibiotic resistance or epidemiological data
 
 
 We will explore [**Microreact**](https://microreact.org/) to visualize genomic
@@ -1076,13 +1090,13 @@ accuracy.
 1. Download the data to your local computer through either the command line or
    the **Download button**
 
-```
-wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/data.csv
-```
+    ```
+    wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/data.csv
+    ```
 
-```
-wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/tree.nwk
-```
+    ```
+    wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/microreact/tree.nwk
+    ```
 
 2. On your preferred web browser (Firefox, Google Chrome, Safari, Microsoft
    Edge), open a new window and type http://microreact.org on the address bar.
@@ -1091,16 +1105,15 @@ wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Survei
 
 
 
-# Visualization using other tools
+## Visualization using other tools
 We can also use open-source tools to visualize the complex genomic data
 integrated with other data types - AMR profiles, Serotying and MLST information.
 
 
 
-
 # Assignment
 
-1. Visualize the generated phylogenetic tree of the 11 samples alongside the
+## 1. Visualize the generated phylogenetic tree of the 11 samples alongside the
    metadata in Microreact. 
 
    - Create a new project and name it accordingly.
@@ -1110,8 +1123,8 @@ integrated with other data types - AMR profiles, Serotying and MLST information.
      
 
 
+## 2. Visualize the data using R
 
-# We can visualize the data using R 
 We will copy the `mlst`, `core-snp.treefile` and `resfinder` results from the 
 compute nodes (`compute05` or `compute06`) to the head node (`hpc`) to our
 `home` directory interactively as follows:
