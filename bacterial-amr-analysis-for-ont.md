@@ -151,7 +151,7 @@ cd /var/scratch/$USER/ACDC_AMR2025
 
 ```
 mkdir -p \
-results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,resfinder,iqtree,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
+results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,kaptive,resfinder,iqtree,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
 ```
 
 3. *Create symblic links to the required resources
