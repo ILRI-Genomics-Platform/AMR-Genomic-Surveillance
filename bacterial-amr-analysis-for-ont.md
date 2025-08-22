@@ -602,8 +602,6 @@ When analyzing MLST results, be aware of certain limitations:
   relationships
 
 
-
-
 #### Merge MLST reports
 
 ```
@@ -616,6 +614,41 @@ cat \
 
 BIGSdb platform curated by the Institute Pasteur
 (https://bigsdb.pasteur.fr/klebsiella)
+
+
+# Serotyping using Kaptive
+
+Kaptive is a system for surface polysaccharide typing from bacterial genome
+sequences.
+
+For each input assembly, Kaptive runs the kaptive.assembly.typing_pipeline which does the following:
+
+- Aligns locus gene nucleotide sequences to the assembly contig sequences using minimap2.
+
+- Identifies the best matching locus type using the scoring algorithm.
+
+- Extracts the locus gene sequences from the assembly contig sequences.
+
+- Predicts the serotype/phenotype based on the gene content.
+
+```
+kaptive assembly \
+/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk \
+./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+-o ./results/ont/klebsiella/kaptive/SRR28370682_k_locus.tsv \
+--min-cov 70 \
+-t 2
+```
+
+
+```
+kaptive assembly \
+/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk \
+./results/ont/klebsiella/dragonflye/SRR28370682.fa \
+-o ./results/ont/klebsiella/kaptive/SRR28370682_o_locus.tsv \
+--min-cov 70 \
+-t 2
+```
 
 
 # Step 7: AMR genes detection
@@ -1192,39 +1225,4 @@ Rscript ~/scripts/visualizeAMR.R \
     --resfinder ~/resfinder/*/ResFinder_results_tab.txt \
     --prefix phylogeny-amr \
     --outdir ~/plots
-```
-
-
-# Serotyping using Kaptive
-
-Kaptive is a system for surface polysaccharide typing from bacterial genome
-sequences.
-
-For each input assembly, Kaptive runs the kaptive.assembly.typing_pipeline which does the following:
-
-- Aligns locus gene nucleotide sequences to the assembly contig sequences using minimap2.
-
-- Identifies the best matching locus type using the scoring algorithm.
-
-- Extracts the locus gene sequences from the assembly contig sequences.
-
-- Predicts the serotype/phenotype based on the gene content.
-
-```
-kaptive assembly \
-/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk \
-./results/ont/klebsiella/dragonflye/SRR28370682.fa \
--o ./results/ont/klebsiella/kaptive/SRR28370682_k_locus.tsv \
---min-cov 70 \
--t 2
-```
-
-
-```
-kaptive assembly \
-/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk \
-./results/ont/klebsiella/dragonflye/SRR28370682.fa \
--o ./results/ont/klebsiella/kaptive/SRR28370682_o_locus.tsv \
---min-cov 70 \
--t 2
 ```
