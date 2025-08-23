@@ -1091,7 +1091,7 @@ analysis:
 gubbins_drawer.py \
   –o core-snp-tree-recombination-regions.pdf \
   -t core-snp.final_tree.tre \
-  core-snp.recombination_predictions.embl
+  ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.embl
 ```
 
 
@@ -1107,7 +1107,7 @@ To create a PDF showing	the	**reconstructed SNPs** against the same tree:
 gubbins_drawer.py \
   –o core-snp-tree-SNPs.pdf \
   -t core-snp.final_tree.tre \
-  core-snp.branch_base_reconstruction.embl
+  ./results/ont/klebsiella/gubbins/core-snp.branch_base_reconstruction.embl
 ```
 
 
