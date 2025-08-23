@@ -633,22 +633,43 @@ For each input assembly, Kaptive runs the kaptive.assembly.typing_pipeline which
 - Predicts the serotype/phenotype based on the gene content.
 
 ```
-kaptive assembly \
-/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk \
-./results/ont/klebsiella/dragonflye/SRR28370682.fa \
--o ./results/ont/klebsiella/kaptive/SRR28370682_k_locus.tsv \
---min-cov 70 \
--t 2
+kdb="/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk"
+```
+
+```
+for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
+    sample=$(basename $fn)
+    sample="${sample%.*}"
+    echo -e "-------------------------------\n"
+    echo -e "running kaptive on: $sample - $fn"
+
+    kaptive assembly \
+      $kdb \
+      $fn \
+      --min-cov 70 \
+      -t 2 \
+      o ./results/ont/klebsiella/kaptive/${sample}_k_locus.tsv
+done
 ```
 
 
 ```
-kaptive assembly \
-/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk \
-./results/ont/klebsiella/dragonflye/SRR28370682.fa \
--o ./results/ont/klebsiella/kaptive/SRR28370682_o_locus.tsv \
---min-cov 70 \
--t 2
+odb="/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk"
+```
+```
+for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
+    sample=$(basename $fn)
+    sample="${sample%.*}"
+    echo -e "-------------------------------\n"
+    echo -e "running kaptive on: $sample - $fn"
+
+    kaptive assembly \
+      $odb \
+      $fn \
+      --min-cov 70 \
+      -t 2 \
+      o ./results/ont/klebsiella/kaptive/${sample}_o_locus.tsv
+done
 ```
 
 
@@ -1086,11 +1107,26 @@ Now, can you use the resultant `BED` file to re-run Snippy all the way to buildi
 
 To produce publication-ready figures of Gubbins analyses
 
+
+plot_gubbins.R \
+  --tree serotype_3.tre \
+  --rec serotype_3_recombination.gff \
+  --annotation serotype_3_annotation.gff  \
+  --meta serotype_3_metadata.csv \
+  --max-branch-length 500 \
+  --clades serotype_3_clades.csv \
+  --markup serotype_3_markup.csv \
+  --legend-height 0.35  \
+  --tree-axis-expansion 30 \
+  --markup-height 0.1 \
+  --heatmap-x-nudge 0.05 \
+  --heatmap-y-nudge -0.05 \
+  --output serotype_3.png
+
 ```
 Rscript ./scripts/plot_gubbins.R \
   -t ./results/ont/klebsiella/gubbins/core-snp.final_tree.tre \
   -r  ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
-  -a ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.gbff  \
   -o ./results/ont/klebsiella/gubbins/core-snp-plots.pdf
 ```
 
