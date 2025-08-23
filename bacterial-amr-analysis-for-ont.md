@@ -625,52 +625,76 @@ sequences.
 For each input assembly, Kaptive runs the kaptive.assembly.typing_pipeline which does the following:
 
 - Aligns locus gene nucleotide sequences to the assembly contig sequences using minimap2.
-
 - Identifies the best matching locus type using the scoring algorithm.
-
 - Extracts the locus gene sequences from the assembly contig sequences.
-
 - Predicts the serotype/phenotype based on the gene content.
 
-```
-kdb="/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk"
-```
 
-```
-for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
-    sample=$(basename $fn)
-    sample="${sample%.*}"
-    echo -e "-------------------------------\n"
-    echo -e "running kaptive on: $sample - $fn"
+Like other human pathogens, members of the KpSC produce immunogenic surface
+polysaccharides which protect against host defences, phages and desiccation. In
+recent years there has been a resurgence of interest in these polysaccharides as
+targets for anti-KpSC vaccines 💉. In order to design effective vaccines, we
+need to understand the underlying diversity and epidemiology of polysaccharide
+variants in the population. We can now achieve this goal at scale by predicting
+surface polysaccharide antigens from rapidly growing collections of whole genome
+sequences.
 
-    kaptive assembly \
-      $kdb \
-      $fn \
-      --min-cov 70 \
-      -t 2 \
-      -o ./results/ont/klebsiella/kaptive/${sample}_k_locus.tsv
-done
-```
+
+### K antigen and locus
+The capsular polysaccharide (CPS), or K-antigen, is an extracellular layer of polysaccharide chains, anchored to the outer-membrane (OM).
 
 
 ```
-odb="/export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk"
+kaptive assembly \
+  /export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_k_locus_primary_reference.gbk \
+  ./pathogenwatch/klebs/assemblies-to-test/*.fasta \
+  --min-cov 70 \
+  -t 2 \
+  -o ./results/ont/klebsiella/kaptive/kaptive_k_locus.tsv
 ```
-```
-for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
-    sample=$(basename $fn)
-    sample="${sample%.*}"
-    echo -e "-------------------------------\n"
-    echo -e "running kaptive on: $sample - $fn"
 
-    kaptive assembly \
-      $odb \
-      $fn \
-      --min-cov 70 \
-      -t 2 \
-      -o ./results/ont/klebsiella/kaptive/${sample}_o_locus.tsv
-done
+### O antigen and locus
+The outer lipopolysaccharide (LPS), or O-antigen, locus is located next to the K-locus. Each KpSC genome contains a single O-locus, for which X variants have been defined to-date. 
+
+
 ```
+kaptive assembly \
+  /export/apps/kaptive/3.1.0/lib/python3.10/site-packages/reference_database/Klebsiella_o_locus_primary_reference.gbk \
+  ./pathogenwatch/klebs/assemblies-to-test/*.fasta \
+  --min-cov 70 \
+  -t 2 \
+  -o ./results/ont/klebsiella/kaptive/kaptive_o_locus.tsv
+```
+
+### Kaptive Web
+You can also upload your assemblies to
+[Kaptive-Web](#https://kaptive-web.erc.monash.edu/). 
+
+
+### Summary Table
+
+Column | Description
+--- | ---- |
+`Assembly` | the name of the input assembly, taken from the assembly filename.
+`Best match locus` | the locus type which most closely matches the assembly
+`Best match type` | the predicted serotype/phenotype
+`Match confidence` | a categorical measure of locus match quality.
+`Problems` | characters indicating issues with the locus match. An absence of any such characters indicates a very good match. `?` = the match was not in a single piece, possible due to a poor match or discontiguous assembly.The number of pieces will be indicated with an integer. `-` = one or more genes expected in the locus were not found.`+` = one or more extra genes were found in the locus.`*` = one or more expected genes was found but with identity below the minimum threshold (default threshold for KpSC is 82.5%, default for A. baumannii is 85%). `!` = one or more locus genes is truncated
+`Identity` | weighted percent identity of the best matching locus to the assembly.
+`Coverage` | weighted percent coverage of the best matching locus in the assembly.
+`Length discrepancy` | the difference in length between the locus match and the corresponding part of the assembly. Only available if the locus was found in a single piece (i.e. the ? problem character is not used).
+`Expected genes in locus` | a fraction indicating how many of the genes in the best matching locus were found in the locus part of the assembly.
+`Expected genes in locus, details` | gene names and percent identity and percent coverage for the expected genes found in the locus part of the assembly.
+`Missing expected genes` | a string listing the gene names of expected genes that were not found.
+`Other genes in locus` | the number of unexpected genes (genes from loci other than the best match) which were found in the locus part of the assembly.
+`Other genes in locus, details` | gene names, percent identity and coverage for the other genes found in the locus part of the assembly.
+`Expected genes outside locus` | the number of expected genes which were found in the assembly but not in the locus part of the assembly (usually zero)
+`Expected genes outside locus, detail` | gene names, percent identity and coverage for the expected genes found outside the locus part of the assembly.
+`Other genes outside locus` | the number of unexpected genes (genes from loci other than the best match) which were found outside the locus part of the assembly.
+`Other genes outside locus, details` | gene names, percent identity and coverage for the other genes found outside the locus part of the assembly.
+`Truncated genes, details` | gene names for the truncated genes found in the assembly.
+`Extra genes, details` | Gene names for the extra genes found in the assembly.
+
 
 
 # Step 7: AMR genes detection
