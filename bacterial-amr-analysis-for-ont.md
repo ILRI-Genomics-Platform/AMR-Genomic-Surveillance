@@ -1147,6 +1147,11 @@ Rscript ./scripts/plot_gubbins.R \
   -o ./results/ont/klebsiella/gubbins/core-snp-plots.png
 ```
 
+<br>
+<left><img src="img/core-snp-plots.png" alt="predicted regions of recombination" width="1532"/></left>
+<br>
+
+
 <!-- To create a PDF showing	the	**predicted regions of recombination** against a	
 phylogenetic reconstruction	based on the final iteration of the	Gubbins
 analysis:
