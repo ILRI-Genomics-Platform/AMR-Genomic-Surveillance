@@ -853,8 +853,12 @@ traditional SAMtools value.
 
 The variant calling is done by Freebayes. The key parameters under user control are:
 
-`--mincov` - the minimum number of reads covering a site to be considered (default=10)
-`--minfrac` - the minimum proportion of those reads which must differ from the reference
+`--mincov` - the minimum number of reads covering a site to be considered
+(default=10)
+
+`--minfrac` - the minimum proportion of those reads which must differ from the
+reference
+
 `--minqual` - the minimum VCF variant call "quality" (default=100)
 
 
@@ -868,7 +872,7 @@ File | Description
 `*.vcf` | Universal variant calling format parsible by intergrating bioinformatics tools
 `*.gff` | Provides genomic feature context for each variant
 `*.txt` | Lists numbers of different variant types
-`*.consensus.fa` | FASTA file of consensus sequence; variants are incoporated into the reference
+`*.consensus.fa` | FASTA file of consensus sequence; variants are incorporated into the reference
 `*.aligned.fa` | The alignment between the reference and the consensus in FASTA format; useful for phylogenetics
 `*.bam` | BAM file for **contigs** alignment agains the reference
 `*.html` | HTML summary of variants
@@ -1038,6 +1042,7 @@ Masking the predicted recombination regions:
 mask_gubbins_aln.py \
     --aln ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln \
     --gff ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
+    --missing-char N \
     --out ./results/ont/klebsiella/gubbins/core-snp.masked.aln
 ```
 
