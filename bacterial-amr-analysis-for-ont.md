@@ -1083,14 +1083,25 @@ gff2bed < ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gf
 Now, can you use the resultant `BED` file to re-run Snippy all the way to building a phylogenrtic tree. How do the trees compare with(out) masking of recombinant regions?
 </details> -->
 
-To create a PDF showing	the	**predicted regions of recombination** against a	
+
+To produce publication-ready figures of Gubbins analyses
+
+```
+Rscript ./scripts/plot_gubbins.R \
+  -t ./results/ont/klebsiella/gubbins/core-snp.final_tree.tre \
+  -r  ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
+  -a ./genomes/klebs/GCF_000016305.1_ASM1630v1_genomic.gbff  \
+  -o ./results/ont/klebsiella/gubbins/core-snp-plots.pdf
+```
+
+<!-- To create a PDF showing	the	**predicted regions of recombination** against a	
 phylogenetic reconstruction	based on the final iteration of the	Gubbins
 analysis:
 
 ```
 gubbins_drawer.py \
   –o core-snp-tree-recombination-regions.pdf \
-  -t core-snp.final_tree.tre \
+  -t ./results/ont/klebsiella/gubbins/core-snp.final_tree.tre \
   ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.embl
 ```
 
@@ -1106,9 +1117,9 @@ To create a PDF showing	the	**reconstructed SNPs** against the same tree:
 ```
 gubbins_drawer.py \
   –o core-snp-tree-SNPs.pdf \
-  -t core-snp.final_tree.tre \
+  -t ./results/ont/klebsiella/gubbins/core-snp.final_tree.tre \
   ./results/ont/klebsiella/gubbins/core-snp.branch_base_reconstruction.embl
-```
+``` -->
 
 
 ## Maximum likelihood phylogenetic inference
