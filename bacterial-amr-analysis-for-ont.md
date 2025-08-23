@@ -999,7 +999,7 @@ We will submit the job using the job scheduler SLURM.
 1. Download the `run_gubbins.sh` to a scripts directory in your home directory
 
 ```
-mkdir ~/scripts
+mkdir -p ~/scripts
 wget -c -N https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/scripts/run_gubbins.sh \
 -P ~/scripts/
 ```
@@ -1206,8 +1206,6 @@ Symbolically link the script to the `scripts` directory in the `home` directory
 
 
 ```
-cd
-mkdir -p ~/scripts
 ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/scripts/visualizeAMR* ~/scripts/
 ```
 
