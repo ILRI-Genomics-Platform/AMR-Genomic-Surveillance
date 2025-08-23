@@ -1,10 +1,5 @@
 #!/usr/bin/env Rscript
 
-
-#!/usr/bin/env Rscript
-
-#' @author John Juma
-
 user <- Sys.getenv('USER')
 
 # check version, install and load libraries
