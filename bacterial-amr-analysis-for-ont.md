@@ -648,7 +648,7 @@ for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
       $fn \
       --min-cov 70 \
       -t 2 \
-      o ./results/ont/klebsiella/kaptive/${sample}_k_locus.tsv
+      -o ./results/ont/klebsiella/kaptive/${sample}_k_locus.tsv
 done
 ```
 
@@ -668,7 +668,7 @@ for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
       $fn \
       --min-cov 70 \
       -t 2 \
-      o ./results/ont/klebsiella/kaptive/${sample}_o_locus.tsv
+      -o ./results/ont/klebsiella/kaptive/${sample}_o_locus.tsv
 done
 ```
 
