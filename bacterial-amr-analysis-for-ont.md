@@ -619,6 +619,15 @@ BIGSdb platform curated by the Institute Pasteur
 
 # Serotyping using Kaptive
 
+Like other human pathogens, members of the KpSC produce immunogenic surface
+polysaccharides which protect against host defences, phages and desiccation. In
+recent years there has been a resurgence of interest in these polysaccharides as
+targets for anti-KpSC vaccines 💉. In order to design effective vaccines, we
+need to understand the underlying diversity and epidemiology of polysaccharide
+variants in the population. We can now achieve this goal at scale by predicting
+surface polysaccharide antigens from rapidly growing collections of whole genome
+sequences.
+
 Kaptive is a system for surface polysaccharide typing from bacterial genome
 sequences.
 
@@ -628,16 +637,6 @@ For each input assembly, Kaptive runs the kaptive.assembly.typing_pipeline which
 - Identifies the best matching locus type using the scoring algorithm.
 - Extracts the locus gene sequences from the assembly contig sequences.
 - Predicts the serotype/phenotype based on the gene content.
-
-
-Like other human pathogens, members of the KpSC produce immunogenic surface
-polysaccharides which protect against host defences, phages and desiccation. In
-recent years there has been a resurgence of interest in these polysaccharides as
-targets for anti-KpSC vaccines 💉. In order to design effective vaccines, we
-need to understand the underlying diversity and epidemiology of polysaccharide
-variants in the population. We can now achieve this goal at scale by predicting
-surface polysaccharide antigens from rapidly growing collections of whole genome
-sequences.
 
 
 ### K antigen and locus
@@ -1129,29 +1128,23 @@ Now, can you use the resultant `BED` file to re-run Snippy all the way to buildi
 </details> -->
 
 
-To produce publication-ready figures of Gubbins analyses
+To produce publication-ready figures of Gubbins analyses and annotate with
+metadata, clades or any other information of the samples.
 
-
-plot_gubbins.R \
-  --tree serotype_3.tre \
-  --rec serotype_3_recombination.gff \
-  --annotation serotype_3_annotation.gff  \
-  --meta serotype_3_metadata.csv \
-  --max-branch-length 500 \
-  --clades serotype_3_clades.csv \
-  --markup serotype_3_markup.csv \
-  --legend-height 0.35  \
-  --tree-axis-expansion 30 \
-  --markup-height 0.1 \
-  --heatmap-x-nudge 0.05 \
-  --heatmap-y-nudge -0.05 \
-  --output serotype_3.png
+```
+awk -F"\t" 'BEGIN{printf "id,ST\n"} {printf "%s,%s\n", $1,"ST"$3}' ./results/ont/klebsiella/mlst/klebs-mlst.txt | sed s'/.fasta//g' | sed s'/.*\///g' > ./results/ont/klebsiella/gubbins/core-snp-metadata.csv
+```
 
 ```
 Rscript ./scripts/plot_gubbins.R \
   -t ./results/ont/klebsiella/gubbins/core-snp.final_tree.tre \
   -r  ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
-  -o ./results/ont/klebsiella/gubbins/core-snp-plots.pdf
+  --meta ./results/ont/klebsiella/gubbins/core-snp-metadata.csv \
+  --legend-height 0.35  \
+  --tree-axis-expansion 30 \
+  --heatmap-x-nudge 0.05 \
+  --heatmap-y-nudge -0.05 \
+  -o ./results/ont/klebsiella/gubbins/core-snp-plots.png
 ```
 
 <!-- To create a PDF showing	the	**predicted regions of recombination** against a	
