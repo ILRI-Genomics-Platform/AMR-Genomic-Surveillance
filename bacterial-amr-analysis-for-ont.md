@@ -151,7 +151,7 @@ cd /var/scratch/$USER/ACDC_AMR2025
 
 ```
 mkdir -p \
-results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,resfinder,iqtree,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
+results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,kaptive,resfinder,iqtree,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
 ```
 
 3. *Create symblic links to the required resources
@@ -195,6 +195,7 @@ module load resfinder/4.6.0
 module load amrfinder/4.0.22
 module load mlst/2.23.0
 module load seqkit/0.11.0
+module load kaptive/3.1.0
 ```
 
 
