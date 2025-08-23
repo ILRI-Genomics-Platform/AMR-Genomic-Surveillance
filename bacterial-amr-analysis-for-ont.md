@@ -195,6 +195,7 @@ module load resfinder/4.6.0
 module load amrfinder/4.0.22
 module load mlst/2.23.0
 module load seqkit/0.11.0
+module load kaptive/3.1.0
 ```
 
 
