@@ -1036,7 +1036,24 @@ run_gubbins.py \
     ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln
 ```
 
-Masking the predicted recombination regions:
+#### Output files
+File | Description
+--- | ---
+`.recombination_predictions.embl` | Recombination predictions in EMBL file format.
+`.recombination_predictions.gff` | Recombination predictions in GFF format
+`.branch_base_reconstruction.embl` | Base substitution reconstruction in EMBL format
+`.summary_of_snp_distribution.vcf` | VCF file summarising the distribution of point mutations
+`.per_branch_statistics.csv` | per branch reporting of the base substitutions inside and outside recombination events
+`.filtered_polymorphic_sites.fasta` | FASTA format alignment of filtered polymorphic sites used to generate the phylogeny in the final iteration
+`.filtered_polymorphic_sites.phylip` | Phylip format alignment of filtered polymorphic sites used to generate the phylogeny in the final iteration
+`.final_tree.tree` | final phylogeny in Newick format; branch lengths are in point mutations
+`..node_labelled.final_tree.tre` | final phylogenetic tree in Newick format but with internal node labels; branch lengths are in point mutations
+
+
+To generate a recombination-masked alignment (i.e., with sequences predicted to
+have been introduced by recombination removed, leaving just the clonal frame),
+the post-processing script `mask_gubbins_aln.py` can be used:
+
 
 ```
 mask_gubbins_aln.py \
@@ -1047,7 +1064,7 @@ mask_gubbins_aln.py \
 ```
 
 
-We can then convert the Gubbins `.gff` masking feature output into a `BED`
+<!-- We can then convert the Gubbins `.gff` masking feature output into a `BED`
 format file usable with `snippy` as argument to the `--mask` option.
 
 Convert Gubbins GFF to BED format: 
@@ -1064,7 +1081,34 @@ gff2bed < ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gf
     </summary>
 
 Now, can you use the resultant `BED` file to re-run Snippy all the way to building a phylogenrtic tree. How do the trees compare with(out) masking of recombinant regions?
-</details>
+</details> -->
+
+To create a PDF showing	the	**predicted regions of recombination** against a	
+phylogenetic reconstruction	based on the final iteration of the	Gubbins
+analysis:
+
+```
+gubbins_drawer.py \
+  –o core-snp-tree-recombination-regions.pdf \
+  -t core-snp.final_tree.tre \
+  core-snp.recombination_predictions.embl
+```
+
+
+For each isolate, blocks representing the regions identified as recombinations
+by gubbins are indicated by coloured blocks. Blue blocks are unique to a single 
+isolate	while red blocks are shared	by multiple	isolates. The horizontal
+position of	the	blocks represents their	position in the alignment.
+
+
+To create a PDF showing	the	**reconstructed SNPs** against the same tree:
+
+```
+gubbins_drawer.py \
+  –o core-snp-tree-SNPs.pdf \
+  -t core-snp.final_tree.tre \
+  core-snp.branch_base_reconstruction.embl
+```
 
 
 ## Maximum likelihood phylogenetic inference
