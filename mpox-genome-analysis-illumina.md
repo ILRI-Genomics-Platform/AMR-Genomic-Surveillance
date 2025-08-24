@@ -624,13 +624,13 @@ squirrel \
 
 Column | Description
 --- | ---
-`sequences.aln.fasta` | The alignment file, with alignment scaffolded against a clade-specific reference. By default one of the ITR regions and a curated set of problematic regions is masked as Ns.
-`sequences.aln.tree` | The output maximum likelihood tree file from IQTREE2 with Node labels that correspond to the reconstruction Node labels. This tree can be viewed in various tree viewers, for example FigTree.
-`sequences.aln.tree.state` / `sequences.aln.tree.state_differences.csv` | The output ancestral state reconstruction file from IQTREE2 and the compiled list of unambiguously variable sites from squirrel.
-`sequences.aln.tree.branch_snps.reconstruction.csv` | A report of individual site changes mapped to specific branches and their dinucleotide context.
-`sequences.aln.tree.amino_acid.reconstruction.csv` | A report of each mutation that occurs across the phylogeny, their location, dinucleotide context, APOBEC3 status, which gene they're present in, codon position, amino acid change and a prediction of how extreme that amino acid change is with Grantham score.
-`sequences.aln.tree.png` / `sequences.aln.tree.svg` |  Visualisation of reconstructed tree showing whether mutations are consistent with APOBEC3 editing or not.
-`sequences.aln.report.html` | Summary report of analysis run.
+`.aln.fasta` | The alignment file, with alignment scaffolded against a clade-specific reference. By default one of the ITR regions and a curated set of problematic regions is masked as Ns.
+`.aln.tree` | The output maximum likelihood tree file from IQTREE2 with Node labels that correspond to the reconstruction Node labels. This tree can be viewed in various tree viewers, for example FigTree.
+`.aln.tree.state` / `.aln.tree.state_differences.csv` | The output ancestral state reconstruction file from IQTREE2 and the compiled list of unambiguously variable sites from squirrel.
+`.aln.tree.branch_snps.reconstruction.csv` | A report of individual site changes mapped to specific branches and their dinucleotide context.
+`.aln.tree.amino_acid.reconstruction.csv` | A report of each mutation that occurs across the phylogeny, their location, dinucleotide context, APOBEC3 status, which gene they're present in, codon position, amino acid change and a prediction of how extreme that amino acid change is with Grantham score.
+`.aln.tree.png` / `sequences.aln.tree.svg` |  Visualisation of reconstructed tree showing whether mutations are consistent with APOBEC3 editing or not.
+`.aln.report.html` | Summary report of analysis run.
 
 
 ## Copy output files to `home` directory
