@@ -528,10 +528,12 @@ wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Sur
 -P ./results/mpox/data/pathoplexus
 ```
 
+
 ```
 wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/mpoxv/mpox_metadata_DRC_2024.txt \
 -P ./results/mpox/data/pathoplexus/
 ```
+
 
 ```
 wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/mpoxv/MPOXV-accessions.txt \
