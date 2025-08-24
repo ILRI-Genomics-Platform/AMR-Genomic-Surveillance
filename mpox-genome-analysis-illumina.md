@@ -7,18 +7,17 @@
 ---
 
 ## Table of Contents
-  - [Overview](#overview)
-  - [Learning Objectives](#learning-objectives)
+  <!-- - [Overview](#overview)
+  - [Learning Objectives](#learning-objectives) -->
   - [Background](#background)
-  - [Prerequisites](#prerequisites)
-  - [Scope of the Tutorial](#scope-of-the-tutorial)
+  - [Epidemiology in Africa](#epidemiology-in-africa)
+  - [About the sample](#about-the-sample)
   - [Set-up](#set-up)
       - [Workshop Environment](#workshop-environment)
       - [Logging into the HPC](#logging-into-the-hpc)
-      - [Compute Node](compute-node)
+      - [Compute Node](#compute-node)
       - [Project organisation](#project-organisation)
   - [Bioinformatics Analysis](#bioinformatics-analysis)
-      - [About the Sample](#about-the-sample)
       - [Step 1: Load required modules](#step-1-load-required-modules)
       - [Step 2: Create a virtual environment and install dependencies](#step-2-create-a-virtual-environment-and-install-dependencies)
       - [Step 3: Remove human reads](#step-3-remove-human-reads)
@@ -30,8 +29,8 @@
         - [Sort alignment](#sort-alignment)
         - [Index alignment](#index-alignment)
       - [Step 7: Trim alignments from an amplicon scheme](#step-7-trim-alignments-from-an-amplicon-scheme)
-      - [Step 8: Call variants](#step-9-call-variants)
-        - [Make depth mask, split variants into ambiguous/consensus](#make-depth-mask-split-variants-into-ambiguous-consensus)
+      - [Step 8: Call variants](#step-8-call-variants)
+        - [Make depth mask, split variants into ambiguous and consensus](#make-depth-mask-split-variants-into-ambiguous-and-consensus)
         - [Normalize variant records into canonical VCF representation](#normalize-variant-records-into-canonical-vcf-representation)
       - [Step 9: Generate consensus genome](#step-9-generate-consensus-genome)
         - [Apply ambiguous variants first using IUPAC codes](#apply-ambiguous-variants-first-using-iupac-codes)
@@ -39,11 +38,11 @@
         - [Apply remaning variants, including
           indels](#apply-remaning-variants-including-indels)
         - [Coverage metrics and visualization with IGV](#coverage-metrics-and-visualization-with-igv)
-      - [Step 10: Squirrel - Some QUIck Reconstruction to Resolve Evolutionary Links](#step-10-squirrel-some-quick-reconstruction-to-resolve-evolutionary-links)
+      - [Step 10: Squirrel Some QUIck Reconstruction to Resolve Evolutionary Links](#step-10-squirrel-some-quick-reconstruction-to-resolve-evolutionary-links)
         - [Add additional sequences retrieved from Pathoplexus](#add-additional-sequences-retrieved-from-pathoplexus)
       
 
-### Background
+# Background
 
 Monkeypox virus (MPXV) was first isolated in Denmark in the late 1950s from a
 colony of laboratory monkeys from Singapore that were going to be used for polio
@@ -70,8 +69,7 @@ humans through:
 The existence of subclades of clade I was detected during the outbreak in the
 Democratic Republic of the Congo (DRC) that started in 2023. 
 
-#### Epidemiology
-Africa
+# Epidemiology in Africa
 
 Outbreak in Central and East Africa starting in 2023 — On August 14, 2024, the
 World Health Organization (WHO) declared for a second time that mpox was a
@@ -81,12 +79,12 @@ reported from 12 African countries, with approximately 90 percent of the cases
 occurring in the DRC [REF].
 
 
-### About the Sample
+# About the Sample
 **Project accession:** [PRJNA885473](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA885473)
 
 
-## Set-up  
-### Workshop Environment
+# Set-up  
+## Workshop Environment
 The workshop is mainly based on working in a HPC environment. However, local
 set-ups will be provisioned, although some steps of the workflows may be
 impossible to execute on laptops. For access to the HPC, you will use your
@@ -95,7 +93,7 @@ operating system. If using a non-Unix operating system you will require a
 program that enables interfacing with the Linux HPC environment.
 
 
-### Logging into the HPC  
+## Logging into the HPC  
 To log in to the HPC, you use the provided details (username and password) with the below command. The username follows the parttern `Bio4InfoXX`, where `XX` is a number.
 ```
 ssh <user_name>@hpc.ilri.cgiar.org
@@ -104,7 +102,7 @@ ssh <user_name>@hpc.ilri.cgiar.org
 - Next, you will be prompted for the password.  
  >***Note:*** The password will not be visible to you as you type--just a little faith.
 
-### Compute Node
+## Compute Node
 There are two nodes to choose from: `compute05`  and `compute06`. If your username (`Bio4InfoXX`) ends with an ***Odd Number*** (1,3,5,7,9...) use `compute05` and if it ends with an ***even number*** (2,4,6,8...) use `compute06`. For the purposes of this workshop we will each avail four vCPUs (two CPU cores).  
 >Compute05
 ```
@@ -125,7 +123,7 @@ interactive -w compute06 -c 2 -J amr-surveillance -p batch
     </summary>
 </details>
 
-### Project Organisation  
+## Project Organisation  
 For any Bioinformatics project, it's good practice to have a structured file system to ensure proper logical separation of components. By so doing, we enhance clarity, collaboration and reproducibility. Before commencing our analysis, we will start by setting up the project directory structure. Widely adopted project structure include the following directories:
 - `data`: stores copy of the original raw data
 - `scripts`: stores utility scrippts and code
@@ -135,52 +133,55 @@ For any Bioinformatics project, it's good practice to have a structured file sys
 
 1. *Create a course directory called `ACDC_AMR2025`:*
 
-```
-mkdir -p /var/scratch/$USER/ACDC_AMR2025
-```
+    ```
+    mkdir -p /var/scratch/$USER/ACDC_AMR2025
+    ```
 
-# Change directory into the created directory
+2. *Change directory into the created directory*
 
-```
-cd /var/scratch/$USER/ACDC_AMR2025
-```
+    ```
+    cd /var/scratch/$USER/ACDC_AMR2025
+    ```
 
 >**Note** Once inside the `hpc`, all instances of ```$USER``` will be equivalent to the `hpc` username that you were assigned. Your username, by default, is stored in a variable called `USER`. By using it, you will not have to type your username, rather, your shell will automatically retrieve your username which is the value stored in the `USER` variable. The `$` (dollar) prefix is used to retrieve the value of that variable.
 
-2. *Create project sub-directories:*
+3. *Create project sub-directories:*
 
-```
-mkdir -p \
-results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},tmp/squirrel,primertrimmed,primer-trimmed,freebayes,data/{ncbi,pathoplexus,all-consensus},squirrel}
-```
+    ```
+    mkdir -p \
+    results/mpox/{fastqc,fastp,hostile,trim_galore,primerschemes,bwa/{index,alignment},tmp/squirrel,primertrimmed,primer-trimmed,freebayes,data/{ncbi,pathoplexus,all-consensus},squirrel}
+    ```
 
-3. *Create symblic links to the required resources
+3. *Create symblic links to the required resources*
 
-```
-ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* . 
-```
+    ```
+    ln -sf /var/scratch/global/jjuma/ACDC_AMR2025/[dpsr]* . 
+    ```
 
 
-4. *Retrieve files from the GitHub repository
+4. *Retrieve files from the GitHub repository*
 
-```
-mkdir -p ./utils
-```
+    ```
+    mkdir -p ./utils
+    ```
 
-<!-- ```
-mkdir -p ./utils
-wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-mpox-environment.yml -P ./utils
-``` -->
+    <!-- ```
+    mkdir -p ./utils
+    wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-mpox-environment.yml -P ./utils
+    ``` -->
 
-<!-- ```
-cp /var/scratch/global/jjuma/ACDC_AMR2025/artic-requirements.txt . 
-``` -->
+    <!-- ```
+    cp /var/scratch/global/jjuma/ACDC_AMR2025/artic-requirements.txt . 
+    ``` -->
 
-```
-wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt -P ./utils
-```
+    ```
+    wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/artic-requirements.txt -P ./utils
+    ```
 
-### Step 1: Load required modules
+# Bioinformatics Analysis
+
+# Step 1: Load required modules
+
 ```
 module load hostile/2.0.0
 module load fastp/0.22.0
@@ -192,7 +193,7 @@ module load bcftools/1.13
 module load squirrel/1.1.2
 ```
 
-### Step 2: Create a virtual and install dependencies
+# Step 2: Create a virtual environment and install dependencies
 
 ```
 python3 -m venv ./py3env
@@ -206,7 +207,7 @@ source ./py3env/bin/activate
 python3 -m pip install -r ./utils/artic-requirements.txt
 ```
 
-### Step 3: Remove human reads
+# Step 3: Remove human reads
 
 ```
 hostile clean \
@@ -217,7 +218,7 @@ hostile clean \
     --index ./databases/hostile/human-t2t-hla
 ```
 
-### Step 4: Trim adapter sequences
+# Step 4: Trim adapter sequences
 
 ```
 fastp \
@@ -236,7 +237,13 @@ fastp \
     2> ./results/mpox/fastp/SRR21755837.fastp.log
 ```
  
-### Step 5: Get primer scheme
+# Step 5: Get primer scheme
+
+```
+cp ./primer_scheme/reference.fasta \
+    ./primer_scheme/primer.bed \
+    ./results/mpox/primerschemes/
+```
 
 <!-- ```
 python ./scripts/get_scheme.py \
@@ -245,20 +252,14 @@ python ./scripts/get_scheme.py \
     yale-mpox/2000/v1.0.0-cladeii
 ``` -->
 
-### Step 6: Alignment of reads
+# Step 6: Alignment of reads
 
-#### Index the reference genome
+## Index the reference genome
 
 <!-- ```
 cp ./results/mpox/primerschemes/yale-mpox/2000/v1.0.0-cladeii/reference.fasta \
     ./results/mpox/bwa/index/
 ``` -->
-
-```
-cp ./primer_scheme/reference.fasta \
-    ./primer_scheme/primer.bed \
-    ./results/mpox/primerschemes/
-```
 
 
 ```
@@ -272,7 +273,7 @@ INDEX=$(find -L ./results/mpox/bwa/index -name "*.amb" | sed 's/.amb//')
 ```
 
 
-#### Align reads to the reference genome
+## Align reads to the reference genome
 
 ```
 bwa mem \
@@ -286,7 +287,7 @@ bwa mem \
     -o ./results/mpox/bwa/alignment/SRR21755837.bam - 
 ```
 
-#### Sort alignment
+## Sort alignment
 
 ```
 samtools sort \
@@ -296,13 +297,13 @@ samtools sort \
     ./results/mpox/bwa/alignment/SRR21755837.bam
 ```
 
-#### Index alignment
+## Index alignment
 
 ```
 samtools index ./results/mpox/bwa/alignment/SRR21755837.sorted.bam
 ```
 
-### Step 7: Trim alignments from an amplicon scheme
+# Step 7: Trim alignments from an amplicon scheme
 
 1. Given a reference position and a direction of travel, walk out and find the nearest primer site.
 2. Soft mask an alignment to fit within primer start/end sites
@@ -345,7 +346,7 @@ python ./scripts/align_trim.py \
     && samtools index ./results/mpox/primertrimmed/SRR21755837.primertrimmed.rg.sorted.bam
 ```
 
-### Step 8: Call variants
+# Step 8: Call variants
 
 freebayes is a Bayesian genetic variant detector designed to find small polymorphisms, specifically SNPs (single-nucleotide polymorphisms), indels (insertions and deletions), MNPs (multi-nucleotide polymorphisms), and complex events (composite insertion and substitution events) smaller than the length of a short-read sequencing alignment.
 
@@ -373,9 +374,10 @@ freebayes \
 
 `--pooled-continuous`: Output all alleles which pass input filters/thresholds,
 regardless of genotyping outcome or model.
+
 `--min-coverage`: -Require at least this coverage to process a site.
 
-#### Make depth mask, split variants into ambiguous/consensus
+## Make depth mask, split variants into ambiguous and consensus
 
 Process a .gvcf file to create a file of consensus variants, low-frequency
 variants and a coverage mask
@@ -392,14 +394,20 @@ python ./scripts/process_gvcf.py \
 ```
 
 `-d`: Mask reference positions with depth less than this threshold
+
 `-l`: Variants with frequency less than -l will be discarded
+
 `-u`: Substitution variants with frequency less than -u will be encoded with
 IUPAC ambiguity codes
+
 `-v`: The output file name for variants (non-reference gVCF records)
-`-c`: The output file name for variants that will be applied to generate the consensus sequence
+
+`-c`: The output file name for variants that will be applied to generate the
+consensus sequence
 
 
-#### Normalize variant records into canonical VCF representation
+
+## Normalize variant records into canonical VCF representation
 Realign and normalize indels; check if REF alleles match the reference;
 split multiallelic sites into multiple rows; recover multiallelics from
 multiple rows.
@@ -416,7 +424,7 @@ done
 
 total/split/joined/realigned/skipped
 
-### Step 9: Generate consensus genome 
+# Step 9: Generate consensus genome 
 The consensus VCF file is split into a set that should be IUPAC codes and all
 other bases, using the ConsensusTag in the VCF
 
@@ -433,7 +441,7 @@ for vt in "ambiguous" "fixed"; do
 done
 ```
 
-#### Apply ambiguous variants first using IUPAC codes. 
+## Apply ambiguous variants first using IUPAC codes. 
 This variant set cannot contain indels or the subsequent step will break
 
 ```
@@ -443,14 +451,14 @@ bcftools consensus \
     ./results/mpox/freebayes/SRR21755837.ambiguous.fa
 ```
 
-#### Get viral contig name from reference
+## Get viral contig name from reference
 
 ```
 CTG_NAME=$(head -n1 ./results/mpox/primerschemes/reference.fasta | sed 's/>//')
 ```
 
 
-#### Apply remaning variants, including indels
+## Apply remaning variants, including indels
 
 ```
 bcftools consensus \
@@ -461,7 +469,7 @@ bcftools consensus \
     ./results/mpox/freebayes/SRR21755837.consensus.fa
 ```
 
-#### Coverage metrics and visualization with IGV
+## Coverage metrics and visualization with IGV
 
 Transfer the `reference.fa` and `reference.fa.fai` and the sorted primertimmed
 alignment files to hpc
@@ -499,9 +507,7 @@ What is the alternate allele, what is the reference allele?
 How many alignments span this region?
 
 
-
-
-### Step 10: Squirrel - Some QUIck Reconstruction to Resolve Evolutionary Links
+# Step 10: Squirrel Some QUIck Reconstruction to Resolve Evolutionary Links
 The MPXV genome is pretty challenging to work with and do reliable phylogenetics
 on. It is large (~200kb), has tracts of low complexity and repetitive regions,
 and has large deletions, which can lead to difficulties producing a reliable
@@ -513,7 +519,7 @@ tree estimation.
 export XDG_CACHE_HOME=$PWD/.cache
 ``` -->
 
-#### Add additional sequences retrieved from Pathoplexus
+## Add additional sequences retrieved from Pathoplexus
 
 ```
 wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/mpoxv/mpox_nuc_DRC_2024.fasta \
@@ -531,7 +537,7 @@ wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Sur
 ```
 
 
-# fetch genome sequences
+## fetch genome sequences
 
 **Project paper:** [Publication](https://pmc.ncbi.nlm.nih.gov/articles/PMC11484285/pdf/eurosurv-29-38-1.pdf)
 We will use 12 MPOXV genomes sequenced from the DRC. We can either retrieve these
@@ -544,7 +550,7 @@ python ./scripts/fetch-genomes.py \
     ./results/mpox/data/ncbi/
 ```
 
-# Concatenate consensus fasta files
+## Concatenate consensus fasta files
 
 ```
 cat \
@@ -607,20 +613,20 @@ squirrel \
     --clade cladei
 ```
 
+## Copy output files to `home` directory
+
 ```
 rsync -avP --partial ./results/mpox/squirrel ~/ --exclude="*.fasta" --exclude="*.state"
 ```
 
+## Copy output files from `home` directory to local machine/compute
+
 ```
 rsync -avP --partial <user_name>@hpc.ilri.cgiar.org:~/squirrel ~/ --exclude="*.fasta" --exclude="*.state"
 ```
-
+<!-- 
 # Temporal signal
 
 ```
 tail -n+2 ./results/mpox/data/pathoplexus/mpox_metadata_DRC_2024.txt | cut -f1,14 > ./results/mpox/data/pathoplexus/dates.txt
-```
-
-```
-
-```
+``` -->
