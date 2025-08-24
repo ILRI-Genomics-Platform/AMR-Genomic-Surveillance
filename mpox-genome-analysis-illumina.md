@@ -39,7 +39,9 @@
           indels](#apply-remaning-variants-including-indels)
         - [Coverage metrics and visualization with IGV](#coverage-metrics-and-visualization-with-igv)
       - [Step 10: Squirrel Some QUIck Reconstruction to Resolve Evolutionary Links](#step-10-squirrel-some-quick-reconstruction-to-resolve-evolutionary-links)
-        - [Add additional sequences retrieved from Pathoplexus](#add-additional-sequences-retrieved-from-pathoplexus)
+        - [Add additional sequences retrieved from
+          Pathoplexus](#add-additional-sequences-retrieved-from-pathoplexus)
+        - [Fetch genome sequences](#fetch-genome-sequences)
       
 
 # Background
@@ -537,7 +539,7 @@ wget -c https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Sur
 ```
 
 
-## fetch genome sequences
+## Fetch genome sequences
 
 **Project paper:** [Publication](https://pmc.ncbi.nlm.nih.gov/articles/PMC11484285/pdf/eurosurv-29-38-1.pdf)
 We will use 12 MPOXV genomes sequenced from the DRC. We can either retrieve these
@@ -564,6 +566,8 @@ cat \
 sed 's/\.1.*//g' ./results/mpox/data/all-consensus/all_consensus.fasta \
     > ./results/mpox/data/all-consensus/mpxv_all_consensus.fasta
 ```
+
+## Run Squirrel
 
 Enrichment of APOBEC3-mutations in the MPXV population are a signature of
 sustained human-to-human transmission. Identifying APOBEC3-like mutations in
