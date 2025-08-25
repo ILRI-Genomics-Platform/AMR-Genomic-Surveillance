@@ -673,7 +673,7 @@ kaptive assembly \
 
 ### Kaptive Web
 You can also upload your assemblies to
-[Kaptive-Web](#https://kaptive-web.erc.monash.edu/). 
+[Kaptive-Web](https://kaptive-web.erc.monash.edu/). 
 
 
 ### Summary Table
