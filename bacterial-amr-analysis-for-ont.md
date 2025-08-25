@@ -33,10 +33,14 @@
         - [Serotyping using Kaptive](#serotyping-using-kaptive)
         - [K antigen and locus](#k-antigen-and-locus)
         - [O antigen and locus](#0-antigen-and-locus)
-      - [Step 7: AMR Detection](#step-7-amr-detection)
-          - [Output Formart](#output-format)
-          - [AMR Dectection with ResFinder](#amr-detection-with-resfinder)
-          - [AMR Dectection with CARD/RGI](#amr-detection-with-card/rgi)
+      - [Step 7: AMR genes detection](#step-7-amr-genes-detection)
+          - [AMR genes detection using
+            ResFinder](#amr-genes-detection-using-resfinder)
+          - [Batch AMR detection](#batch-amr-detection)
+          - [AMR Detection using CARD and RGI web resources](#amr-detection-using-card-and-rgi-web-resources)
+          - [AMR genes detection using
+            AMRFinder](#amr-genes-detection-using-amrfinder)
+          - [Output Format](#output-format)
       - [Step 8: Variant Calling and Consensus Assemblies](#step-8-variant-calling-and-consensus-assemblies)
           - [Fast Bacterial Variant Calling with Contigs](#fast-bacterial-variant-calling-with-contigs)
           - [Snippy Outputs](#snippy-outputs)
@@ -701,7 +705,7 @@ Column | Description
 # Step 7: AMR genes detection
 
 
-#### AMR genes detection using ResFinder
+## AMR genes detection using ResFinder
 
 Now that we have an annotated genome, we can query it for antimicrobial
 resistance. There a variety of tools for the task. We will use commonly used
@@ -724,12 +728,7 @@ python -m resfinder \
     --point
 ```
 
-
-#### AMR Detection using CARD/RGI web resource
-[**CARD/RGI**](https://card.mcmaster.ca/analyze/rgi) can be used to predict resistomes from protein or nucleotide data based on homology and SNP models.
-
-
-# Batch AMR detection 
+## Batch AMR detection 
 
 ```
 for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
@@ -753,13 +752,18 @@ for fn in ./pathogenwatch/klebs/assemblies-to-test/*.fasta; do
 done
 ```
 
+## AMR Detection using CARD and RGI web resources
+[**CARD/RGI**](https://card.mcmaster.ca/analyze/rgi) can be used to predict
+resistomes from protein or nucleotide data based on homology and SNP models.
+
+
 ```
 module unload prokka/1.14.6
 module unload amrfinder/4.0.22
 module load amrfinder/4.0.22
 ```
 
-#### AMR genes detection using AMRFinder
+## AMR genes detection using AMRFinder
 
 NCBI--[***AMRFinderPlus***](https://github.com/ncbi/amr/wiki/Home). It
 identifies acquired antimicrobial resistance genes in bacterial protein and/or
@@ -807,7 +811,7 @@ amrfinder \
 ```
 
 
-#### Output Format
+## Output Format
 AMRFinderPlus produces a tab-separated output file with detailed information:
 Column | Description
 ---|---
