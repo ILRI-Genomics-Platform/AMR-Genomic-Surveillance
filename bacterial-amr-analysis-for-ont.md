@@ -25,7 +25,7 @@
       - [Step 4: Genome Assembly](#step-4-genome-assembly)
       - [Step 5: Genome Annotation](#step-5-genome-annotation)
       - [Step 6: Variant Calling and Consensus Assemblies](#step-6-variant-calling-and-consensus-assemblies)
-       - [Fast Bacterial Variant Calling with Contigs](#fast-bacterial-variant-calling-with-contigs)
+          - [Fast Bacterial Variant Calling with Contigs](#fast-bacterial-variant-calling-with-contigs)
           - [Snippy Outputs](#snippy-outputs)
           - [Visualising Snippy Variants](#visualising-snippy-variants)
           - [Build Core and Whole Genome Alignments from Snippy Output](#build-core-and-whole-genome-alignments-from-snippy-output)
@@ -38,11 +38,11 @@
           - [AMR Dectection with ResFinder](#amr-detection-with-resfinder)
           - [AMR Dectection with CARD/RGI](#amr-detection-with-card/rgi)
       - [Step 8: Pathogen Typing](#step-8-pathogen-typing)
-          - [MLST](#mlst)
-              - [MLST Output Format](#mlst-output-format)
-              - [MLST Results Interpretation](#mlst-results-interpretation)
-              - [Visualising MLST Results](#visualising-mlst-results)
-              - [MLST Interpretation
+        - [MLST](#mlst)
+        - [MLST Output Format](#mlst-output-format)
+        - [MLST Results Interpretation](#mlst-results-interpretation)
+        - [Visualising MLST Results](#visualising-mlst-results)
+        - [MLST Interpretation
                 Limitations](#mslt-interpretation-limitations)
     - [Step 9: Phylogenetic Analysis](#step-9-phylogenetic-analysis)
         - [Phylogenetic Analysis of Gubbins
