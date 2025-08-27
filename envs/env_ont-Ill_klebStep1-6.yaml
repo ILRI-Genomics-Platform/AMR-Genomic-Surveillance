@@ -1,0 +1,16 @@
+channels:
+- conda-forge
+- bioconda
+dependencies:
+- bioconda::bbmap=38.95
+- bioconda::dragonflye=1.2.1
+- bioconda::fastp=0.22.0
+- bioconda::fastqc=0.11.9
+- bioconda::mlst=2.23.0
+- bioconda::prokka=1.14.6
+- bioconda::seqkit=2.10.0
+- bioconda::shovill=1.1.0
+- pip
+- pip:
+  - kaptive==3.1.0
+  - nanoplot==1.42.0
