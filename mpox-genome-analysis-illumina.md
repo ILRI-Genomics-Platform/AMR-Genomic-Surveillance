@@ -191,7 +191,7 @@ module load seqtk/1.3
 module load bwa/0.7.17
 module load freebayes/1.3.4
 module unload bcftools/1.17
-module load bcftools/1.13
+module load bcftools/1.8
 module load squirrel/1.1.2
 ```
 
