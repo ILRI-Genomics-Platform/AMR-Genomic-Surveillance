@@ -127,4 +127,5 @@ Please find here linked the tutorials for Introduction to Linux and for respecti
 6. [Bioinformatics Data Management](Intro_to_bioinformatics_data_Management.md)
 
 
-> [Bacterial Genome and AMR Analysis Terms](bacterial_genome_terms.md)
+> [Bacterial Genome and AMR Analysis Terms](bacterial_genome_terms.md)  
+> [Reproducing the analysis environments with mamba](envs/README.md)  
