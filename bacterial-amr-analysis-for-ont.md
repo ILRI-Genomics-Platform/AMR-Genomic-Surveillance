@@ -157,7 +157,7 @@ cd /var/scratch/$USER/ACDC_AMR2025
 
 ```
 mkdir -p \
-results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,kaptive,resfinder,iqtree,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
+results/ont/klebsiella/{porechop,nanoq,fastq-scan,nanoplot,dragonflye,prokka,amrfinder,mlst,kaptive,kleborate,resfinder,iqtree,tmp/{dragonflye,prokka,amrfinder,snippy},snippy,snippy-core,gubbins}
 ```
 
 3. *Create symblic links to the required resources
@@ -834,7 +834,67 @@ Name of closest sequence | Name of the matching sequence
 HMM id | Identifier of HMM used for detection (if applicable)
 HMM description | Description of HMM (if applicable)
 
+<br>
 
+
+
+# Optional - Kleborate Genotyping Framework
+
+```
+module purge
+module load kleborate/3.2.4
+```
+
+Kleborate was primarily developed to screen genome assemblies of *Klebsiella
+pneumoniae* and the *Klebsiella pneumoniae* species complex (KpSC) for:
+- Species (e.g. *K. pneumoniae*, *K. quasipneumoniae*, *K. variicola*, etc.)
+- *K. pneumoniae* species complex MLST
+- ICEKp-associated virulence loci: yersiniabactin (*ybt*), colibactin (*clb*), salmochelin (*iro*), hypermucoidy (*rmp*)
+- Virulence plasmid associated loci: salmochelin (*iro*), aerobactin (*iuc*), hypermucoidy (*rmp*, *rmpA2*)
+- Antimicrobial resistance determinants: acquired genes, SNPs, gene truncations and intrinsic β-lactamases
+- K (capsule) and O antigen (LPS) serotype prediction, via *wzi* alleles and Kaptive
+
+Kleborate v3 includes a range of modules for typing bacterial genomes, most of which are specific to a particular species or complex (*Klebsiella pneumoniae SC*,
+*Klebsiella oxytoca SC*, *Escherichia coli*). 
+
+Kleborate v3 modules are divided into:
+- General Modules
+- Modules for Klebsiella pneumoniae species complex
+- Modules for Klebsiella oxytoca species complex
+- Modules for Escherichia species complex
+
+# Available modules
+
+```
+kleborate --list_modules
+```
+
+Module | Description
+--- | ---
+`klebsiella_pneumo_complex__mlst` | chromosomal MLST for the *Klebsiella pneumoniae* species complex
+`klebsiella_pneumo_complex__kaptive` | In silico serotyping of K and L locus for the *Klebsiella pneumoniae* species complex
+`klebsiella_pneumo_complex__amr` | Genotyping acquired genes and mutations for the *Klebsiella pneumoniae* species complex
+`klebsiella_pneumo_complex__cipro_prediction` | Ciprofloxacin resistance prediction based on theresults of the `klebsiella_pneumo_complex__amr` module
+
+
+
+```
+kpsc_modules=("klebsiella_pneumo_complex__mlst" "klebsiella_pneumo_complex__kaptive" "klebsiella_pneumo_complex__amr" "klebsiella_pneumo_complex__cipro_prediction")
+```
+
+```
+for module in ${kpsc_modules[*]}; do
+  suffix=$(echo $module | sed 's/klebsiella_pneumo_complex__//g')
+  echo -e "---------------starting--------------"
+  echo -e "Running kleborate module: $module"
+  kleborate \
+  -a ./pathogenwatch/klebs/assemblies-to-test/*.fasta \
+  -o ./results/ont/klebsiella/kleborate/$suffix \
+  -p kpsc \
+  --modules $module
+  echo -e "---------------complete--------------"
+done
+```
 
 
 # Step 8: Variant Calling and Consensus Assemblies
