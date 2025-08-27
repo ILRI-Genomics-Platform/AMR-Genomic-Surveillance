@@ -1,0 +1,9 @@
+channels:
+- conda-forge
+- bioconda
+dependencies:
+- bioconda::ncbi-amrfinderplus=4.0.23
+- bioconda::rgi=6.0.4
+- pip
+- pip:
+  - resfinder==4.7.2
