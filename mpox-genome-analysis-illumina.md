@@ -608,7 +608,6 @@ conda activate squirrel
 ```
 squirrel \
     results/mpox/data/all-consensus/mpxv_all_consensus.fasta \
-    --no-mask \
     --seq-qc \
     --outdir results/mpox/squirrel \
     --outfile all_consensus.aln.fasta \
@@ -617,8 +616,39 @@ squirrel \
     --run-apobec3-phylo \
     --interactive-tree \
     --outgroups KJ642617,KJ642615,KJ642616 \
-    --clade cladei
+    --clade cladei \
+    --fig-height 15 \
+    --fig-width 12
 ```
+
+# Masking
+- `Squirrel` trims the alignment to `190788` at the end of the genome to mask
+  out one of the inverted terminal repeat (ITR) regions and pads the end of the
+  genome with `N`
+
+- `Squirrel` performs masking (replacement with N) on low-complexity or
+  repetitive regions that have been characterised for Clade I and II.
+
+# Alignment quality control
+
+- `Mutations that are adjacent to N bases` - N sites are usually a product of
+  low coverage regions. Mutations that occur directly adjacent to low coverage
+  regions may be a result of mis-alignment prior to the low coverage masking and
+  may not be real SNPs.
+
+- `Unique mutations that clump together` - Usually mutations do not clump
+  closely together and may suggest an alignment or assembly issue. If these
+  mutations are not shared with any other sequences, they are flagged for
+  masking.
+
+- `Sequences with a high N content` - Sequences that have many ambiguous bases
+  in them are flagged that they may want to be excluded in further analysis.
+
+# Phylogeny-informed quality control
+
+`reversions` - flag issues with the assembly pipeline (often insufficient primer
+sequence trimming from reads or absent low-coverage masking).
+
 
 ## Output files
 
