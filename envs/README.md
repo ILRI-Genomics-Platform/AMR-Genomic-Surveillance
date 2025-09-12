@@ -198,7 +198,7 @@ Beyond the virtual environments, there are `python` and `R` scripts used in diff
 Some of these scripts can be found in the [**scripts**](../scripts) directory in the GitHub repo. To access them;  
  - Go to the repo's [scripts](../scripts) ->   
  - Click on the script e.g [fetch-genomes.py](https://github.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/blob/main/scripts/fetch-genomes.py) -> 
- - Click the `Raw` button, copy the URL (link) and download using `wget <URL> **OR** 
+ - Click the `Raw` button, copy the URL (link) and download using `wget <URL>` **OR** 
    - `Copy raw file` and paste it to a file with same name **OR** 
    - Click `Download raw file` and move it to the right folder.  
 
