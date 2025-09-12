@@ -195,10 +195,10 @@ Beyond the virtual environments, there are `python` and `R` scripts used in diff
  - `process_gvcf.py` - `Step 8` and  
  - `fetch-genomes.py` - `Step 10`  
 
-Some of these scripts can be found in the [**scripts**](../scripts) directory of these GitHub repo. To access them;  
+Some of these scripts can be found in the [**scripts**](../scripts) directory in the GitHub repo. To access them;  
  - Go to the repo's [scripts](../scripts) ->   
  - Click on the script e.g [fetch-genomes.py](https://github.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/blob/main/scripts/fetch-genomes.py) -> 
- - Click the `Raw` button, copy the URL (link) and download using `wget <URL>` as shown **OR** 
+ - Click the `Raw` button, copy the URL (link) and download using `wget <URL> **OR** 
    - `Copy raw file` and paste it to a file with same name **OR** 
-   - click `Download raw file` and move it to the right folder.  
+   - Click `Download raw file` and move it to the right folder.  
 
