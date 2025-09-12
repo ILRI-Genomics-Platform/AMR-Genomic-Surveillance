@@ -48,13 +48,13 @@ The YAML files for these tutorials are hosted in GitHub in our course repo. Here
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/env_ont-Ill_klebStep1-6.yaml
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/env_ont_klebStep7-amr.yaml
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/env_ont_klebStep8-10.yaml
-wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/mpox-environment.yml
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/mpox-environment.yaml
 ```
 
 - `env_ont-Ill_klebStep1-6.yaml` - Has packages for Step 3 to Step 6 for both ONT and Illumina data.
 - `env_ont_klebStep7-amr.yaml` - Has packages for Step 7 AMR prediction using ResFinder, RGI and AMRFinderPlus.
 - `env_ont_klebStep8-10.yaml` - Covers Step 8 and 9 packages.
-- `mpox-environment.yml` - Has all packages needed by the Mpox workflow. That also includes packages installed in `Step 2`, i.e packages listed in `./utils/artic-requirements.txt` so skip `Step 2`.
+- `mpox-environment.yaml` - Has all packages needed by the Mpox workflow. That also includes packages installed in `Step 2`, i.e packages listed in `./utils/artic-requirements.txt` so skip `Step 2`.
 
 
 ### Option 2: Using `curl`
@@ -184,8 +184,8 @@ mamba activate bactWGSvc
 mamba deactivate
 
 # mpoxWGSvc environment
-mamba env create -f mpox-environment.yml --name mpoxWGSvc --dry-run
-mamba env create -f mpox-environment.yml --name mpoxWGSvc
+mamba env create -f mpox-environment.yaml --name mpoxWGSvc --dry-run
+mamba env create -f mpox-environment.yaml --name mpoxWGSvc
 mamba activate mpoxWGSvc
 mamba deactivate
 ```
