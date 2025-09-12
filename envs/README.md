@@ -40,7 +40,7 @@ This YAML:
 
 ## Download YAML Files from GitHub
 
-Assuming your YAML files are hosted in a GitHub repo, here’s how to download them:
+The YAML files for these tutorials are hosted in GitHub in our course repo. Here’s how to download them:
 
 ### Option 1: Using `wget`
 
@@ -48,11 +48,13 @@ Assuming your YAML files are hosted in a GitHub repo, here’s how to download t
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/env_ont-Ill_klebStep1-6.yaml
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/env_ont_klebStep7-amr.yaml
 wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/env_ont_klebStep8-10.yaml
+wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/refs/heads/main/envs/mpox-environment.yml
 ```
 
 - `env_ont-Ill_klebStep1-6.yaml` - Has packages for Step 3 to Step 6 for both ONT and Illumina data.
-- `env_ont_klebStep7-amr.yaml` - Has packages for Step 7 AMR prediction using ResFinder, RGI and AMRFinderPlus
-- `env_ont_klebStep8-10.yaml` - Covers Step 8 and 9 packages
+- `env_ont_klebStep7-amr.yaml` - Has packages for Step 7 AMR prediction using ResFinder, RGI and AMRFinderPlus.
+- `env_ont_klebStep8-10.yaml` - Covers Step 8 and 9 packages.
+- `mpox-environment.yml` - Has all packages needed by the Mpox workflow. That also includes packages installed in `Step 2`, i.e packages listed in `./utils/artic-requirements.txt` so skip `Step 2`.
 
 
 ### Option 2: Using `curl`
@@ -133,7 +135,7 @@ This installs Mamba from the `conda-forge` channel and makes it available global
 Assuming you have a YAML file like `env_ont-Ill_klebStep1-6.yaml`, run:
 
 ```bash
-mamba env create -f env_ont-Ill_klebStep1-6.yaml --name bactWGSgenome
+mamba env create -f ./env_ont-Ill_klebStep1-6.yaml --name bactWGSgenome
 ```
 
 ---
@@ -143,7 +145,7 @@ mamba env create -f env_ont-Ill_klebStep1-6.yaml --name bactWGSgenome
 To preview what Mamba will install:
 
 ```bash
-mamba env create -f env_ont-Ill_klebStep1-6.yaml --name bactWGSgenome --dry-run
+mamba env create -f ./env_ont-Ill_klebStep1-6.yaml --name bactWGSgenome --dry-run
 ```
 
 This helps catch issues before committing.
@@ -180,4 +182,20 @@ mamba env create -f env_ont_klebStep8-10.yaml --name bactWGSvc --dry-run
 mamba env create -f env_ont_klebStep8-10.yaml --name bactWGSvc
 mamba activate bactWGSvc
 mamba deactivate
+
+# mpoxWGSvc environment
+mamba env create -f mpox-environment.yml --name mpoxWGSvc --dry-run
+mamba env create -f mpox-environment.yml --name mpoxWGSvc
+mamba activate mpoxWGSvc
+mamba deactivate
 ```
+
+Beyond the virtual environments, there are `python` and `R` scripts used in different steps of the pipeline. For example the mpox pipeline uses these python scripts in different steps:  
+ - `align_trim.py` - `Step 7`,   
+ - `process_gvcf.py` - `Step 8` and  
+ - `fetch-genomes.py` - `Step 10`  
+Some of these scripts can be found in the [**scripts**](../scripts) directory of these GitHub repo. To access them;
+ - go to the repo's [scripts](../scripts) ->   
+ - click on the script e.g [fetch-genomes.py](https://github.com/ILRI-Genomics-Platform/AMR-Genomic-Surveillance/blob/main/scripts/fetch-genomes.py) -> 
+ - click the `Raw` button and download using `wget` + `URL` as shown **OR** `Copy raw file` and paste it to a file with same name **OR** click `Download raw file** and move it to the right folder.  
+

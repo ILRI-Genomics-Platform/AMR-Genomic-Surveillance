@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -w compute06
+#SBATCH -w compute05
 #SBATCH --job-name=recombination-gubbins
 #SBATCH --output=stdout_%j.out
 #SBATCH --error=stderr_%j.err
@@ -16,7 +16,7 @@ module load gubbins/3.4
 
 
 # I/O
-WORKDIR="/var/scratch/$USER/ACDC_AMR2025"
+WORKDIR="/var/scratch/$USER/cohort4_AMR"
 OUTDIR="${WORKDIR}/results/ont/klebsiella/gubbins"
 
 echo -e "working directory: ${WORKDIR}"
@@ -41,3 +41,8 @@ mask_gubbins_aln.py \
     --aln ${WORKDIR}/results/ont/klebsiella/snippy-core/core-snp-clean.full.aln \
     --gff ${WORKDIR}/results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
     --out ${WORKDIR}/results/ont/klebsiella/gubbins/core-snp.masked.aln
+mask_gubbins_aln.py \
+    --aln ./results/ont/klebsiella/snippy-core/core-snp-clean.full.aln \
+    --gff ./results/ont/klebsiella/gubbins/core-snp.recombination_predictions.gff \
+    --missing-char N \
+    --out ./results/ont/klebsiella/gubbins/core-snp.masked.aln
