@@ -168,13 +168,14 @@ mamba deactivate
 
 ---
 
-For the other two environments repeat **Step 4 and 5** for each YAML file.
-Example:
+For the other three environments repeat **Step 4 and 5** for each YAML file.  
+Here are the simplified steps:
 
 ```bash
 # bactWGSamr environment
 mamba env create -f env_ont_klebStep7-amr.yaml --name bactWGSamr --dry-run
 mamba env create -f env_ont_klebStep7-amr.yaml --name bactWGSamr
+mamba activate bactWGSamr
 mamba deactivate
 
 # bactWGSvc environment
@@ -189,6 +190,8 @@ mamba env create -f mpox-environment.yaml --name mpoxWGSvc
 mamba activate mpoxWGSvc
 mamba deactivate
 ```
+
+## Scripts
 
 Beyond the virtual environments, there are `python` and `R` scripts used in different steps of the pipeline. For example the mpox pipeline uses these python scripts in different steps:  
  - `align_trim.py` - `Step 7`,   
