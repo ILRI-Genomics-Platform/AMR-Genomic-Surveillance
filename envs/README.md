@@ -54,7 +54,7 @@ wget https://raw.githubusercontent.com/ILRI-Genomics-Platform/AMR-Genomic-Survei
 - `env_ont-Ill_klebStep1-6.yaml` - Has packages for Step 3 to Step 6 for both ONT and Illumina data.
 - `env_ont_klebStep7-amr.yaml` - Has packages for Step 7 AMR prediction using ResFinder, RGI and AMRFinderPlus.
 - `env_ont_klebStep8-10.yaml` - Covers Step 8 and 9 packages.
-- `mpox-environment.yaml` - Has all packages needed by the Mpox workflow. That also includes packages installed in `Step 2`, i.e packages listed in `./utils/artic-requirements.txt` so skip `Step 2`.
+- `mpox-environment.yaml` - Has all packages needed by the Mpox workflow. That also includes packages installed in `Step 2`, i.e packages listed in `./utils/artic-requirements.txt`. Therefore, skip *Step 2: Create a virtual environment and install dependencies* in mpox tutorial.
 
 
 ### Option 2: Using `curl`
