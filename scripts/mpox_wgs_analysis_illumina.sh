@@ -216,14 +216,29 @@ process_sample() {
   # - Uses the primer scheme (BED file)
   # - Outputs trimmed alignments in SAM format to a temporary file
   # - Writes alignment report and amplicon depth report
-  python ./scripts/align_trim.py \
-    --normalise "${NORMALISE}" \
+
+  # python ./scripts/align_trim.py \
+  #   --normalise "${NORMALISE}" \
+  #   "${PRIMER_SCHEME_OUT}/primer.bed" \
+  #   --paired \
+  #   --no-read-groups \
+  #   --primer-match-threshold "${PRIMER_MATCH_THRESHOLD}" \
+  #   --min-mapq "${MIN_MAPQ}" \
+  #   --trim-primers \
+  #   --report "${ALIGNREPORT}" \
+  #   --amp-depth-report "${AMP_DEPTH}" \
+  #   < "${SAMTOOLS_SORTED}" \
+  #   > "${PRIMER_UNSORTED_BAM}" \
+  #   2> "${ALIGN_ERR}"
+
+ # - Using updated standalone tool: align_trim
+  align_trim \
     "${PRIMER_SCHEME_OUT}/primer.bed" \
-    --paired \
-    --no-read-groups \
-    --primer-match-threshold "${PRIMER_MATCH_THRESHOLD}" \
+    --normalise "${NORMALISE}" \
     --min-mapq "${MIN_MAPQ}" \
-    --trim-primers \
+    --primer-match-threshold "${PRIMER_MATCH_THRESHOLD}" \
+    --allow-incorrect-pairs \
+    --no-read-groups \
     --report "${ALIGNREPORT}" \
     --amp-depth-report "${AMP_DEPTH}" \
     < "${SAMTOOLS_SORTED}" \
