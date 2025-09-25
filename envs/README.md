@@ -168,6 +168,24 @@ mamba deactivate
 
 ---
 
+## Step 6: Removing a conda  Environment Using mamba
+
+Once you have an environment, its files will be stored in a specific directory.  
+You can check if an environment is there and remove it by name.  
+Example using `bactWGSgenome`. List environments:  
+
+```bash
+mamba env list
+```
+
+Then remove the environment and all it's files:
+
+```
+mamba env remove -n bactWGSgenome
+```
+
+---
+
 For the other three environments repeat **Step 4 and 5** for each YAML file.  
 Here are the simplified steps:
 

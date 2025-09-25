@@ -12,6 +12,7 @@ dependencies:
 - bioconda::seqtk=1.5
 - bioconda::squirrel=1.2.2
 - bioconda::tabix=1.11
+- bioconda::align_trim=1.0.2
 - conda-forge::biopython=1.85
 - conda-forge::bzip2=1.0.8
 - conda-forge::clint=0.5.1

@@ -348,6 +348,37 @@ python ./scripts/align_trim.py \
     && samtools index ./results/mpox/primertrimmed/SRR21755837.primertrimmed.rg.sorted.bam
 ```
 
+## Alternative: Use updated standalone tool: `align_trim`
+
+---
+<details close>
+  <summary>Click to toggle <span style="color:blue"><b>align_trim alternative command</b></span></summary>
+  <blockquote>
+
+You can read more on `align_trim` tool here: [align_trim](https://github.com/artic-network/align_trim?tab=readme-ov-file)  
+However, for it to work, you need an ARTIC primer BED file in [primalscheme version 3 format](https://github.com/artic-network/primal-page?tab=readme-ov-file#v3)  
+
+```
+align_trim \
+    ./results/mpox/primerschemes/primer.bed \
+    --normalise 200  \
+    --min-mapq 20 \
+    --primer-match-threshold 35 \
+    --allow-incorrect-pairs \
+    --no-read-groups \
+    --report ./results/mpox/primertrimmed/SRR21755837.alignreport.csv \
+    --amp-depth-report ./results/mpox/primertrimmed/SRR21755837.amplicon_depths.tsv \
+    < ./results/mpox/bwa/alignment/SRR21755837.sorted.bam 2> ./results/mpox/primertrimmed/SRR21755837.alignreport.er \
+    | samtools sort -T SRR21755837 - \
+    -o ./results/mpox/primertrimmed/SRR21755837.primertrimmed.rg.sorted.bam \
+    && samtools index ./results/mpox/primertrimmed/SRR21755837.primertrimmed.rg.sorted.bam
+```
+
+  </blockquote>
+</details>
+
+---
+
 # Step 8: Call variants
 
 freebayes is a Bayesian genetic variant detector designed to find small polymorphisms, specifically SNPs (single-nucleotide polymorphisms), indels (insertions and deletions), MNPs (multi-nucleotide polymorphisms), and complex events (composite insertion and substitution events) smaller than the length of a short-read sequencing alignment.
